@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC Exams - Online Test Adda</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+}
+
+header{
+background:#0d47a1;
+color:white;
+text-align:center;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:30px 20px;
+}
+
+.title{
+text-align:center;
+font-size:32px;
+color:#0d47a1;
+margin-bottom:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card h2{
+color:#0d47a1;
+margin-bottom:10px;
+}
+
+.card p{
+margin-bottom:20px;
+}
+
+.btn{
+display:inline-block;
+background:#0d47a1;
+color:white;
+padding:10px 20px;
+text-decoration:none;
+border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>SSC Exams</h1>
+<p>Choose Your SSC Category</p>
+<p>SSC परीक्षा श्रेणी चुनें</p>
+</header>
+
+<div class="container">
+
+<h2 class="title">SSC Categories</h2>
+
+<div class="cards">
+
+<div class="card">
+<h2>SSC CGL</h2>
+<p>Combined Graduate Level</p>
+<a href="ssc-cgl.html" class="btn">Open</a>
+</div>
+
+<div class="card">
+<h2>SSC CHSL</h2>
+<p>Combined Higher Secondary Level</p>
+<a href="ssc-chsl.html" class="btn">Open</a>
+</div>
+
+<div class="card">
+<h2>SSC MTS</h2>
+<p>Multi Tasking Staff</p>
+<a href="ssc-mts.html" class="btn">Open</a>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
