@@ -1,123 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Online Test Adda</title>
+
 <style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
 body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    background:#f4f6f9;
+background:#f4f7fc;
 }
 
-header{
-    background:#0d47a1;
-    color:white;
-    text-align:center;
-    padding:30px;
+nav{
+background:#0d47a1;
+padding:15px;
+display:flex;
+justify-content:center;
+gap:25px;
+flex-wrap:wrap;
 }
 
-.container{
-    width:90%;
-    margin:auto;
-    padding:20px;
+nav a{
+color:white;
+text-decoration:none;
+font-weight:bold;
 }
 
-.exam-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+.hero{
+text-align:center;
+padding:50px 20px;
+background:linear-gradient(135deg,#0d47a1,#1976d2);
+color:white;
 }
 
-.exam-card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    text-align:center;
+.hero h1{
+font-size:40px;
+margin-bottom:10px;
 }
 
-.exam-card h3{
-    color:#0d47a1;
+.hero p{
+font-size:18px;
 }
 
-.exam-card button{
-    background:#0d47a1;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:5px;
-    cursor:pointer;
+.section-title{
+text-align:center;
+margin:40px 0 20px;
+font-size:30px;
+color:#0d47a1;
 }
 
-.exam-card button:hover{
-    background:#1565c0;
+.exam-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+padding:20px;
+max-width:1200px;
+margin:auto;
+}
+
+.card{
+background:white;
+border-radius:15px;
+padding:25px;
+text-align:center;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card h3{
+color:#0d47a1;
+margin-bottom:10px;
+}
+
+.card p{
+margin-bottom:15px;
+}
+
+.btn{
+background:#0d47a1;
+color:white;
+padding:10px 20px;
+border-radius:5px;
+text-decoration:none;
+display:inline-block;
 }
 
 footer{
-    text-align:center;
-    padding:20px;
-    background:#0d47a1;
-    color:white;
-    margin-top:30px;
+background:#0d47a1;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:40px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Online Test Adda</h1>
-    <p>Free Mock Tests for Competitive Exams</p>
-</header>
+<nav>
+<a href="index.html">🏠 Home</a>
+<a href="pdf-notes.html">📚 PDF Notes</a>
+<a href="test.html">📝 Test Series</a>
+<a href="contact.html">📞 Contact</a>
+</nav>
 
-<div class="container">
+<div class="hero">
+<h1>Online Test Adda</h1>
+<p>Free Mock Tests & PDF Notes for Competitive Exams</p>
+<p>सरकारी एवं प्रतियोगी परीक्षाओं की तैयारी के लिए मुफ्त टेस्ट और नोट्स</p>
+</div>
 
-<h2>Choose Your Exam</h2>
+<h2 class="section-title">Choose Your Exam / परीक्षा चुनें</h2>
 
-<div class="exam-grid">
+<div class="exam-container">
 
-<div class="exam-card">
+<div class="card">
 <h3>SSC</h3>
-<p>SSC CGL, CHSL, MTS Mock Tests</p>
-<button>Start Test</button>
+<p>SSC CGL, CHSL, MTS Notes & Tests</p>
+<a class="btn" href="ssc.html">Explore</a>
 </div>
 
-<div class="exam-card">
+<div class="card">
 <h3>NEET</h3>
-<p>Biology, Physics & Chemistry Tests</p>
-<button>Start Test</button>
+<p>Biology, Physics & Chemistry</p>
+<a class="btn" href="neet.html">Explore</a>
 </div>
 
-<div class="exam-card">
+<div class="card">
 <h3>JEE</h3>
-<p>Physics, Chemistry & Mathematics Tests</p>
-<button>Start Test</button>
+<p>Physics, Chemistry & Mathematics</p>
+<a class="btn" href="jee.html">Explore</a>
 </div>
 
-<div class="exam-card">
+<div class="card">
 <h3>Railway</h3>
-<p>RRB NTPC & Group D Mock Tests</p>
-<button>Start Test</button>
+<p>RRB NTPC & Group D Preparation</p>
+<a class="btn" href="railway.html">Explore</a>
 </div>
 
-<div class="exam-card">
+<div class="card">
 <h3>Bihar Police</h3>
-<p>Practice Tests & Previous Papers</p>
-<button>Start Test</button>
+<p>Notes, Mock Tests & Practice Sets</p>
+<a class="btn" href="bihar-police.html">Explore</a>
 </div>
 
-<div class="exam-card">
+<div class="card">
 <h3>UP Police</h3>
-<p>Latest Pattern Mock Tests</p>
-<button>Start Test</button>
+<p>Latest Syllabus & Test Series</p>
+<a class="btn" href="up-police.html">Explore</a>
 </div>
 
-<div class="exam-card">
+<div class="card">
 <h3>BPSC</h3>
-<p>Prelims & Mains Practice Tests</p>
-<button>Start Test</button>
-</div>
-
+<p>Prelims & Mains Preparation</p>
+<a class="btn" href="bpsc.html">Explore</a>
 </div>
 
 </div>
