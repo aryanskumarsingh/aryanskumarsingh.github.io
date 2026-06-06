@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPSC</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f7fc;
+margin:0;
+}
+
+header{
+background:#0d47a1;
+color:white;
+text-align:center;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:30px 20px;
+}
+
+.title{
+text-align:center;
+font-size:32px;
+color:#0d47a1;
+margin-bottom:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card h2{
+color:#0d47a1;
+margin-bottom:10px;
+}
+
+.btn{
+display:inline-block;
+background:#0d47a1;
+color:white;
+padding:10px 20px;
+border-radius:6px;
+text-decoration:none;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>BPSC</h1>
+<p>Choose Your BPSC Category</p>
+</header>
+
+<div class="container">
+
+<h2 class="title">BPSC Categories</h2>
+
+<div class="cards">
+
+<div class="card">
+<h2>📘 BPSC Prelims</h2>
+<p>PDF Notes & Mock Tests</p>
+<a href="bpsc-prelims.html" class="btn">Open</a>
+</div>
+
+<div class="card">
+<h2>📗 BPSC Mains</h2>
+<p>PDF Notes & Mock Tests</p>
+<a href="bpsc-mains.html" class="btn">Open</a>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
