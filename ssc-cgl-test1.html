@@ -1,4 +1,284 @@
-let percentage=((score/maxMarks)*100).toFixed(2);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC CGL Mock Test 1</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+margin:0;
+background:#f4f4f4;
+}
+
+.header{
+background:#007bff;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+.timer{
+font-size:22px;
+font-weight:bold;
+text-align:center;
+background:#ffd54f;
+padding:10px;
+position:sticky;
+top:0;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+.question-box{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.option{
+display:block;
+padding:10px;
+margin:10px 0;
+background:#eee;
+border-radius:5px;
+cursor:pointer;
+}
+
+.option:hover{
+background:#ddd;
+}
+
+.buttons{
+margin-top:20px;
+display:flex;
+justify-content:space-between;
+}
+
+button{
+padding:10px 20px;
+border:none;
+background:#007bff;
+color:white;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+.palette{
+margin-top:20px;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.palette button{
+width:40px;
+height:40px;
+padding:0;
+}
+
+.result{
+display:none;
+background:white;
+padding:20px;
+border-radius:10px;
+text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>SSC CGL Mock Test 1</h1>
+</div>
+
+<div class="timer" id="timer">
+60:00
+</div>
+
+<div class="container">
+
+<div class="question-box" id="quizBox">
+<h3 id="question"></h3>
+<div id="options"></div>
+
+<div class="buttons">
+<button onclick="prevQuestion()">Previous</button>
+<button onclick="nextQuestion()">Next</button>
+</div>
+
+<div class="palette" id="palette"></div>
+
+<br>
+<button onclick="submitTest()">Submit Test</button>
+
+</div>
+
+<div class="result" id="result">
+<h2>Test Completed</h2>
+<h3 id="score"></h3>
+<h3 id="percent"></h3>
+</div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+q:"What is the capital of Australia?",
+options:["Sydney","Melbourne","Canberra","Perth"],
+answer:2
+},
+
+{
+q:"Who wrote the Constitution of India?",
+options:["Mahatma Gandhi","B.R. Ambedkar","Jawaharlal Nehru","Sardar Patel"],
+answer:1
+},
+
+{
+q:"25 × 4 = ?",
+options:["100","90","95","80"],
+answer:0
+},
+
+{
+q:"Which river is known as the Ganga of South India?",
+options:["Krishna","Godavari","Kaveri","Mahanadi"],
+answer:1
+},
+
+{
+q:"Who discovered gravity?",
+options:["Newton","Einstein","Galileo","Tesla"],
+answer:0
+},
+
+{
+q:"The square root of 144 is:",
+options:["10","11","12","13"],
+answer:2
+},
+
+{
+q:"Which is the largest planet?",
+options:["Earth","Saturn","Jupiter","Mars"],
+answer:2
+},
+
+{
+q:"Article 21 deals with:",
+options:["Equality","Freedom","Life and Liberty","Education"],
+answer:2
+},
+
+{
+q:"15% of 200 = ?",
+options:["25","30","35","40"],
+answer:1
+},
+
+{
+q:"Who is known as the Iron Man of India?",
+options:["Nehru","Patel","Bose","Tilak"],
+answer:1
+}
+
+];
+
+let currentQuestion=0;
+let answers=new Array(questions.length).fill(null);
+
+function loadQuestion(){
+
+document.getElementById("question").innerHTML=
+(currentQuestion+1)+". "+questions[currentQuestion].q;
+
+let optionsHTML="";
+
+questions[currentQuestion].options.forEach((opt,index)=>{
+
+optionsHTML+=
+<label class="option">
+<input type="radio"
+name="option"
+value="${index}"
+${answers[currentQuestion]==index?"checked":""}
+onclick="saveAnswer(${index})">
+${opt}
+</label>
+;
+
+});
+
+document.getElementById("options").innerHTML=optionsHTML;
+}
+
+function saveAnswer(index){
+answers[currentQuestion]=index;
+}
+
+function nextQuestion(){
+if(currentQuestion<questions.length-1){
+currentQuestion++;
+loadQuestion();
+}
+}
+
+function prevQuestion(){
+if(currentQuestion>0){
+currentQuestion--;
+loadQuestion();
+}
+}
+
+function createPalette(){
+
+let html="";
+
+for(let i=0;i<questions.length;i++){
+
+html+=
+<button onclick="jumpQuestion(${i})">
+${i+1}
+</button>
+;
+
+}
+
+document.getElementById("palette").innerHTML=html;
+}
+
+function jumpQuestion(i){
+currentQuestion=i;
+loadQuestion();
+}
+
+function submitTest(){
+
+let score=0;
+
+for(let i=0;i<questions.length;i++){
+
+if(answers[i]===questions[i].answer){
+score+=2;
+}
+else if(answers[i]!==null){
+score-=0.5;
+}
+  let percentage=((score/maxMarks)*100).toFixed(2);
 
 document.getElementById("quizBox").style.display="none";
 document.getElementById("result").style.display="block";
@@ -40,3 +320,7 @@ loadQuestion();
 
 </body>
 </html>
+
+}
+
+let maxMarks=questions.length*2;
