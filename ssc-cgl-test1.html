@@ -1,238 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SSC CGL Mock Test 1</title>
-
 <style>
-body{
-    font-family: Arial, sans-serif;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-}
-
-.timer{
-    position: sticky;
-    top: 0;
-    background: gold;
-    padding: 10px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.question{
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 8px;
-}
-
-button{
-    padding: 12px 25px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-.correct{
-    background-color: #b7ffb7;
-}
-
-.wrong{
-    background-color: #ffb7b7;
-}
+body{font-family:Arial,sans-serif;max-width:900px;margin:auto;padding:20px}
+.timer{position:sticky;top:0;background:#ffd54f;padding:10px;font-weight:bold}
+.question{border:1px solid #ddd;padding:10px;margin:10px 0}
+.correct{background:#b7ffb7}
+.wrong{background:#ffb7b7}
+button{padding:10px 20px;font-size:16px}
 </style>
 </head>
-
 <body>
-
-<div class="timer">
-⏳ Time Left: <span id="timer">90:00</span>
-</div>
-
+<div class="timer">⏳ Time Left: <span id="timer">90:00</span></div>
 <h1>SSC CGL Mock Test 1</h1>
 
-<form id="quizForm">
-
-<div class="question" data-answer="A">
-<p><b>1. What is the capital of Rajasthan?</b></p>
-
-<label><input type="radio" name="q1" value="A"> Jaipur</label><br>
-<label><input type="radio" name="q1" value="B"> Jodhpur</label><br>
-<label><input type="radio" name="q1" value="C"> Udaipur</label><br>
-<label><input type="radio" name="q1" value="D"> Kota</label>
-</div>
-
-<div class="question" data-answer="B">
-<p><b>2. 25 × 12 = ?</b></p>
-
-<label><input type="radio" name="q2" value="A"> 250</label><br>
-<label><input type="radio" name="q2" value="B"> 300</label><br>
-<label><input type="radio" name="q2" value="C"> 350</label><br>
-<label><input type="radio" name="q2" value="D"> 275</label>
-</div>
-
-    <div class="question" data-answer="B">
-<p><b>3. Which planet is known as the Red Planet?</b></p>
-
-<label><input type="radio" name="q3" value="A"> Venus</label><br>
-<label><input type="radio" name="q3" value="B"> Mars</label><br>
-<label><input type="radio" name="q3" value="C"> Jupiter</label><br>
-<label><input type="radio" name="q3" value="D"> Saturn</label>
-</div>
-
-<div class="question" data-answer="C">
-<p><b>4. 144 ÷ 12 = ?</b></p>
-
-<label><input type="radio" name="q4" value="A"> 10</label><br>
-<label><input type="radio" name="q4" value="B"> 11</label><br>
-<label><input type="radio" name="q4" value="C"> 12</label><br>
-<label><input type="radio" name="q4" value="D"> 14</label>
-</div>
-
-<div class="question" data-answer="B">
-<p><b>5. Who wrote Discovery of India?</b></p>
-
-<label><input type="radio" name="q5" value="A"> Mahatma Gandhi</label><br>
-<label><input type="radio" name="q5" value="B"> Jawaharlal Nehru</label><br>
-<label><input type="radio" name="q5" value="C"> Sardar Patel</label><br>
-<label><input type="radio" name="q5" value="D"> B. R. Ambedkar</label>
-</div>
-
-<div class="question" data-answer="C">
-<p><b>6. Which is the largest ocean in the world?</b></p>
-
-<label><input type="radio" name="q6" value="A"> Atlantic Ocean</label><br>
-<label><input type="radio" name="q6" value="B"> Indian Ocean</label><br>
-<label><input type="radio" name="q6" value="C"> Pacific Ocean</label><br>
-<label><input type="radio" name="q6" value="D"> Arctic Ocean</label>
-</div>
-
-<div class="question" data-answer="A">
-<p><b>7. What is 18² ?</b></p>
-
-<label><input type="radio" name="q7" value="A"> 324</label><br>
-<label><input type="radio" name="q7" value="B"> 342</label><br>
-<label><input type="radio" name="q7" value="C"> 314</label><br>
-<label><input type="radio" name="q7" value="D"> 334</label>
-</div>
-
-<div class="question" data-answer="C">
-<p><b>8. Synonym of Brave?</b></p>
-
-<label><input type="radio" name="q8" value="A"> Coward</label><br>
-<label><input type="radio" name="q8" value="B"> Fearful</label><br>
-<label><input type="radio" name="q8" value="C"> Courageous</label><br>
-<label><input type="radio" name="q8" value="D"> Weak</label>
-</div>
-
-<div class="question" data-answer="A">
-<p><b>9. Which Article of the Constitution provides Equality before Law?</b></p>
-
-<label><input type="radio" name="q9" value="A"> Article 14</label><br>
-<label><input type="radio" name="q9" value="B"> Article 19</label><br>
-<label><input type="radio" name="q9" value="C"> Article 21</label><br>
-<label><input type="radio" name="q9" value="D"> Article 32</label>
-</div>
-
-<div class="question" data-answer="B">
-<p><b>10. HCF of 24 and 36 is?</b></p>
-
-<label><input type="radio" name="q10" value="A"> 6</label><br>
-<label><input type="radio" name="q10" value="B"> 12</label><br>
-<label><input type="radio" name="q10" value="C"> 18</label><br>
-<label><input type="radio" name="q10" value="D"> 24</label>
-</div>
-
-<button type="button" onclick="checkScore()">
-Submit Test
-</button>
-
+<form id="quiz">
+<div id="questions"></div>
+<button type="button" onclick="checkScore()">Submit Test</button>
 </form>
 
 <div id="result"></div>
 
 <script>
+const questions=[
+["What is the capital of Rajasthan?",["Jaipur","Jodhpur","Udaipur","Kota"],0],
+["25 × 12 = ?",["250","300","350","275"],1],
+["Red Planet?",["Venus","Mars","Jupiter","Saturn"],1],
+["144 ÷ 12 = ?",["10","11","12","14"],2],
+["Who wrote Discovery of India?",["Gandhi","Nehru","Patel","Ambedkar"],1],
+["Largest ocean?",["Atlantic","Indian","Pacific","Arctic"],2],
+["18² = ?",["324","342","314","334"],0],
+["Synonym of Brave?",["Coward","Fearful","Courageous","Weak"],2],
+["Article for Equality?",["14","19","21","32"],0],
+["HCF of 24 and 36?",["6","12","18","24"],1],
+["Father of Nation?",["Nehru","Gandhi","Patel","Bose"],1],
+["15% of 200?",["25","30","35","40"],1],
+["Most abundant gas?",["Oxygen","Nitrogen","CO2","Hydrogen"],1],
+["Antonym of Ancient?",["Old","Modern","Historic","Traditional"],1],
+["Currency of Japan?",["Yuan","Won","Yen","Ringgit"],2],
+["7×8+12?",["68","64","72","74"],0],
+["Sorrow of Bihar river?",["Ganga","Kosi","Son","Gandak"],1],
+["CPU stands for?",["Central Processing Unit","Central Power Unit","Computer Processing Unit","Control Processing Unit"],0],
+["If TRAIN=USBJO, BOOK=?",["CPPL","CPOK","BNNL","DQQM"],0],
+["First President of India?",["Rajendra Prasad","Nehru","Radhakrishnan","Ambedkar"],0]
+];
 
-let timeLeft = 5400;
+const qDiv=document.getElementById("questions");
+questions.forEach((q,i)=>{
+ let html=<div class="question" data-answer="${q[2]}"><p>${i+1}. ${q[0]}</p>;
+ q[1].forEach((o,j)=>{
+  html+=<label><input type="radio" name="q${i}" value="${j}"> ${o}</label><br>;
+ });
+ html+="</div>";
+ qDiv.innerHTML+=html;
+});
 
-const timer = setInterval(function(){
-
-let minutes = Math.floor(timeLeft / 60);
-let seconds = timeLeft % 60;
-
-document.getElementById("timer").innerHTML =
-minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-
-timeLeft--;
-
-if(timeLeft < 0){
-clearInterval(timer);
-checkScore();
-}
-
+let timeLeft=5400;
+const timer=setInterval(()=>{
+ let m=Math.floor(timeLeft/60), s=timeLeft%60;
+ document.getElementById("timer").textContent=m+":"+(s<10?"0":"")+s;
+ timeLeft--;
+ if(timeLeft<0){clearInterval(timer);checkScore();}
 },1000);
 
 function checkScore(){
-
-clearInterval(timer);
-
-let total = document.querySelectorAll(".question").length;
-let attempted = 0;
-let correct = 0;
-let wrong = 0;
-
-document.querySelectorAll(".question").forEach(question=>{
-
-let answer = question.dataset.answer;
-
-let selected =
-question.querySelector("input[type=radio]:checked");
-
-question.querySelectorAll("label").forEach(label=>{
-
-let input = label.querySelector("input");
-
-if(input.value === answer){
-label.classList.add("correct");
+ clearInterval(timer);
+ let correct=0,wrong=0,attempted=0;
+ document.querySelectorAll('.question').forEach(q=>{
+  let ans=q.dataset.answer;
+  let sel=q.querySelector('input:checked');
+  q.querySelectorAll('label').forEach(l=>{
+   let inp=l.querySelector('input');
+   if(inp.value===ans) l.classList.add('correct');
+   if(sel && inp.value===sel.value && sel.value!==ans) l.classList.add('wrong');
+  });
+  if(sel){attempted++; if(sel.value===ans) correct++; else wrong++;}
+ });
+ document.getElementById('result').innerHTML=
+ <h2>Result</h2>
+ <p>Total: ${questions.length}</p>
+ <p>Attempted: ${attempted}</p>
+ <p>Correct: ${correct}</p>
+ <p>Wrong: ${wrong}</p>
+ <p>Percentage: ${(correct/questions.length*100).toFixed(2)}%</p>;
 }
-
-if(selected &&
-selected.value === input.value &&
-selected.value !== answer){
-label.classList.add("wrong");
-}
-
-});
-
-if(selected){
-
-attempted++;
-
-if(selected.value === answer){
-correct++;
-}else{
-wrong++;
-}
-
-}
-
-});
-    document.getElementById("result").innerHTML = 
-<h2>Result</h2>
-<p>Total Questions: ${total}</p>
-<p>Attempted: ${attempted}</p>
-<p>Correct: ${correct}</p>
-<p>Wrong: ${wrong}</p>
-<p>Percentage: ${((correct/total)*100).toFixed(2)}%</p>
-;
-
-}
-
 </script>
 </body>
 </html>
-
-
