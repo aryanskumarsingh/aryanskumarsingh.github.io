@@ -1,250 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SSC CGL Mock Test</title>
-
-<style>
-body{
-font-family:Arial,sans-serif;
-max-width:800px;
-margin:auto;
-padding:20px;
-}
-
-.timer{
-background:#ffeb3b;
-padding:10px;
-font-size:20px;
-font-weight:bold;
-text-align:center;
-position:sticky;
-top:0;
-}
-
-.question-box{
-border:1px solid #ccc;
-padding:20px;
-margin-top:20px;
-border-radius:10px;
-}
-
-.option{
-display:block;
-margin:10px 0;
-padding:10px;
-border:1px solid #ddd;
-border-radius:5px;
-cursor:pointer;
-}
-
-button{
-padding:10px 20px;
-margin:10px;
-font-size:16px;
-}
-
-#result{
-display:none;
-}
-</style>
+<title>SSC Test</title>
 </head>
-
 <body>
 
-<div class="timer">
-Time Left: <span id="time">15:00</span>
-</div>
-
-<h2>SSC CGL Mock Test - 1</h2>
+<h2>SSC CGL Mock Test</h2>
 
 <div id="quiz"></div>
-
-<div>
-<button onclick="prevQuestion()">Previous</button>
-<button onclick="nextQuestion()">Next</button>
-<button onclick="submitQuiz()">Submit Test</button>
-</div>
-
-<div id="result"></div>
 
 <script>
 
 const quizData = [
-
 {
-question:"1. What is the capital of Bihar?",
-options:["Patna","Ranchi","Lucknow","Bhopal"],
-answer:"Patna"
-},
-
-{
-question:"2. 25 × 4 = ?",
-options:["50","75","100","125"],
-answer:"100"
-},
-
-{
-question:"3. Who wrote the Indian National Anthem?",
-options:["Premchand","Tagore","Nehru","Gandhi"],
-answer:"Tagore"
-},
-
-{
-question:"4. भारत का राष्ट्रीय पशु कौन है?",
-options:["शेर","बाघ","हाथी","चीता"],
-answer:"बाघ"
-},
-
-{
-question:"5. Synonym of 'Brave'?",
-options:["Coward","Fearful","Bold","Weak"],
-answer:"Bold"
-},
-
-{
-question:"6. 144 ÷ 12 = ?",
-options:["10","12","14","16"],
-answer:"12"
-},
-
-{
-question:"7. Which planet is known as Red Planet?",
-options:["Earth","Mars","Jupiter","Venus"],
-answer:"Mars"
-},
-
-{
-question:"8. संविधान कब लागू हुआ?",
-options:["15 Aug 1947","26 Jan 1950","2 Oct 1947","26 Nov 1949"],
-answer:"26 Jan 1950"
-},
-
-{
-question:"9. What is HCF of 12 and 18?",
-options:["2","3","6","9"],
-answer:"6"
-},
-
-{
-question:"10. SSC stands for?",
-options:[
-"Staff Selection Commission",
-"State Service Commission",
-"Student Service Commission",
-"Staff Service Committee"
-],
-answer:"Staff Selection Commission"
+question:"What is the capital of Bihar?",
+options:["Patna","Delhi","Lucknow","Ranchi"]
 }
-
 ];
-
-let currentQuestion = 0;
-let answers = new Array(quizData.length).fill("");
 
 function loadQuestion(){
 
-const q = quizData[currentQuestion];
+let q = quizData[0];
 
-let html = 
-<div class="question-box">
-<h3>Question ${currentQuestion+1} of ${quizData.length}</h3>
-<p>${q.question}</p>
-;
+document.getElementById("quiz").innerHTML = 
+<h3>${q.question}</h3>
 
-q.options.forEach(option=>{
+<label><input type="radio" name="q1"> ${q.options[0]}</label><br>
 
-html += 
-<label class="option">
-<input type="radio"
-name="answer"
-value="${option}"
-${answers[currentQuestion]===option?"checked":""}
-onclick="saveAnswer('${option}')">
-${option}
-</label>
-;
+<label><input type="radio" name="q1"> ${q.options[1]}</label><br>
 
-});
+<label><input type="radio" name="q1"> ${q.options[2]}</label><br>
 
-html += "</div>";
+<label><input type="radio" name="q1"> ${q.options[3]}</label>
 
-document.getElementById("quiz").innerHTML = html;
-}
-
-function saveAnswer(ans){
-answers[currentQuestion]=ans;
-}
-
-function nextQuestion(){
-if(currentQuestion<quizData.length-1){
-currentQuestion++;
-loadQuestion();
-}
-}
-
-function prevQuestion(){
-if(currentQuestion>0){
-currentQuestion--;
-loadQuestion();
-}
-}
-
-function submitQuiz(){
-
-let score=0;
-let review="";
-
-quizData.forEach((q,index)=>{
-
-if(answers[index]===q.answer){
-score++;
-}
-
-review += 
-<p>
-<b>Q${index+1}:</b> ${q.question}<br>
-Your Answer: ${answers[index]||"Not Answered"}<br>
-Correct Answer: ${q.answer}
-</p>
-<hr>
-;
-
-});
-
-document.getElementById("quiz").style.display="none";
-
-document.getElementById("result").style.display="block";
-
-document.getElementById("result").innerHTML=
-
-<h2>Test Submitted</h2>
-<h3>Your Score: ${score}/${quizData.length}</h3>
-${review}
 ;
 }
-
-let totalTime=15*60;
-
-const timer=setInterval(()=>{
-
-let minutes=Math.floor(totalTime/60);
-let seconds=totalTime%60;
-
-document.getElementById("time").innerText=
-String(minutes).padStart(2,'0')
-+":"+
-String(seconds).padStart(2,'0');
-
-totalTime--;
-
-if(totalTime<0){
-clearInterval(timer);
-submitQuiz();
-}
-
-},1000);
 
 loadQuestion();
 
