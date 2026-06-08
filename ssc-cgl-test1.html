@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC CGL Mock Test | Online Test Adda</title>
+<title>SSC CGL Mock Test</title>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 .sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
 .main{flex:1;padding:20px;overflow-y:auto}
-.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
-.timer{background:#d32f2f;padding:8px 15px;border-radius:20px;font-weight:bold}
+.header{background:#1a237e;color:white;padding:15px}
 .q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
 .q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px}
 .q-btn.answered{background:#4caf50;color:white;border:none}
@@ -45,8 +44,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 </div>
 <div class="main">
 <div class="header">
-<h2>SSC CGL Mock Test</h2>
-<div class="timer" id="timer">60:00</div>
+<h2>SSC CGL Mock Test - No Timer</h2>
 </div>
 <div id="quizArea">
 <div class="question-box">
@@ -66,7 +64,6 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 </div>
 </div>
 <script>
-console.log("Script started");
 const questions = [
 {q:"Bharat ka Samvidhan kab lagu hua?",o:["15 Aug 1947","26 Jan 1950","26 Nov 1949","2 Oct 1950"],a:1,s:"GK"},
 {q:"Who is the first Indian woman to win an Olympic medal?",o:["P.V. Sindhu","Saina Nehwal","Karnam Malleswari","Mary Kom"],a:2,s:"GK"},
@@ -78,9 +75,6 @@ const questions = [
 {q:"A train 100m long crosses a pole in 10 sec. Speed =?",o:["10 m/s","20 m/s","5 m/s","15 m/s"],a:0,s:"Quant"},
 {q:"Simple Interest on Rs 1000 at 10% for 2 years?",o:["Rs 100","Rs 150","Rs 200","Rs 250"],a:2,s:"Quant"},
 {q:"Find odd one: January, March, July, November",o:["January","March","July","November"],a:3,s:"Reasoning"},
-{q:"If EARTH = 52, then MOON =?",o:["57","58","59","60"],a:0,s:"Reasoning"},
-{q:"Complete: 3, 8, 15, 24,?",o:["32","33","35","36"],a:2,s:"Reasoning"},
-{q:"Choose the correct spelling:",o:["Definately","Definitely","Definietly","Definitly"],a:1,s:"English"},
 {q:"Synonym of 'Enormous'?",o:["Tiny","Huge","Small","Little"],a:1,s:"English"},
 {q:"Antonym of 'Victory'?",o:["Success","Win","Defeat","Triumph"],a:2,s:"English"}
 ];
@@ -88,17 +82,9 @@ for(let i=questions.length;i<100;i++){
 let sec=["GK","Quant","Reasoning","English"][Math.floor(i/25)];
 questions.push({q:${sec} Demo Q${i+1}: 10 + 10 =?,o:["10","15","20","25"],a:2,s:sec});
 }
-console.log("Questions loaded:", questions.length);
 let current=0;
 let answers=Array(100).fill(null);
 let review=Array(100).fill(false);
-let time=3600;
-const timerId=setInterval(()=>{
-if(time<=0){clearInterval(timerId);submitTest();return}
-time--;
-let m=Math.floor(time/60),s=time%60;
-document.getElementById('timer').innerText=${m}:${s<10?'0':''}${s};
-},1000);
 const qPanel=document.getElementById('qPanel');
 for(let i=0;i<100;i++){
 let btn=document.createElement('button');
@@ -108,13 +94,12 @@ btn.onclick=()=>jumpQ(i);
 qPanel.appendChild(btn);
 }
 function loadQ(){
-console.log("Loading Q", current+1);
-document.getElementById('qNum').innerText='Question ${current+1} | ${questions[current].s}';
+document.getElementById('qNum').innerText=Question ${current+1} | ${questions[current].s};
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';
 questions[current].o.forEach((opt,i)=>{
 let checked=answers[current]===i?'checked':'';
-optHtml+='<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>';
+optHtml+=<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>;
 });
 document.getElementById('options').innerHTML=optHtml;
 updatePanel();
@@ -124,9 +109,11 @@ function nextQ(){saveAns();if(current<99){current++;loadQ()}}
 function jumpQ(i){saveAns();current=i;loadQ()}
 function markReview(){review[current]=!review[current];updatePanel()}
 function updatePanel(){document.querySelectorAll('.q-btn').forEach((btn,i)=>{btn.className='q-btn';if(i===current)btn.classList.add('current');if(answers[i]!==null)btn.classList.add('answered');else btn.classList.add('not-visited');if(review[i])btn.classList.add('review');});}
-function submitTest(){if(!confirm("Submit test?"))return;saveAns();clearInterval(timerId);let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=${score}/200;document.getElementById('analysis').innerText=Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;document.getElementById('sectionScore').innerHTML=GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;}
+function submitTest(){if(!confirm("Submit test?"))return;saveAns();let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=${score}/200;document.getElementById('analysis').innerText=Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;document.getElementById('sectionScore').innerHTML=GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;}
 loadQ();
-console.log("Script ended");
 </script>
 </body>
 </html>
+{q:"If EARTH = 52, then MOON =?",o:["57","58","59","60"],a:0,s:"Reasoning"},
+{q:"Complete: 3, 8, 15, 24,?",o:["32","33","35","36"],a:2,s:"Reasoning"},
+{q:"Choose the correct spelling:",o:["Definately","Definitely","Definietly","Definitly"],a:1,s:"English"},
