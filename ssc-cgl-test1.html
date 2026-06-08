@@ -7,26 +7,28 @@
 <style>
   *{box-sizing:border-box;font-family:Arial,sans-serif}
   body{margin:0;background:#f4f6f9;display:flex;height:100vh}
- .sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
- .main{flex:1;padding:20px;overflow-y:auto}
- .header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
- .timer{background:#d32f2f;padding:8px 15px;border-radius:20px;font-weight:bold}
- .q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
- .q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px}
- .q-btn.answered{background:#4caf50;color:white;border:none}
- .q-btn.review{background:#ff9800;color:white;border:none}
- .q-btn.current{border:2px solid #1a237e}
- .question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
- .options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
- .options input{margin-right:10px}
- .btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
- .btn-next{background:#1a237e;color:white}
- .btn-review{background:#ff9800;color:white}
- .btn-submit{background:#d32f2f;color:white}
- .legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
- .hide{display:none}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#d32f2f;padding:8px 15px;border-radius:20px;font-weight:bold}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.not-visited{background:#fff}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
   #result{background:white;padding:30px;border-radius:8px;text-align:center}
- .score{font-size:48px;color:#1a237e;margin:10px}
+.score{font-size:48px;color:#1a237e;margin:10px}
   @media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:200px}}
 </style>
 </head>
@@ -52,7 +54,7 @@
   <div id="quizArea">
     <div class="question-box">
       <h3 id="qNum">Question 1</h3>
-      <p id="question">Loading...</p>
+      <p id="question"></p>
       <div class="options" id="options"></div>
     </div>
     <button class="btn btn-review" onclick="markReview()">Mark for Review</button>
@@ -71,48 +73,65 @@
 <script>
 const questions = [
   // GK 1-25
-  {q:"Who is the current CJI of India?",o:["DY Chandrachud","UU Lalit","NV Ramana","SA Bobde"],a:0,s:"GK"},
-  {q:"Which is the largest desert in India?",o:["Sahara","Thar","Kalahari","Gobi"],a:1,s:"GK"},
-  // Add 23 more GK...
+  {q:"Who is the architect of the Indian Constitution?",o:["Mahatma Gandhi","Dr. B.R. Ambedkar","Jawaharlal Nehru","Sardar Patel"],a:1,s:"GK"},
+  {q:"Which planet is known as the Red Planet?",o:["Venus","Mars","Jupiter","Saturn"],a:1,s:"GK"},
+  {q:"The Currency of Japan is?",o:["Yuan","Won","Yen","Dollar"],a:2,s:"GK"},
+  {q:"Who wrote 'Discovery of India'?",o:["M.K. Gandhi","J.L. Nehru","R.N. Tagore","S.C. Bose"],a:1,s:"GK"},
+  {q:"Headquarters of UNO is in?",o:["Paris","Geneva","New York","London"],a:2,s:"GK"},
+  // Add more GK here...
 
   // Quant 26-50
-  {q:"If 15% of x = 45, then x =?",o:["200","250","300","350"],a:2,s:"Quant"},
-  {q:"Speed of 72 km/hr in m/s?",o:["10","15","20","25"],a:2,s:"Quant"},
-  // Add 23 more Quant...
-
-  // Reasoning 51-75
-  {q:"Complete: 2, 6, 12, 20,?",o:["28","30","32","36"],a:1,s:"Reasoning"},
-  {q:"If CAT = 24, then DOG =?",o:["26","27","28","29"],a:0,s:"Reasoning"},
-  // Add 23 more Reasoning...
+  {q:"What is 15% of 200?",o:["15","30","45","60"],a:1,s:"Quant"},
+  {q:"If CP=₹500 and SP=₹600, profit % =?",o:["10%","15%","20%","25%"],a:2,s:"Quant"},
+  {q:"Square root of 144?",o:["10","11","12","13"],a:2,s:"Quant"},
+  {q:"Simplify: 2 + 3 × 4",o:["20","14","10","18"],a:1,s:"Quant"},
+  {q:"Average of 10, 20, 30, 40?",o:["20","25","30","40"],a:1,s:"Quant"},
+  // Add more Quant...
+ // Reasoning 51-75
+  {q:"Find odd one: Dog, Cat, Cow, Car",o:["Dog","Cat","Cow","Car"],a:3,s:"Reasoning"},
+  {q:"If A=1, B=2, then CAT=?",o:["24","25","26","27"],a:0,s:"Reasoning"},
+  {q:"Complete series: 5, 10, 15, 20,?",o:["22","25","30","35"],a:1,s:"Reasoning"},
+  {q:"Ramu is elder than Shyam. Shyam is elder than Mohan. Who is eldest?",o:["Ramu","Shyam","Mohan","Can't say"],a:0,s:"Reasoning"},
+  {q:"Mirror image of 'B' is?",o:["B","D","P","Reverse B"],a:3,s:"Reasoning"},
+  // Add more Reasoning...
 
   // English 76-100
-  {q:"Synonym of 'Abundant'?",o:["Scarce","Plentiful","Rare","Meager"],a:1,s:"English"},
-  {q:"Choose correct spelling:",o:["Accomodate","Accommodate","Acommodate","Accommadate"],a:1,s:"English"}
-  // Add 23 more English...
+  {q:"Synonym of 'Brave'?",o:["Coward","Courageous","Timid","Weak"],a:1,s:"English"},
+  {q:"Antonym of 'Ancient'?",o:["Old","Modern","Past","Historic"],a:1,s:"English"},
+  {q:"Choose correct spelling:",o:["Receive","Recieve","Receeve","Receve"],a:0,s:"English"},
+  {q:"He ___ to school daily.",o:["go","goes","going","gone"],a:1,s:"English"},
+  {q:"Plural of 'Child'?",o:["Childs","Childes","Children","Childern"],a:2,s:"English"}
+  // Add more English...
 ];
-  // Demo me 8 questions hain. 100 ke liye array me aur add kar dena
-while(questions.length < 100){
-  questions.push({q:Sample Question ${questions.length+1}?,o:["Option A","Option B","Option C","Option D"],a:0,s:["GK","Quant","Reasoning","English"][questions.length%4]});
+
+// Fill rest 80 questions so total = 100
+const sections = ["GK","Quant","Reasoning","English"];
+for(let i=questions.length; i<100; i++){
+  let sec = sections[Math.floor(i/25)];
+  questions.push({
+    q: ${sec} Sample Question ${i+1}: What is 2+2?,
+    o: ["3","4","5","6"],
+    a: 1,
+    s: sec
+  });
 }
 
 let current = 0;
 let answers = Array(100).fill(null);
 let review = Array(100).fill(false);
-let time = 60*60; // 60 min
+let time = 60*60;
 
-// Timer
-setInterval(()=>{
-  if(time<=0){submitTest();return}
+const timerId = setInterval(()=>{
+  if(time<=0){clearInterval(timerId); submitTest(); return}
   time--;
   let m = Math.floor(time/60), s = time%60;
   document.getElementById('timer').innerText = ${m}:${s<10?'0':''}${s};
 },1000);
 
-// Build question panel
 const qPanel = document.getElementById('qPanel');
 for(let i=0;i<100;i++){
   let btn = document.createElement('button');
-  btn.className = 'q-btn';
+  btn.className = 'q-btn not-visited';
   btn.innerText = i+1;
   btn.onclick = ()=> jumpQ(i);
   qPanel.appendChild(btn);
@@ -124,7 +143,7 @@ function loadQ(){
   let optHtml = '';
   questions[current].o.forEach((opt,i)=>{
     let checked = answers[current]===i?'checked':'';
-    optHtml += <label><input type="radio" name="opt" value="${i}" ${checked}> ${opt}</label>;
+    optHtml += <label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>;
   });
   document.getElementById('options').innerHTML = optHtml;
   updatePanel();
@@ -133,23 +152,26 @@ function loadQ(){
 function saveAns(){
   let selected = document.querySelector('input[name="opt"]:checked');
   if(selected) answers[current] = parseInt(selected.value);
+  updatePanel();
 }
 
 function nextQ(){saveAns(); if(current<99){current++;loadQ()}}
 function jumpQ(i){saveAns(); current=i; loadQ()}
-function markReview(){review[current]=true; nextQ()}
+function markReview(){review[current]=!review[current]; updatePanel()}
 
 function updatePanel(){
   document.querySelectorAll('.q-btn').forEach((btn,i)=>{
     btn.className = 'q-btn';
     if(i===current) btn.classList.add('current');
     if(answers[i]!==null) btn.classList.add('answered');
+    else btn.classList.add('not-visited');
     if(review[i]) btn.classList.add('review');
   });
 }
 
 function submitTest(){
-  saveAns();
+  if(!confirm("Are you sure you want to submit?")) return;
+  saveAns(); clearInterval(timerId);
   let score = 0, correct = 0, wrong = 0;
   let secScore = {GK:0,Quant:0,Reasoning:0,English:0};
   questions.forEach((q,i)=>{
@@ -161,4 +183,11 @@ function submitTest(){
   document.getElementById('quizArea').classList.add('hide');
   document.getElementById('result').classList.remove('hide');
   document.getElementById('finalScore').innerText = ${score}/200;
-  document.getElementById('analysis').innerText = `Correct: ${correct} | Wrong:
+  document.getElementById('analysis').innerText = Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;
+  document.getElementById('sectionScore').innerHTML = GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;
+}
+
+loadQ();
+</script>
+</body>
+</html>
