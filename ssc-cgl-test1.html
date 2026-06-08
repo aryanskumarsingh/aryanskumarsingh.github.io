@@ -21,13 +21,37 @@ font-weight:bold;
 
 <div id="timer">05:00</div>
 
-<h3>1. What is the capital of Bihar?</h3>
+<div id="question"></div>
 
-<input type="radio" name="q1"> Patna<br>
-<input type="radio" name="q1"> Delhi<br>
-<input type="radio" name="q1"> Ranchi<br>
-<input type="radio" name="q1"> Lucknow<br>
+<button onclick="nextQuestion()">Next</button>
 
+<script>
+
+const questions = [
+"What is the capital of Bihar?",
+"25 × 4 = ?",
+"Who wrote the National Anthem?"
+];
+
+let current = 0;
+
+function loadQuestion(){
+document.getElementById("question").innerHTML =
+"<h3>" + questions[current] + "</h3>";
+}
+
+function nextQuestion(){
+
+if(current < questions.length-1){
+current++;
+loadQuestion();
+}
+
+}
+
+loadQuestion();
+
+</script>
 <script>
 
 let time = 300;
