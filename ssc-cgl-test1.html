@@ -1,75 +1,164 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>SSC CGL Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC CGL Mock Test | Online Test Adda</title>
 <style>
-body{
-font-family:Arial;
-padding:20px;
-}
-#timer{
-background:yellow;
-padding:10px;
-font-size:20px;
-font-weight:bold;
-}
+  *{box-sizing:border-box;font-family:Arial,sans-serif}
+  body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+ .sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+ .main{flex:1;padding:20px;overflow-y:auto}
+ .header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+ .timer{background:#d32f2f;padding:8px 15px;border-radius:20px;font-weight:bold}
+ .q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+ .q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px}
+ .q-btn.answered{background:#4caf50;color:white;border:none}
+ .q-btn.review{background:#ff9800;color:white;border:none}
+ .q-btn.current{border:2px solid #1a237e}
+ .question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+ .options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+ .options input{margin-right:10px}
+ .btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+ .btn-next{background:#1a237e;color:white}
+ .btn-review{background:#ff9800;color:white}
+ .btn-submit{background:#d32f2f;color:white}
+ .legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+ .hide{display:none}
+  #result{background:white;padding:30px;border-radius:8px;text-align:center}
+ .score{font-size:48px;color:#1a237e;margin:10px}
+  @media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:200px}}
 </style>
 </head>
 <body>
 
-<h1>SSC CGL Mock Test</h1>
+<div class="sidebar">
+  <h3>Question Panel</h3>
+  <div class="legend">
+    <p><span style="background:#4caf50"></span>Answered</p>
+    <p><span style="background:#ff9800"></span>Marked</p>
+    <p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+  </div>
+  <div class="q-panel" id="qPanel"></div>
+  <button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
 
-<div id="timer">05:00</div>
+<div class="main">
+  <div class="header">
+    <h2>SSC CGL Mock Test</h2>
+    <div class="timer" id="timer">60:00</div>
+  </div>
 
-<div id="question"></div>
+  <div id="quizArea">
+    <div class="question-box">
+      <h3 id="qNum">Question 1</h3>
+      <p id="question">Loading...</p>
+      <div class="options" id="options"></div>
+    </div>
+    <button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+    <button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+  </div>
 
-<button onclick="nextQuestion()">Next</button>
+  <div id="result" class="hide">
+    <h2>Test Submitted!</h2>
+    <p class="score" id="finalScore">0/200</p>
+    <p id="analysis"></p>
+    <h3>Section Wise:</h3>
+    <p id="sectionScore"></p>
+  </div>
+</div>
 
 <script>
-
 const questions = [
-"What is the capital of Bihar?",
-"25 × 4 = ?",
-"Who wrote the National Anthem?"
+  // GK 1-25
+  {q:"Who is the current CJI of India?",o:["DY Chandrachud","UU Lalit","NV Ramana","SA Bobde"],a:0,s:"GK"},
+  {q:"Which is the largest desert in India?",o:["Sahara","Thar","Kalahari","Gobi"],a:1,s:"GK"},
+  // Add 23 more GK...
+
+  // Quant 26-50
+  {q:"If 15% of x = 45, then x =?",o:["200","250","300","350"],a:2,s:"Quant"},
+  {q:"Speed of 72 km/hr in m/s?",o:["10","15","20","25"],a:2,s:"Quant"},
+  // Add 23 more Quant...
+
+  // Reasoning 51-75
+  {q:"Complete: 2, 6, 12, 20,?",o:["28","30","32","36"],a:1,s:"Reasoning"},
+  {q:"If CAT = 24, then DOG =?",o:["26","27","28","29"],a:0,s:"Reasoning"},
+  // Add 23 more Reasoning...
+
+  // English 76-100
+  {q:"Synonym of 'Abundant'?",o:["Scarce","Plentiful","Rare","Meager"],a:1,s:"English"},
+  {q:"Choose correct spelling:",o:["Accomodate","Accommodate","Acommodate","Accommadate"],a:1,s:"English"}
+  // Add 23 more English...
 ];
+  // Demo me 8 questions hain. 100 ke liye array me aur add kar dena
+while(questions.length < 100){
+  questions.push({q:Sample Question ${questions.length+1}?,o:["Option A","Option B","Option C","Option D"],a:0,s:["GK","Quant","Reasoning","English"][questions.length%4]});
+}
 
 let current = 0;
+let answers = Array(100).fill(null);
+let review = Array(100).fill(false);
+let time = 60*60; // 60 min
 
-function loadQuestion(){
-document.getElementById("question").innerHTML =
-"<h3>" + questions[current] + "</h3>";
-}
-
-function nextQuestion(){
-
-if(current < questions.length-1){
-current++;
-loadQuestion();
-}
-
-}
-
-loadQuestion();
-
-</script>
-
-<script>
-
-let time = 300;
-
-setInterval(function(){
-
-let minutes = Math.floor(time/60);
-let seconds = time%60;
-
-document.getElementById("timer").innerHTML =
-minutes + ":" + (seconds<10?"0":"") + seconds;
-
-time--;
-
+// Timer
+setInterval(()=>{
+  if(time<=0){submitTest();return}
+  time--;
+  let m = Math.floor(time/60), s = time%60;
+  document.getElementById('timer').innerText = ${m}:${s<10?'0':''}${s};
 },1000);
 
-</script>
+// Build question panel
+const qPanel = document.getElementById('qPanel');
+for(let i=0;i<100;i++){
+  let btn = document.createElement('button');
+  btn.className = 'q-btn';
+  btn.innerText = i+1;
+  btn.onclick = ()=> jumpQ(i);
+  qPanel.appendChild(btn);
+}
 
-</body>
-</html>
+function loadQ(){
+  document.getElementById('qNum').innerText = Question ${current+1} | ${questions[current].s};
+  document.getElementById('question').innerText = questions[current].q;
+  let optHtml = '';
+  questions[current].o.forEach((opt,i)=>{
+    let checked = answers[current]===i?'checked':'';
+    optHtml += <label><input type="radio" name="opt" value="${i}" ${checked}> ${opt}</label>;
+  });
+  document.getElementById('options').innerHTML = optHtml;
+  updatePanel();
+}
+
+function saveAns(){
+  let selected = document.querySelector('input[name="opt"]:checked');
+  if(selected) answers[current] = parseInt(selected.value);
+}
+
+function nextQ(){saveAns(); if(current<99){current++;loadQ()}}
+function jumpQ(i){saveAns(); current=i; loadQ()}
+function markReview(){review[current]=true; nextQ()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className = 'q-btn';
+    if(i===current) btn.classList.add('current');
+    if(answers[i]!==null) btn.classList.add('answered');
+    if(review[i]) btn.classList.add('review');
+  });
+}
+
+function submitTest(){
+  saveAns();
+  let score = 0, correct = 0, wrong = 0;
+  let secScore = {GK:0,Quant:0,Reasoning:0,English:0};
+  questions.forEach((q,i)=>{
+    if(answers[i]!==null){
+      if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}
+      else {score-=0.5;wrong++;secScore[q.s]-=0.5}
+    }
+  });
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText = ${score}/200;
+  document.getElementById('analysis').innerText = `Correct: ${correct} | Wrong:
