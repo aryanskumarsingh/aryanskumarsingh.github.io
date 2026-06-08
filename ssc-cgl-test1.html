@@ -141,25 +141,15 @@ const questions = [
 let current = 0;
 let userAns = new Array(questions.length).fill(null);
 let review = new Array(questions.length).fill(false);
-
-let time = 900; // 15 min
-
-/* TIMER */
-function startTimer(){
-    let t = setInterval(()=>{
-        let m = Math.floor(time/60);
-        let s = time%60;
-
-        document.getElementById("timer").innerText =
-        Time: ${m}:${s<10?"0"+s:s};
-
-        time--;
-        if(time < 0){
-            clearInterval(t);
-            submitTest();
-        }
-    },1000);
+    #timer{
+background:yellow;
+padding:10px;
+font-size:20px;
+font-weight:bold;
 }
+
+<div id="timer">05:00</div>
+
 
 /* SHOW QUESTION */
 function showQuestion(){
