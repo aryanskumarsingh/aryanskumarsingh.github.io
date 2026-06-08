@@ -46,18 +46,17 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 <div class="main">
 <div class="header">
 <h2>SSC CGL Mock Test</h2>
-<div class="timer" id="timer">60:00</div>
+<div class="timer" id="timer"> 60:00 </div>
 </div>
-<div id="quizArea">
-<div class="question-box">
-<h3 id="qNum">Question 1</h3>
+<div id="quizArea"></div>
+<div class="question-box"></div>
+<h3 id="qNum"> Question 1</h3>
 <p id="question"></p>
 <div class="options" id="options"></div>
-</div>
 <button class="btn btn-review" onclick="markReview()">Mark for Review</button>
 <button class="btn btn-next" onclick="nextQ()">Save & Next</button>
 </div>
-<div id="result" class="hide">
+<div id="result" class="hide"></div>
 <h2>Test Submitted!</h2>
 <p class="score" id="finalScore">0/200</p>
 <p id="analysis"></p>
@@ -99,7 +98,7 @@ document.getElementById('options').innerHTML=optHtml;updatePanel();
 }
 function saveAns(){let selected=document.querySelector('input[name="opt"]:checked');if(selected)answers[current]=parseInt(selected.value);updatePanel();}
 function nextQ(){saveAns();if(current<99){current++;loadQ()}}
-function jumpQ(i){saveAns();current=i;loadQ()}
+function jumpQ(i){saveAns();current=i;loadQ()}}
 function markReview(){review[current]=!review[current];updatePanel()}
 function updatePanel(){document.querySelectorAll('.q-btn').forEach((btn,i)=>{btn.className='q-btn';if(i===current)btn.classList.add('current');if(answers[i]!==null)btn.classList.add('answered');else btn.classList.add('not-visited');if(review[i])btn.classList.add('review');});}
 function submitTest(){if(!confirm("Submit test?"))return;saveAns();clearInterval(timerId);let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=${score}/200;document.getElementById('analysis').innerText=Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;document.getElementById('sectionScore').innerHTML=GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;}
