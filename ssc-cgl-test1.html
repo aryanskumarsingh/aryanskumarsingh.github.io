@@ -28,7 +28,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 .hide{display:none}
 #result{background:white;padding:30px;border-radius:8px;text-align:center}
 .score{font-size:48px;color:#1a237e;margin:10px}
-media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
 </style>
 </head>
 <body>
@@ -44,7 +44,7 @@ media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180
 </div>
 <div class="main">
 <div class="header">
-<h2>SSC CGL Mock Test - No Timer</h2>
+<h2>SSC CGL Mock Test</h2>
 </div>
 <div id="quizArea">
 <div class="question-box">
@@ -75,6 +75,9 @@ const questions = [
 {q:"A train 100m long crosses a pole in 10 sec. Speed =?",o:["10 m/s","20 m/s","5 m/s","15 m/s"],a:0,s:"Quant"},
 {q:"Simple Interest on Rs 1000 at 10% for 2 years?",o:["Rs 100","Rs 150","Rs 200","Rs 250"],a:2,s:"Quant"},
 {q:"Find odd one: January, March, July, November",o:["January","March","July","November"],a:3,s:"Reasoning"},
+{q:"If EARTH = 52, then MOON =?",o:["57","58","59","60"],a:0,s:"Reasoning"},
+{q:"Complete: 3, 8, 15, 24,?",o:["32","33","35","36"],a:2,s:"Reasoning"},
+{q:"Choose the correct spelling:",o:["Definately","Definitely","Definietly","Definitly"],a:1,s:"English"},
 {q:"Synonym of 'Enormous'?",o:["Tiny","Huge","Small","Little"],a:1,s:"English"},
 {q:"Antonym of 'Victory'?",o:["Success","Win","Defeat","Triumph"],a:2,s:"English"}
 ];
@@ -114,6 +117,3 @@ loadQ();
 </script>
 </body>
 </html>
-{q:"If EARTH = 52, then MOON =?",o:["57","58","59","60"],a:0,s:"Reasoning"},
-{q:"Complete: 3, 8, 15, 24,?",o:["32","33","35","36"],a:2,s:"Reasoning"},
-{q:"Choose the correct spelling:",o:["Definately","Definitely","Definietly","Definitly"],a:1,s:"English"},
