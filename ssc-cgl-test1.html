@@ -65,8 +65,8 @@ media{max-width:768px}{body{flex-direction:column}.sidebar{width:100%;height:180
 </div>
 </div>
 <script>
-loadQuestion() [
-{q:"भारत का संविधान कब लागू हुआ?",o:["15 Aug 1947","26 Jan 1950","26 Nov 1949","2 Oct 1950"],a:1,s:"GK"},
+const question = 
+[{q:"भारत का संविधान कब लागू हुआ?",o:["15 Aug 1947","26 Jan 1950","26 Nov 1949","2 Oct 1950"],a:1,s:"GK"},
 {q:"Who is the first Indian woman to win an Olympic medal?",o:["P.V. Sindhu","Saina Nehwal","Karnam Malleswari","Mary Kom"],a:2,s:"GK"},
 {q:"Which is the longest river in India?",o:["Yamuna","Brahmaputra","Ganga","Godavari"],a:2,s:"GK"},
 {q:"GST was implemented in India from?",o:["1 Jan 2017","1 Apr 2017","1 July 2017","1 Aug 2017"],a:2,s:"GK"},
@@ -102,7 +102,7 @@ function jumpQ(i){saveAns();current=i;loadQ()}}
 function markReview(){review[current]=!review[current];updatePanel()}
 function updatePanel(){document.querySelectorAll('.q-btn').forEach((btn,i)=>{btn.className='q-btn';if(i===current)btn.classList.add('current');if(answers[i]!==null)btn.classList.add('answered');else btn.classList.add('not-visited');if(review[i])btn.classList.add('review');});}
 function submitTest(){if(!confirm("Submit test?"))return;saveAns();clearInterval(timerId);let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=${score}/200;document.getElementById('analysis').innerText=Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;document.getElementById('sectionScore').innerHTML=GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;}
-loadQ();
+loadQuestion();
 </script>
 </body>
 </html>
