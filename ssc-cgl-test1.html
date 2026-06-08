@@ -1,237 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC CGL Mock Test 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSC CGL Mock Test</title>
 
 <style>
 body{
 font-family:Arial,sans-serif;
-margin:0;
-background:#f4f4f4;
-}
-
-.header{
-background:#007bff;
-color:white;
-padding:15px;
-text-align:center;
-}
-
-.timer{
-font-size:22px;
-font-weight:bold;
-text-align:center;
-background:#ffd54f;
-padding:10px;
-position:sticky;
-top:0;
-}
-
-.container{
-max-width:900px;
+max-width:800px;
 margin:auto;
 padding:20px;
 }
 
+.timer{
+background:#ffeb3b;
+padding:10px;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+position:sticky;
+top:0;
+}
+
 .question-box{
-background:white;
+border:1px solid #ccc;
 padding:20px;
+margin-top:20px;
 border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 .option{
 display:block;
-padding:10px;
 margin:10px 0;
-background:#eee;
+padding:10px;
+border:1px solid #ddd;
 border-radius:5px;
 cursor:pointer;
-}
-
-.option:hover{
-background:#ddd;
-}
-
-.buttons{
-margin-top:20px;
-display:flex;
-justify-content:space-between;
 }
 
 button{
 padding:10px 20px;
-border:none;
-background:#007bff;
-color:white;
-border-radius:5px;
-cursor:pointer;
+margin:10px;
+font-size:16px;
 }
 
-button:hover{
-background:#0056b3;
-}
-
-.palette{
-margin-top:20px;
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-}
-
-.palette button{
-width:40px;
-height:40px;
-padding:0;
-}
-
-.result{
+#result{
 display:none;
-background:white;
-padding:20px;
-border-radius:10px;
-text-align:center;
 }
 </style>
 </head>
+
 <body>
 
-<div class="header">
-<h1>SSC CGL Mock Test 1</h1>
+<div class="timer">
+Time Left: <span id="time">15:00</span>
 </div>
 
-<div class="timer" id="timer">
-60:00
-</div>
+<h2>SSC CGL Mock Test - 1</h2>
 
-<div class="container">
+<div id="quiz"></div>
 
-<div class="question-box" id="quizBox">
-<h3 id="question"></h3>
-<div id="options"></div>
-
-<div class="buttons">
+<div>
 <button onclick="prevQuestion()">Previous</button>
 <button onclick="nextQuestion()">Next</button>
+<button onclick="submitQuiz()">Submit Test</button>
 </div>
 
-<div class="palette" id="palette"></div>
-
-<br>
-<button onclick="submitTest()">Submit Test</button>
-
-</div>
-
-<div class="result" id="result">
-<h2>Test Completed</h2>
-<h3 id="score"></h3>
-<h3 id="percent"></h3>
-</div>
-
-</div>
+<div id="result"></div>
 
 <script>
 
-const questions = [
+const quizData = [
 
 {
-q:"What is the capital of Australia?",
-options:["Sydney","Melbourne","Canberra","Perth"],
-answer:2
+question:"1. What is the capital of Bihar?",
+options:["Patna","Ranchi","Lucknow","Bhopal"],
+answer:"Patna"
 },
 
 {
-q:"Who wrote the Constitution of India?",
-options:["Mahatma Gandhi","B.R. Ambedkar","Jawaharlal Nehru","Sardar Patel"],
-answer:1
+question:"2. 25 × 4 = ?",
+options:["50","75","100","125"],
+answer:"100"
 },
 
 {
-q:"25 × 4 = ?",
-options:["100","90","95","80"],
-answer:0
+question:"3. Who wrote the Indian National Anthem?",
+options:["Premchand","Tagore","Nehru","Gandhi"],
+answer:"Tagore"
 },
 
 {
-q:"Which river is known as the Ganga of South India?",
-options:["Krishna","Godavari","Kaveri","Mahanadi"],
-answer:1
+question:"4. भारत का राष्ट्रीय पशु कौन है?",
+options:["शेर","बाघ","हाथी","चीता"],
+answer:"बाघ"
 },
 
 {
-q:"Who discovered gravity?",
-options:["Newton","Einstein","Galileo","Tesla"],
-answer:0
+question:"5. Synonym of 'Brave'?",
+options:["Coward","Fearful","Bold","Weak"],
+answer:"Bold"
 },
 
 {
-q:"The square root of 144 is:",
-options:["10","11","12","13"],
-answer:2
+question:"6. 144 ÷ 12 = ?",
+options:["10","12","14","16"],
+answer:"12"
 },
 
 {
-q:"Which is the largest planet?",
-options:["Earth","Saturn","Jupiter","Mars"],
-answer:2
+question:"7. Which planet is known as Red Planet?",
+options:["Earth","Mars","Jupiter","Venus"],
+answer:"Mars"
 },
 
 {
-q:"Article 21 deals with:",
-options:["Equality","Freedom","Life and Liberty","Education"],
-answer:2
+question:"8. संविधान कब लागू हुआ?",
+options:["15 Aug 1947","26 Jan 1950","2 Oct 1947","26 Nov 1949"],
+answer:"26 Jan 1950"
 },
 
 {
-q:"15% of 200 = ?",
-options:["25","30","35","40"],
-answer:1
+question:"9. What is HCF of 12 and 18?",
+options:["2","3","6","9"],
+answer:"6"
 },
 
 {
-q:"Who is known as the Iron Man of India?",
-options:["Nehru","Patel","Bose","Tilak"],
-answer:1
+question:"10. SSC stands for?",
+options:[
+"Staff Selection Commission",
+"State Service Commission",
+"Student Service Commission",
+"Staff Service Committee"
+],
+answer:"Staff Selection Commission"
 }
 
 ];
 
-let currentQuestion=0;
-let answers=new Array(questions.length).fill(null);
+let currentQuestion = 0;
+let answers = new Array(quizData.length).fill("");
 
 function loadQuestion(){
 
-document.getElementById("question").innerHTML=
-(currentQuestion+1)+". "+questions[currentQuestion].q;
+const q = quizData[currentQuestion];
 
-let optionsHTML="";
+let html = 
+<div class="question-box">
+<h3>Question ${currentQuestion+1} of ${quizData.length}</h3>
+<p>${q.question}</p>
+;
 
-questions[currentQuestion].options.forEach((opt,index)=>{
+q.options.forEach(option=>{
 
-optionsHTML+=
+html += 
 <label class="option">
 <input type="radio"
-name="option"
-value="${index}"
-${answers[currentQuestion]==index?"checked":""}
-onclick="saveAnswer(${index})">
-${opt}
+name="answer"
+value="${option}"
+${answers[currentQuestion]===option?"checked":""}
+onclick="saveAnswer('${option}')">
+${option}
 </label>
 ;
 
 });
 
-document.getElementById("options").innerHTML=optionsHTML;
+html += "</div>";
+
+document.getElementById("quiz").innerHTML = html;
 }
 
-function saveAnswer(index){
-answers[currentQuestion]=index;
+function saveAnswer(ans){
+answers[currentQuestion]=ans;
 }
 
 function nextQuestion(){
-if(currentQuestion<questions.length-1){
+if(currentQuestion<quizData.length-1){
 currentQuestion++;
 loadQuestion();
 }
@@ -244,122 +191,61 @@ loadQuestion();
 }
 }
 
-function createPalette(){
-
-let html="";
-
-for(let i=0;i<questions.length;i++){
-
-html+=
-<button onclick="jumpQuestion(${i})">
-${i+1}
-</button>
-;
-
-}
-
-document.getElementById("palette").innerHTML=html;
-}
-
-function jumpQuestion(i){
-currentQuestion=i;
-loadQuestion();
-}
-
-function submitTest(){
+function submitQuiz(){
 
 let score=0;
+let review="";
 
-for(let i=0;i<questions.length;i++){
+quizData.forEach((q,index)=>{
 
-if(answers[i]===questions[i].answer){
-score+=2;
+if(answers[index]===q.answer){
+score++;
 }
-else if(answers[i]!==null){
-score-=0.5;
-}
-  let percentage=((score/maxMarks)*100).toFixed(2);
 
-document.getElementById("quizBox").style.display="none";
+review += 
+<p>
+<b>Q${index+1}:</b> ${q.question}<br>
+Your Answer: ${answers[index]||"Not Answered"}<br>
+Correct Answer: ${q.answer}
+</p>
+<hr>
+;
+
+});
+
+document.getElementById("quiz").style.display="none";
+
 document.getElementById("result").style.display="block";
 
-document.getElementById("score").innerHTML=
-"Score: "+score+" / "+maxMarks;
+document.getElementById("result").innerHTML=
 
-document.getElementById("percent").innerHTML=
-"Percentage: "+percentage+"%";
+<h2>Test Submitted</h2>
+<h3>Your Score: ${score}/${quizData.length}</h3>
+${review}
+;
 }
 
-let time=60*60;
+let totalTime=15*60;
 
-let timer=setInterval(()=>{
+const timer=setInterval(()=>{
 
-let min=Math.floor(time/60);
-let sec=time%60;
+let minutes=Math.floor(totalTime/60);
+let seconds=totalTime%60;
 
-document.getElementById("timer").innerHTML=
-${min}:${sec<10?"0":""}${sec};
+document.getElementById("time").innerText=
+String(minutes).padStart(2,'0')
++":"+
+String(seconds).padStart(2,'0');
 
-time--;
+totalTime--;
 
-if(time<0){
-
+if(totalTime<0){
 clearInterval(timer);
-
-alert("Time Up! Test Submitted");
-
-submitTest();
+submitQuiz();
 }
 
 },1000);
 
-createPalette();
-loadQuestion();
-
-</script>
-
-</body>
-</html>
-
-}
-
-let maxMarks=questions.length*2;
-let percentage=((score/maxMarks)*100).toFixed(2);
-
-document.getElementById("quizBox").style.display="none";
-document.getElementById("result").style.display="block";
-
-document.getElementById("score").innerHTML=
-"Score: "+score+" / "+maxMarks;
-
-document.getElementById("percent").innerHTML=
-"Percentage: "+percentage+"%";
-}
-
-let time=60*60;
-
-let timer=setInterval(()=>{
-
-let min=Math.floor(time/60);
-let sec=time%60;
-
-document.getElementById("timer").innerHTML=
-${min}:${sec<10?"0":""}${sec};
-
-time--;
-
-if(time<0){
-
-clearInterval(timer);
-
-alert("Time Up! Test Submitted");
-
-submitTest();
-}
-
-},1000);
-
-createPalette();
 loadQuestion();
 
 </script>
