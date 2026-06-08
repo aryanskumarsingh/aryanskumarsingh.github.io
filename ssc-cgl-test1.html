@@ -1,21 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SSC Test</title>
+<title>SSC CGL Test</title>
+<style>
+body{
+font-family:Arial;
+padding:20px;
+}
+#timer{
+background:yellow;
+padding:10px;
+font-size:20px;
+font-weight:bold;
+}
+</style>
 </head>
 <body>
 
 <h1>SSC CGL Mock Test</h1>
 
-<div id="quiz"></div>
+<div id="timer">05:00</div>
+
+<h3>1. What is the capital of Bihar?</h3>
+
+<input type="radio" name="q1"> Patna<br>
+<input type="radio" name="q1"> Delhi<br>
+<input type="radio" name="q1"> Ranchi<br>
+<input type="radio" name="q1"> Lucknow<br>
 
 <script>
-document.getElementById("quiz").innerHTML =
-"<h3>1. What is the capital of Bihar?</h3>" +
-"<input type='radio' name='q1'> Patna<br>" +
-"<input type='radio' name='q1'> Delhi<br>" +
-"<input type='radio' name='q1'> Ranchi<br>" +
-"<input type='radio' name='q1'> Lucknow";
+
+let time = 300;
+
+setInterval(function(){
+
+let minutes = Math.floor(time/60);
+let seconds = time%60;
+
+document.getElementById("timer").innerHTML =
+minutes + ":" + (seconds<10?"0":"") + seconds;
+
+time--;
+
+},1000);
+
 </script>
 
 </body>
