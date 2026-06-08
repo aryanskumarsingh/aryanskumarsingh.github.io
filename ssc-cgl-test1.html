@@ -5,39 +5,17 @@
 </head>
 <body>
 
-<h2>SSC CGL Mock Test</h2>
+<h1>SSC CGL Mock Test</h1>
 
 <div id="quiz"></div>
 
 <script>
-
-const quizData = [
-{
-question:"What is the capital of Bihar?",
-options:["Patna","Delhi","Lucknow","Ranchi"]
-}
-];
-
-function loadQuestion(){
-
-let q = quizData[0];
-
-document.getElementById("quiz").innerHTML = 
-<h3>${q.question}</h3>
-
-<label><input type="radio" name="q1"> ${q.options[0]}</label><br>
-
-<label><input type="radio" name="q1"> ${q.options[1]}</label><br>
-
-<label><input type="radio" name="q1"> ${q.options[2]}</label><br>
-
-<label><input type="radio" name="q1"> ${q.options[3]}</label>
-
-;
-}
-
-loadQuestion();
-
+document.getElementById("quiz").innerHTML =
+"<h3>1. What is the capital of Bihar?</h3>" +
+"<input type='radio' name='q1'> Patna<br>" +
+"<input type='radio' name='q1'> Delhi<br>" +
+"<input type='radio' name='q1'> Ranchi<br>" +
+"<input type='radio' name='q1'> Lucknow";
 </script>
 
 </body>
