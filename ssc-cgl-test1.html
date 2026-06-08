@@ -29,7 +29,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 .hide{display:none}
 #result{background:white;padding:30px;border-radius:8px;text-align:center}
 .score{font-size:48px;color:#1a237e;margin:10px}
-media{max-width:768px}{body{flex-direction:column}.sidebar{width:100%;height:180px}}}
+media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
 </style>
 </head>
 <body>
@@ -46,17 +46,18 @@ media{max-width:768px}{body{flex-direction:column}.sidebar{width:100%;height:180
 <div class="main">
 <div class="header">
 <h2>SSC CGL Mock Test</h2>
-<div id="timer"> 60:00 </div>
+<div class="timer" id="timer">60:00</div>
 </div>
-<div id="quizArea"></div>
-<div class="question-box"></div>
-<h3 id="qNum"> Question 1</h3>
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
 <p id="question"></p>
 <div class="options" id="options"></div>
+</div>
 <button class="btn btn-review" onclick="markReview()">Mark for Review</button>
 <button class="btn btn-next" onclick="nextQ()">Save & Next</button>
 </div>
-<div id="result" class="hide"></div>
+<div id="result" class="hide">
 <h2>Test Submitted!</h2>
 <p class="score" id="finalScore">0/200</p>
 <p id="analysis"></p>
@@ -65,32 +66,35 @@ media{max-width:768px}{body{flex-direction:column}.sidebar{width:100%;height:180
 </div>
 </div>
 <script>
-const question = 
-[{q:"भारत का संविधान कब लागू हुआ?",o:["15 Aug 1947","26 Jan 1950","26 Nov 1949","2 Oct 1950"],a:1,s:"GK"},
+console.log("Script started");
+const questions = [
+{q:"Bharat ka Samvidhan kab lagu hua?",o:["15 Aug 1947","26 Jan 1950","26 Nov 1949","2 Oct 1950"],a:1,s:"GK"},
 {q:"Who is the first Indian woman to win an Olympic medal?",o:["P.V. Sindhu","Saina Nehwal","Karnam Malleswari","Mary Kom"],a:2,s:"GK"},
 {q:"Which is the longest river in India?",o:["Yamuna","Brahmaputra","Ganga","Godavari"],a:2,s:"GK"},
 {q:"GST was implemented in India from?",o:["1 Jan 2017","1 Apr 2017","1 July 2017","1 Aug 2017"],a:2,s:"GK"},
 {q:"Headquarters of ISRO is in?",o:["Mumbai","New Delhi","Bengaluru","Hyderabad"],a:2,s:"GK"},
 {q:"If 20% of a number is 50, the number is?",o:["200","250","300","150"],a:1,s:"Quant"},
-{q:"The value of 25 × 25 - 24 × 24 =?",o:["1","25","49","50"],a:2,s:"Quant"},
+{q:"The value of 25 x 25 - 24 x 24 =?",o:["1","25","49","50"],a:2,s:"Quant"},
 {q:"A train 100m long crosses a pole in 10 sec. Speed =?",o:["10 m/s","20 m/s","5 m/s","15 m/s"],a:0,s:"Quant"},
-{q:"Simple Interest on ₹1000 at 10% for 2 years?",o:["₹100","₹150","₹200","₹250"],a:2,s:"Quant"},
+{q:"Simple Interest on Rs 1000 at 10% for 2 years?",o:["Rs 100","Rs 150","Rs 200","Rs 250"],a:2,s:"Quant"},
 {q:"Find odd one: January, March, July, November",o:["January","March","July","November"],a:3,s:"Reasoning"},
 {q:"If EARTH = 52, then MOON =?",o:["57","58","59","60"],a:0,s:"Reasoning"},
- {q:"Complete: 3, 8, 15, 24,?",o:["32","33","35","36"],a:2,s:"Reasoning"},
+{q:"Complete: 3, 8, 15, 24,?",o:["32","33","35","36"],a:2,s:"Reasoning"},
 {q:"Choose the correct spelling:",o:["Definately","Definitely","Definietly","Definitly"],a:1,s:"English"},
 {q:"Synonym of 'Enormous'?",o:["Tiny","Huge","Small","Little"],a:1,s:"English"},
 {q:"Antonym of 'Victory'?",o:["Success","Win","Defeat","Triumph"],a:2,s:"English"}
 ];
-#for{leti=questions.length;i<100;i++}{
+for(let i=questions.length;i<100;i++){
 let sec=["GK","Quant","Reasoning","English"][Math.floor(i/25)];
-questions.push({q:${sec} Demo Q${i+1}: 10 + 10 =?,o:["10","15","20","25"],a:2,s:sec});}
-
+questions.push({q:${sec} Demo Q${i+1}: 10 + 10 =?,o:["10","15","20","25"],a:2,s:sec});
+}
+console.log("Questions loaded:", questions.length);
 let current=0;let answers=Array(100).fill(null);let review=Array(100).fill(false);let time=3600;
 const timerId=setInterval(()=>{if(time<=0){clearInterval(timerId);submitTest();return}time--;let m=Math.floor(time/60),s=time%60;document.getElementById('timer').innerText=${m}:${s<10?'0':''}${s};},1000);
 const qPanel=document.getElementById('qPanel');
 for(let i=0;i<100;i++){let btn=document.createElement('button');btn.className='q-btn not-visited';btn.innerText=i+1;btn.onclick=()=>jumpQ(i);qPanel.appendChild(btn);}
 function loadQ(){
+console.log("Loading Q", current+1);
 document.getElementById('qNum').innerText=Question ${current+1} | ${questions[current].s};
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';questions[current].o.forEach((opt,i)=>{let checked=answers[current]===i?'checked':'';optHtml+=<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>;});
@@ -98,11 +102,12 @@ document.getElementById('options').innerHTML=optHtml;updatePanel();
 }
 function saveAns(){let selected=document.querySelector('input[name="opt"]:checked');if(selected)answers[current]=parseInt(selected.value);updatePanel();}
 function nextQ(){saveAns();if(current<99){current++;loadQ()}}
-function jumpQ(i){saveAns();current=i;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
 function markReview(){review[current]=!review[current];updatePanel()}
 function updatePanel(){document.querySelectorAll('.q-btn').forEach((btn,i)=>{btn.className='q-btn';if(i===current)btn.classList.add('current');if(answers[i]!==null)btn.classList.add('answered');else btn.classList.add('not-visited');if(review[i])btn.classList.add('review');});}
 function submitTest(){if(!confirm("Submit test?"))return;saveAns();clearInterval(timerId);let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=${score}/200;document.getElementById('analysis').innerText=Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;document.getElementById('sectionScore').innerHTML=GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;}
-loadQuestion();
+loadQ();
+console.log("Script ended");
 </script>
 </body>
 </html>
