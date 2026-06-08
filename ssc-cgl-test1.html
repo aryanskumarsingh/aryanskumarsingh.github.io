@@ -1,247 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC CGL Pro Mock Test</title>
-
+<title>SSC CGL Test</title>
 <style>
 body{
-    margin:0;
-    font-family: Arial;
-    background:#eef2f7;
+font-family:Arial;
+padding:20px;
 }
-
-/* TOP BAR */
-.topbar{
-    background:#1e3a8a;
-    color:white;
-    padding:12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-/* LAYOUT */
-.container{
-    display:flex;
-    max-width:1100px;
-    margin:auto;
-}
-
-/* QUESTION AREA */
-.main{
-    flex:3;
-    background:white;
-    padding:20px;
-}
-
-.question{
-    font-size:20px;
-    margin-bottom:15px;
-}
-
-.option{
-    padding:10px;
-    border:1px solid #ccc;
-    margin:8px 0;
-    cursor:pointer;
-    border-radius:5px;
-}
-
-.option:hover{
-    background:#f1f1f1;
-}
-
-.selected{
-    background:#c8e6c9 !important;
-}
-
-.btn{
-    padding:10px 12px;
-    margin:8px 5px;
-    cursor:pointer;
-}
-
-/* SIDEBAR */
-.sidebar{
-    flex:1;
-    background:#fff;
-    padding:15px;
-    border-left:1px solid #ddd;
-}
-
-.palette{
-    display:grid;
-    grid-template-columns: repeat(5,1fr);
-    gap:5px;
-}
-
-.qbtn{
-    padding:8px;
-    text-align:center;
-    border:1px solid #aaa;
-    cursor:pointer;
-    border-radius:4px;
-    font-size:12px;
-}
-
-.answered{ background:#4caf50; color:white; }
-.notanswered{ background:#f44336; color:white; }
-.review{ background:#ff9800; color:white; }
-
-#result{
-    display:none;
-    padding:20px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="topbar">
-    <div>SSC CGL Mock Test</div>
-    <div id="timer">Time: 15:00</div>
-</div>
-
-<div class="container">
-
-    <!-- MAIN -->
-    <div class="main" id="quizBox">
-        <div class="question" id="question"></div>
-        <div id="options"></div>
-
-        <button class="btn" onclick="prevQ()">Previous</button>
-        <button class="btn" onclick="markReview()">Mark for Review</button>
-        <button class="btn" onclick="nextQ()">Next</button>
-        <button class="btn" onclick="submitTest()">Submit</button>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h3>Questions</h3>
-        <div class="palette" id="palette"></div>
-    </div>
-
-</div>
-
-<!-- RESULT -->
-<div id="result"></div>
-
-<script>
-
-const questions = [
-    {q:"Capital of India?", options:["Mumbai","Delhi","Kolkata","Chennai"], answer:1},
-    {q:"2 + 2 × 2 = ?", options:["6","8","4","10"], answer:0},
-    {q:"SSC full form?", options:["Staff Selection Commission","State Service Center","Student Study Circle","None"], answer:0},
-    {q:"Who is PM of India?", options:["Rahul Gandhi","Modi","Yogi","Amit Shah"], answer:1},
-    {q:"Water formula?", options:["CO2","H2O","O2","NaCl"], answer:1}
-];
-
-let current = 0;
-let userAns = new Array(questions.length).fill(null);
-let review = new Array(questions.length).fill(false);
-    #timer{
+#timer{
 background:yellow;
 padding:10px;
 font-size:20px;
 font-weight:bold;
 }
+</style>
+</head>
+<body>
+
+<h1>SSC CGL Mock Test</h1>
 
 <div id="timer">05:00</div>
 
+<div id="question"></div>
 
-/* SHOW QUESTION */
-function showQuestion(){
-    let q = questions[current];
-    document.getElementById("question").innerText = q.q;
+<button onclick="nextQuestion()">Next</button>
 
-    let html = "";
+<script>
 
-    q.options.forEach((opt,i)=>{
-        let sel = userAns[current] === i ? "selected" : "";
-        html += <div class="option ${sel}" onclick="selectOpt(${i})">${opt}</div>;
-    });
+const questions = [
+"What is the capital of Bihar?",
+"25 × 4 = ?",
+"Who wrote the National Anthem?"
+];
 
-    document.getElementById("options").innerHTML = html;
+let current = 0;
 
-    updatePalette();
+function loadQuestion(){
+document.getElementById("question").innerHTML =
+"<h3>" + questions[current] + "</h3>";
 }
 
-/* SELECT */
-function selectOpt(i){
-    userAns[current] = i;
-    showQuestion();
+function nextQuestion(){
+
+if(current < questions.length-1){
+current++;
+loadQuestion();
 }
 
-/* NAV */
-function nextQ(){
-    if(current < questions.length-1){
-        current++;
-        showQuestion();
-    }
 }
 
-function prevQ(){
-    if(current > 0){
-        current--;
-        showQuestion();
-    }
-}
+loadQuestion();
 
-/* MARK REVIEW */
-function markReview(){
-    review[current] = !review[current];
-    updatePalette();
-}
+</script>
 
-/* PALETTE */
-function updatePalette(){
-    let p = "";
-    questions.forEach((q,i)=>{
-        let cls = "qbtn";
+<script>
 
-        if(userAns[i] !== null) cls += " answered";
-        else cls += " notanswered";
+let time = 300;
 
-        if(review[i]) cls = "qbtn review";
+setInterval(function(){
 
-        p += <div class="${cls}" onclick="goTo(${i})">${i+1}</div>;
-    });
+let minutes = Math.floor(time/60);
+let seconds = time%60;
 
-    document.getElementById("palette").innerHTML = p;
-}
+document.getElementById("timer").innerHTML =
+minutes + ":" + (seconds<10?"0":"") + seconds;
 
-function goTo(i){
-    current = i;
-    showQuestion();
-}
+time--;
 
-/* SUBMIT */
-function submitTest(){
-    let score = 0;
-
-    questions.forEach((q,i)=>{
-        if(userAns[i] === q.answer){
-            score++;
-        }
-    });
-
-    document.getElementById("quizBox").style.display = "none";
-
-    document.getElementById("result").innerHTML = 
-        <h2>Result</h2>
-        <h3>Score: ${score} / ${questions.length}</h3>
-        <p>Correct: ${score}</p>
-        <p>Wrong: ${questions.length - score}</p>
-    ;
-    document.getElementById("result").style.display = "block";
-}
-
-/* INIT */
-showQuestion();
-updatePalette();
-startTimer();
+},1000);
 
 </script>
 
