@@ -2,169 +2,94 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC CGL Pro Mock Test</title>
+<title>SSC CGL Mock Test</title>
 
 <style>
-body{
-    margin:0;
-    font-family: Arial;
-    background:#eef2f7;
-}
+body{font-family:Arial;margin:0;background:#eef2f7}
 
-/* TOP BAR */
 .topbar{
-    background:#1e3a8a;
-    color:white;
-    padding:12px;
-    display:flex;
-    justify-content:space-between;
+background:#1e3a8a;color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
 }
 
-/* LAYOUT */
-.container{
-    display:flex;
-    max-width:1100px;
-    margin:auto;
-}
+.container{display:flex;max-width:1000px;margin:auto}
 
-/* MAIN */
-.main{
-    flex:3;
-    background:white;
-    padding:20px;
-}
+.main{flex:3;background:white;padding:20px}
 
-/* QUESTION */
-.question{
-    font-size:20px;
-    margin-bottom:15px;
-}
+.question{font-size:20px;margin-bottom:15px}
 
 .option{
-    padding:10px;
-    border:1px solid #ccc;
-    margin:8px 0;
-    cursor:pointer;
-    border-radius:5px;
+padding:10px;
+border:1px solid #ccc;
+margin:8px 0;
+cursor:pointer;
 }
 
-.option:hover{
-    background:#f1f1f1;
-}
+.option:hover{background:#f1f1f1}
 
-.selected{
-    background:#c8e6c9 !important;
-}
+.selected{background:#c8e6c9}
 
-/* BUTTONS */
-.btn{
-    padding:10px;
-    margin:6px 5px;
-    cursor:pointer;
-}
-
-/* SIDEBAR */
-.sidebar{
-    flex:1;
-    background:#fff;
-    padding:15px;
-    border-left:1px solid #ddd;
-}
-
-.palette{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:5px;
-}
+.sidebar{flex:1;background:white;padding:10px}
 
 .qbtn{
-    padding:8px;
-    text-align:center;
-    border:1px solid #aaa;
-    cursor:pointer;
-    font-size:12px;
-    border-radius:4px;
+display:inline-block;
+padding:8px;
+margin:3px;
+border:1px solid #333;
+cursor:pointer;
 }
 
-.answered{background:#4caf50;color:white;}
-.notanswered{background:#f44336;color:white;}
-.review{background:#ff9800;color:white;}
-
-#result{
-    display:none;
-    padding:20px;
-}
+.answered{background:green;color:white}
+.notanswered{background:red;color:white}
 </style>
+
 </head>
+
 <body>
+
 <div class="topbar">
-    <div>SSC CGL Mock Test</div>
-    <div id="timer">Time: 15:00</div>
+<div>SSC CGL Mock Test</div>
+<div id="timer">Time: 15:00</div>
 </div>
 
 <div class="container">
 
-    <!-- MAIN -->
-    <div class="main" id="quizBox">
+<div class="main">
+<div class="question" id="question">Loading question...</div>
+<div id="options"></div>
 
-        <div class="question" id="question">Loading question...</div>
+<button onclick="prevQ()">Previous</button>
+<button onclick="nextQ()">Next</button>
+<button onclick="submitTest()">Submit</button>
+</div>
 
-        <div id="options"></div>
-
-        <button class="btn" onclick="prevQ()">Previous</button>
-        <button class="btn" onclick="markReview()">Mark for Review</button>
-        <button class="btn" onclick="nextQ()">Next</button>
-        <button class="btn" onclick="submitTest()">Submit</button>
-
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h3>Questions</h3>
-        <div class="palette" id="palette"></div>
-    </div>
+<div class="sidebar">
+<h3>Questions</h3>
+<div id="palette"></div>
+</div>
 
 </div>
 
-<div id="result"></div>
-
 <script>
 
-/* ================= QUESTIONS ================= */
 const questions = [
-    {
-        q:"Capital of India?",
-        options:["Mumbai","Delhi","Kolkata","Chennai"],
-        answer:1
-    },
-    {
-        q:"2 + 2 × 2 = ?",
-        options:["6","8","4","10"],
-        answer:0
-    },
-    {
-        q:"SSC full form?",
-        options:[
-            "Staff Selection Commission",
-            "State Service Center",
-            "Student Study Circle",
-            "None"
-        ],
-        answer:0
-    },
-    {
-        q:"Water formula?",
-        options:["CO2","H2O","O2","NaCl"],
-        answer:1
-    }
+{q:"Capital of India?",options:["Mumbai","Delhi","Kolkata","Chennai"],answer:1},
+{q:"2 + 2 × 2 = ?",options:["6","8","4","10"],answer:0},
+{q:"SSC full form?",options:["Staff Selection Commission","State Service Commission","Student Center","None"],answer:0}
 ];
 
-/* ================= VARIABLES ================= */
 let current = 0;
-let userAns = Array(questions.length).fill(null);
-let review = Array(questions.length).fill(false);
+let answers = Array(questions.length).fill(null);
 let time = 900;
+
+/* ================= INIT SAFE ================= */
+window.onload = function(){
+    showQuestion();
+    updatePalette();
+    startTimer();
+};
 
 /* ================= TIMER ================= */
 function startTimer(){
@@ -192,15 +117,11 @@ function showQuestion(){
 
     let html = "";
 
-    for(let i=0;i<q.options.length;i++){
+    q.options.forEach((opt,i)=>{
+        let sel = answers[current] === i ? "selected" : "";
 
-        let sel = (userAns[current] === i) ? "selected" : "";
-
-        html += 
-        <div class="option ${sel}" onclick="selectOption(${i})">
-            ${q.options[i]}
-        </div>;
-    }
+        html += <div class="option ${sel}" onclick="selectOption(${i})">${opt}</div>;
+    });
 
     document.getElementById("options").innerHTML = html;
 
@@ -209,12 +130,12 @@ function showQuestion(){
 
 /* ================= SELECT OPTION ================= */
 function selectOption(i){
-    userAns[current] = i;
+    answers[current] = i;
     showQuestion();
 }
 
 /* ================= NAVIGATION ================= */
-    function nextQ(){
+function nextQ(){
     if(current < questions.length-1){
         current++;
         showQuestion();
@@ -228,27 +149,17 @@ function prevQ(){
     }
 }
 
-/* ================= MARK REVIEW ================= */
-function markReview(){
-    review[current] = !review[current];
-    updatePalette();
-}
-
 /* ================= PALETTE ================= */
 function updatePalette(){
 
     let html = "";
 
-    for(let i=0;i<questions.length;i++){
+    questions.forEach((q,i)=>{
 
-        let cls = "qbtn notanswered";
-
-        if(userAns[i] !== null) cls = "qbtn answered";
-
-        if(review[i]) cls = "qbtn review";
+        let cls = answers[i] !== null ? "qbtn answered" : "qbtn notanswered";
 
         html += <div class="${cls}" onclick="goTo(${i})">${i+1}</div>;
-    }
+    });
 
     document.getElementById("palette").innerHTML = html;
 }
@@ -263,26 +174,17 @@ function submitTest(){
 
     let score = 0;
 
-    for(let i=0;i<questions.length;i++){
-        if(userAns[i] === questions[i].answer){
+    questions.forEach((q,i)=>{
+        if(answers[i] === q.answer){
             score++;
         }
-    }
+    });
 
-    document.getElementById("quizBox").style.display = "none";
-
-    document.getElementById("result").innerHTML = 
-        <h2>Result</h2>
-        <h3>Score: ${score} / ${questions.length}</h3>
-    ;
-
-    document.getElementById("result").style.display = "block";
+    document.body.innerHTML =
+    <h2 style="text-align:center;margin-top:50px">
+        Your Score: ${score}/${questions.length}
+    </h2>;
 }
-
-/* ================= INIT (IMPORTANT FIX) ================= */
-showQuestion();
-updatePalette();
-startTimer();
 
 </script>
 
