@@ -109,12 +109,12 @@ qPanel.appendChild(btn);
 }
 function loadQ(){
 console.log("Loading Q", current+1);
-document.getElementById('qNum').innerText=Question ${current+1} | ${questions[current].s};
+document.getElementById('qNum').innerText='Question ${current+1} | ${questions[current].s}';
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';
 questions[current].o.forEach((opt,i)=>{
 let checked=answers[current]===i?'checked':'';
-optHtml+=<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>;
+optHtml+='<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>';
 });
 document.getElementById('options').innerHTML=optHtml;
 updatePanel();
