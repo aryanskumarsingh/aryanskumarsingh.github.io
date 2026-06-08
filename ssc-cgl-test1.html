@@ -9,7 +9,7 @@ alert("JS Start");
 const q=[{t:"2+2=?",o:["3","4","5"],a:1}];
 document.getElementById('q').innerText=q[0].t;
 let h='';
-q[0].o.forEach((x,i)=>{h+=<p>${x}</p>});
+q[0].o.forEach((x,i)=>{h+='<p>${x}</p>'});
 document.getElementById('opt').innerHTML=h;
 </script>
 </body>
