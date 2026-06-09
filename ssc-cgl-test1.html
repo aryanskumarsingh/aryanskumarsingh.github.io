@@ -11,7 +11,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 .main{flex:1;padding:20px;overflow-y:auto}
 .header{background:#1a237e;color:white;padding:15px}
 .q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
-.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
 .q-btn.answered{background:#4caf50;color:white;border:none}
 .q-btn.review{background:#ff9800;color:white;border:none}
 .q-btn.not-visited{background:#fff}
@@ -83,7 +83,7 @@ const questions = [
 ];
 for(let i=questions.length;i<100;i++){
 let sec=["GK","Quant","Reasoning","English"][Math.floor(i/25)];
-questions.push({q:${sec} Demo Q${i+1}: 10 + 10 =?,o:["10","15","20","25"],a:2,s:sec});
+questions.push({q:`${sec} Demo Q${i+1}: 10 + 10 =?`,o:["10","15","20","25"],a:2,s:sec});
 }
 let current=0;
 let answers=Array(100).fill(null);
@@ -97,12 +97,12 @@ btn.onclick=()=>jumpQ(i);
 qPanel.appendChild(btn);
 }
 function loadQ(){
-document.getElementById('qNum').innerText=Question ${current+1} | ${questions[current].s};
+document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';
 questions[current].o.forEach((opt,i)=>{
 let checked=answers[current]===i?'checked':'';
-optHtml+=<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>;
+optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
 });
 document.getElementById('options').innerHTML=optHtml;
 updatePanel();
@@ -112,7 +112,7 @@ function nextQ(){saveAns();if(current<99){current++;loadQ()}}
 function jumpQ(i){saveAns();current=i;loadQ()}
 function markReview(){review[current]=!review[current];updatePanel()}
 function updatePanel(){document.querySelectorAll('.q-btn').forEach((btn,i)=>{btn.className='q-btn';if(i===current)btn.classList.add('current');if(answers[i]!==null)btn.classList.add('answered');else btn.classList.add('not-visited');if(review[i])btn.classList.add('review');});}
-function submitTest(){if(!confirm("Submit test?"))return;saveAns();let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=${score}/200;document.getElementById('analysis').innerText=Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%;document.getElementById('sectionScore').innerHTML=GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50;}
+function submitTest(){if(!confirm("Submit test?"))return;saveAns();let score=0,correct=0,wrong=0;let secScore={GK:0,Quant:0,Reasoning:0,English:0};questions.forEach((q,i)=>{if(answers[i]!==null){if(answers[i]===q.a){score+=2;correct++;secScore[q.s]+=2}else{score-=0.5;wrong++;secScore[q.s]-=0.5}}});document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');document.getElementById('finalScore').innerText=`${score}/200`;document.getElementById('analysis').innerText=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%`;document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;}
 loadQ();
 </script>
 </body>
