@@ -91,7 +91,7 @@ questions.push({q:`${sec} Demo Q${i+1}: 10 + 10 =?`,o:["10","15","20","25"],a:2,
 let current=0;
 let answers=Array(100).fill(null);
 let review=Array(100).fill(false);
-let timeLeft = 60 * 60; // 60 minutes
+let timeLeft = 60 * 60;
 let timerInterval;
 
 function startTimer(){
@@ -119,7 +119,7 @@ qPanel.appendChild(btn);
 }
 function loadQ(){
 loadQ();
-startTimer(); // Ye add karo
+startTimer(); 
 document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';
