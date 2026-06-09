@@ -10,6 +10,8 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 .sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
 .main{flex:1;padding:20px;overflow-y:auto}
 .header{background:#1a237e;color:white;padding:15px}
+.header{display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
 .q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
 .q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
 .q-btn.not-visited{background:#fff}
@@ -45,6 +47,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 <div class="main">
 <div class="header">
 <h2>SSC CGL Mock Test</h2>
+<div class="timer" id="timer">Time Left: 60:00</div>
 </div>
 <div id="quizArea">
 <div class="question-box">
@@ -88,6 +91,24 @@ questions.push({q:`${sec} Demo Q${i+1}: 10 + 10 =?`,o:["10","15","20","25"],a:2,
 let current=0;
 let answers=Array(100).fill(null);
 let review=Array(100).fill(false);
+let timeLeft = 60 * 60; // 60 minutes
+let timerInterval;
+
+function startTimer(){
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      alert("Time Up! Test auto-submitted.");
+      submitTest();
+      return;
+    }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60);
+    let sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
 const qPanel=document.getElementById('qPanel');
 for(let i=0;i<100;i++){
 let btn=document.createElement('button');
@@ -97,6 +118,8 @@ btn.onclick=()=>jumpQ(i);
 qPanel.appendChild(btn);
 }
 function loadQ(){
+loadQ();
+startTimer(); // Ye add karo
 document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';
@@ -122,6 +145,7 @@ function updatePanel(){
 }
 
 function submitTest(){
+  clearInterval(timerInterval);
   if(!confirm("Submit test?"))return;
   saveAns();
   let score=0,correct=0,wrong=0;
