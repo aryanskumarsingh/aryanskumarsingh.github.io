@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEET Mock Test</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background:#f4f4f4;
+}
+
+#timer{
+    background:#ffcc00;
+    padding:10px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.question{
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    margin:8px 0;
+    padding:10px;
+    border:1px solid #ccc;
+    cursor:pointer;
+    background:white;
+}
+
+.option:hover{
+    background:#e8f0fe;
+}
+
+.selected{
+    background:#c8e6c9;
+}
+
+button{
+    padding:10px 15px;
+    margin:10px 5px;
+}
+
+#result{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<h2>NEET Mock Test</h2>
+
+<div id="timer">Time Left: 10:00</div>
+
+<div id="quiz">
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+
+    <button onclick="prevQuestion()">Previous</button>
+    <button onclick="nextQuestion()">Next</button>
+    <button onclick="submitTest()">Submit</button>
+</div>
+
+<div id="result">
+    <h2>Result</h2>
+    <p id="score"></p>
+</div>
+
+<script>
+
+const questions = [
+{
+q:"Functional unit of kidney is:",
+options:["Neuron","Nephron","Alveoli","Sarcomere"],
+answer:1
+},
+{
+q:"Powerhouse of cell is:",
+options:["Nucleus","Golgi Body","Mitochondria","Ribosome"],
+answer:2
+},
+{
+q:"DNA stands for:",
+options:[
+"Deoxyribonucleic Acid",
+"Dynamic Nuclear Acid",
+"Double Nitrogen Acid",
+"None"
+],
+answer:0
+},
+{
+q:"Human heart has how many chambers?",
+options:["2","3","4","5"],
+answer:2
+},
+{
+q:"SI unit of force is:",
+options:["Joule","Newton","Pascal","Watt"],
+answer:1
+}
+];
+
+let current = 0;
+let answers = Array(questions.length).fill(null);
+
+function showQuestion(){
+
+let q = questions[current];
+
+document.getElementById("question").innerText = q.q;
+
+let html = "";
+
+q.options.forEach((opt,i)=>{
+
+let selected = answers[current]===i ? "selected":"";
+
+html += 
+<div class="option ${selected}"
+onclick="selectOption(${i})">
+${opt}
+</div>
+;
+});
+
+document.getElementById("options").innerHTML = html;
+}
+
+function selectOption(i){
+answers[current] = i;
+showQuestion();
+}
+
+function nextQuestion(){
+if(current < questions.length-1){
+current++;
+showQuestion();
+}
+}
+
+function prevQuestion(){
+if(current > 0){
+current--;
+showQuestion();
+}
+}
+
+function submitTest(){
+
+let score = 0;
+
+questions.forEach((q,i)=>{
+if(answers[i]===q.answer){
+score++;
+}
+});
+
+document.getElementById("quiz").style.display="none";
+document.getElementById("result").style.display="block";
+
+document.getElementById("score").innerText =
+"Your Score: " + score + " / " + questions.length;
+}
+
+/* TIMER */
+let time = 600;
+
+setInterval(function(){
+
+let min = Math.floor(time/60);
+let sec = time%60;
+
+document.getElementById("timer").innerText =
+"Time Left: " + min + ":" + (sec<10?"0"+sec:sec);
+
+time--;
+
+if(time<0){
+submitTest();
+}
+
+},1000);
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
