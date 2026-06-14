@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEET Test 1 - 180 PYQ CBT</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+    body{background:#f1f5f9;color:#1e293b}
+    header{background:#0f172a;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+    #timer{font-size:20px;font-weight:700;color:#facc15}
+   .container{display:flex;height:calc(100vh - 60px)}
+   .sidebar{width:300px;background:#fff;border-right:1px solid #cbd5e1;overflow-y:auto;padding:10px}
+   .main{flex:1;display:flex;flex-direction:column}
+   .sections{display:flex;gap:8px;padding:10px;background:#e2e8f0}
+   .sec-btn{padding:8px 16px;border:none;border-radius:6px;background:#fff;cursor:pointer;font-weight:600}
+   .sec-btn.active{background:#2563eb;color:#fff}
+   .q-box{flex:1;padding:20px;overflow-y:auto;background:#fff}
+   .q-text{font-size:18px;margin-bottom:15px;font-weight:600}
+   .option{display:block;width:100%;padding:12px;margin:8px 0;border:2px solid #cbd5e1;border-radius:8px;background:#f8fafc;cursor:pointer;text-align:left;font-size:16px}
+   .option:hover{background:#dbeafe}
+   .option.selected{border-color:#2563eb;background:#dbeafe}
+   .nav-btns{display:flex;justify-content:space-between;padding:15px;border-top:1px solid #cbd5e1}
+   .btn{padding:10px 20px;border:none;border-radius:6px;font-weight:600;cursor:pointer}
+   .btn-save{background:#22c55e;color:#fff}
+   .btn-submit{background:#dc2626;color:#fff}
+   .palette{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+   .pal{width:45px;height:45px;border-radius:6px;border:2px solid #94a3b8;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;font-size:14px}
+   .not-visited{background:#fff}
+   .visited{background:#fde047}
+   .answered{background:#22c55e;color:#fff}
+   .marked{background:#a855f7;color:#fff}
+   .result-screen{display:none;padding:30px;text-align:center}
+   .result-screen h2{color:#0f172a;margin-bottom:20px}
+   .score{font-size:48px;font-weight:800;color:#2563eb}
+   .solution{display:none;text-align:left;margin-top:20px}
+   .sol-box{background:#f8fafc;padding:15px;border-radius:8px;margin:10px 0;border-left:4px solid #2563eb}
+   .correct{color:#16a34a;font-weight:700}
+   .wrong{color:#dc2626;font-weight:700}
+</style>
+</head>
+<body>
+
+<header>
+    <h3>NEET Test 1 - 180 Questions</h3>
+    <div id="timer">Time Left: 180:00</div>
+</header>
+
+<div class="container" id="test-screen">
+    <div class="sidebar">
+        <h4>Question Palette</h4>
+        <div class="palette" id="palette"></div>
+    </div>
+    <div class="main">
+        <div class="sections">
+            <button class="sec-btn active" onclick="changeSection('Physics')">Physics</button>
+            <button class="sec-btn" onclick="changeSection('Chemistry')">Chemistry</button>
+            <button class="sec-btn" onclick="changeSection('Biology')">Biology</button>
+        </div>
+        <div class="q-box">
+            <div id="q-counter"></div>
+            <div class="q-text" id="q-text"></div>
+            <div id="options"></div>
+        </div>
+        <div class="nav-btns">
+            <button class="btn" onclick="markReview()">Mark for Review</button>
+            <button class="btn btn-save" onclick="saveNext()">Save & Next</button>
+            <button class="btn btn-submit" onclick="submitTest()">Submit Test</button>
+        </div>
+    </div>
+</div>
+
+<div class="result-screen" id="result-screen">
+    <h2>Test Submitted Successfully</h2>
+    <div class="score" id="final-score"></div>
+    <button class="btn btn-save" onclick="showSolution()">View Solutions</button>
+    <div class="solution" id="solution-box"></div>
+</div>
+
+<script>
+// ========= 1. QUESTION DATA - 180 PYQ =========
+const testData = {
+    Physics: [
+        {q:"1. SI unit of Force is?", opt:["Joule","Newton","Watt","Pascal"], ans:"Newton", sol:"Force = Mass x Acceleration. SI unit = kg.m/s² = Newton"},
+        {q:"2. Speed of light in vacuum?", opt:["3x10^8 m/s","3x10^6 m/s","3x10^10 m/s","3x10^5 m/s"], ans:"3x10^8 m/s", sol:"Standard value of speed of light c = 3x10^8 m/s"}
+        // Yaha 58 aur Physics ke question add kar dena. Total 60 chahiye
+    ],
+    Chemistry: [
+        {q:"61. pH of pure water is?", opt:["0","7","14","1"], ans:"7", sol:"At 25°C, pure water has equal H+ and OH- ions, so pH = 7"},
+        {q:"62. Atomic number of Oxygen?", opt:["6","7","8","9"], ans:"8", sol:"Oxygen has 8 protons in nucleus"}
+        // Yaha 58 aur Chemistry ke question add kar dena. Total 60 chahiye
+    ],
+    Biology: [
+        {q:"121. Powerhouse of cell?", opt:["Nucleus","Mitochondria","Ribosome","Chloroplast"], ans:"Mitochondria", sol:"Mitochondria produces ATP, so called powerhouse of cell"},
+        {q:"122. DNA stands for?", opt:["Deoxyribo Nucleic Acid","Di Nucleic Acid","Dual Nucleic Acid","None"], ans:"Deoxyribo Nucleic Acid", sol:"DNA = Deoxyribonucleic Acid"}
+        // Yaha 58 aur Biology ke question add kar dena. Total 60 chahiye
+    ]
+};
+
+// ========= 2. CBT LOGIC =========
+let currentSection = 'Physics';
+let currentQ = 0;
+let userAnswers = {};
+let timeLeft = 180 * 60; // 180 min in seconds
+let timerInterval;
+
+// Timer
+function startTimer(){
+    timerInterval = setInterval(()=>{
+        timeLeft--;
+        let min = Math.floor(timeLeft/60);
+        let sec = timeLeft%60;
+        document.getElementById('timer').innerText = `Time Left: ${min}:${sec<10?'0':''}${sec}`;
+        if(timeLeft <= 0){
+            clearInterval(timerInterval);
+            alert("Time Over! Test Auto-Submitted");
+            submitTest();
+        }
+    },1000);
+}
+
+// Load Question
+function loadQuestion(){
+    let sectionData = testData[currentSection];
+    let q = sectionData[currentQ];
+    document.getElementById('q-counter').innerText = `${currentSection} - Q ${currentQ+1} / ${sectionData.length}`;
+    document.getElementById('q-text').innerText = q.q;
+
+    let optHTML = '';
+    q.opt.forEach(option=>{
+        let isSelected = userAnswers[currentSection+'_'+currentQ] === option? 'selected' : '';
+        optHTML += `<button class="option ${isSelected}" onclick="selectOption('${option}')">${option}</button>`;
+    });
+    document.getElementById('options').innerHTML = optHTML;
+    updatePalette();
+}
+
+// Select Option
+function selectOption(opt){
+    userAnswers[currentSection+'_'+currentQ] = opt;
+    loadQuestion();
+}
+
+// Save & Next
+function saveNext(){
+    let sectionData = testData[currentSection];
+    if(currentQ < sectionData.length - 1){
+        currentQ++;
+    } else if(currentSection!== 'Biology'){
+        changeSection(currentSection === 'Physics'? 'Chemistry' : 'Biology');
+    }
+    loadQuestion();
+}
+
+// Mark for Review
+function markReview(){
+    userAnswers[currentSection+'_'+currentQ] = userAnswers[currentSection+'_'+currentQ] || 'MARKED';
+    updatePalette();
+}
+
+// Change Section
+function changeSection(sec){
+    currentSection = sec;
+    currentQ = 0;
+    document.querySelectorAll('.sec-btn').forEach(b=>b.classList.remove('active'));
+    event.target.classList.add('active');
+    loadQuestion();
+}
+
+// Palette
+function createPalette(){
+    let palette = document.getElementById('palette');
+    let total = 0;
+    for(let sec in testData) total += testData[sec].length;
+    let html = '';
+    for(let i=1; i<=total; i++){
+        html += `<div class="pal not-visited" onclick="jumpToQ(${i-1})">${i}</div>`;
+    }
+    palette.innerHTML = html;
+}
+function updatePalette(){
+    let pals = document.querySelectorAll('.pal');
+    let idx = 0;
+    for(let sec in testData){
+        testData[sec].forEach((_,q)=>{
+            let key = sec+'_'+q;
+            if(userAnswers[key] && userAnswers[key]!== 'MARKED') pals[idx].className = 'pal answered';
+            else if(userAnswers[key] === 'MARKED') pals[idx].className = 'pal marked';
+            else if(sec===currentSection && q===currentQ) pals[idx].className = 'pal visited';
+            idx++;
+        });
+    }
+}
+function jumpToQ(globalIdx){
+    let idx = 0;
+    for(let sec in testData){
+        if(globalIdx < idx + testData[sec].length){
+            currentSection = sec;
+            currentQ = globalIdx - idx;
+            loadQuestion();
+            return;
+        }
+        idx += testData[sec].length;
+    }
+}
+
+// Submit Test
+function submitTest(){
+    clearInterval(timerInterval);
+    document.getElementById('test-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+
+    let score = 0;
+    let total = 0;
+    for(let sec in testData){
+        testData[sec].forEach((q,i)=>{
+            total++;
+            if(userAnswers[sec+'_'+i] === q.ans) score += 4;
+            else if(userAnswers[sec+'_'+i]) score -= 1; // Negative marking
+        });
+    }
+    document.getElementById('final-score').innerText = `Score: ${score} / ${total*4}`;
+}
+
+// Show Solution
+function showSolution(){
+    let box = document.getElementById('solution-box');
+    box.style.display = 'block';
+    let html = '<h3>Solutions & Explanations</h3>';
+    for(let sec in testData){
+        html += `<h4 style="margin-top:20px;color:#0f172a">${sec}</h4>`;
+        testData[sec].forEach((q,i)=>{
+            let userAns = userAnswers[sec+'_'+i] || 'Not Attempted';
+            let status = userAns === q.ans? 'correct' : 'wrong';
+            html += `<div class="sol-box">
+                <p><b>Q${i+1}.</b> ${q.q}</p>
+                <p>Your Answer: <span class="${status}">${userAns}</span></p>
+                <p>Correct Answer: <span class="correct">${q.ans}</span></p>
+                <p><b>Solution:</b> ${q.sol}</p>
+            </div>`;
+        });
+    }
+    box.innerHTML = html;
+}
+
+// ========= 3. START =========
+createPalette();
+loadQuestion();
+startTimer();
+
+// Prevent copy/refresh
+window.addEventListener('beforeunload', e => e.preventDefault());
+</script>
+</body>
+</html>
