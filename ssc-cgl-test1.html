@@ -95,6 +95,7 @@ let timeLeft = 60 * 60;
 let timerInterval;
 
 function startTimer(){
+  clearInterval(timerInterval);
   timerInterval = setInterval(()=>{
     if(timeLeft <= 0){
       clearInterval(timerInterval);
@@ -117,8 +118,7 @@ btn.innerText=i+1;
 btn.onclick=()=>jumpQ(i);
 qPanel.appendChild(btn);
 }
-function loadQ(){
-startTimer(); 
+function loadQ(){ 
 document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
 document.getElementById('question').innerText=questions[current].q;
 let optHtml='';
@@ -161,6 +161,8 @@ function submitTest(){
   document.getElementById('analysis').innerText=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${100-correct-wrong} | Accuracy: ${correct+wrong>0?(correct/(correct+wrong)*100).toFixed(1):0}%`;
   document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
 }
+loadQ()
+startTimer();
 </script>
 </body>
 </html>
