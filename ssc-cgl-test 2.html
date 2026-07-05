@@ -3,57 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC-cgl-test02</title>
+<title>SSC-cgl-test2</title>
 <style>
-*{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{margin:0;background:#f0f2f5;display:flex;height:100vh}
-.sidebar{width:320px;background:#fff;border-right:2px solid #ddd;padding:15px;overflow-y:auto}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
 .main{flex:1;padding:20px;overflow-y:auto}
-.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.timer{background:#fff;color:#d32f2f;padding:10px 18px;border-radius:6px;font-weight:bold;font-size:20px}
-.q-panel{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:15px}
-.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:5px;font-weight:600;font-size:12px}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
 .q-btn.answered{background:#4caf50;color:white;border:none}
 .q-btn.review{background:#ff9800;color:white;border:none}
-.q-btn.current{border:3px solid #1a237e}
-.question-box{background:white;padding:25px;border-radius:10px;margin-bottom:20px;box-shadow:0 3px 6px rgba(0,0,0,0.1)}
-.options label{display:block;padding:14px;margin:10px 0;border:2px solid #ddd;border-radius:6px;cursor:pointer;font-size:16px}
-.options label:hover{background:#e3f2fd;border-color:#1a237e}
-.options input{margin-right:12px;transform:scale(1.2)}
-.btn{padding:12px 25px;border:none;border-radius:6px;cursor:pointer;font-size:16px;font-weight:600;margin:5px}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
 .btn-next{background:#1a237e;color:white}
 .btn-review{background:#ff9800;color:white}
 .btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
 .hide{display:none}
-#result{background:white;padding:30px;border-radius:10px;text-align:center}
-.score{font-size:56px;color:#1a237e;margin:15px;font-weight:bold}
-.solution-box{text-align:left;max-height:650px;overflow-y:auto;margin-top:25px}
-.sol-que{padding:18px;margin:12px 0;border-radius:8px;border-left:6px solid #ccc}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
 .correct{background:#e8f5e9;border-color:#4caf50}
 .wrong{background:#ffebee;border-color:#d32f2f}
 .not-att{background:#f5f5f5;border-color:#9e9e9e}
-.explanation{background:#fff8e1;padding:14px;border-radius:6px;margin-top:12px;font-size:15px;line-height:1.7;border-left:3px solid #ff9800}
-.question-img{max-width:100%;height:auto;margin:15px 0;border:1px solid #ccc;border-radius:6px}
-.section-title{background:#1a237e;color:white;padding:8px;border-radius:4px;margin:15px 0;text-align:center;font-weight:bold}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
 </style>
 </head>
 <body>
 <div class="sidebar">
-<h3>📋 Question Panel 1-100</h3>
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
 <div class="q-panel" id="qPanel"></div>
 <button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
 </div>
 
 <div class="main">
 <div class="header">
-<h2>SSC CGL TEST 02</h2>
+<h2>SSC CGL Mock Test 02</h2>
 <div class="timer" id="timer">Time Left: 60:00</div>
 </div>
 
 <div id="quizArea">
 <div class="question-box">
 <h3 id="qNum">Question 1</h3>
-<div id="question"></div>
+<p id="question"></p>
 <div class="options" id="options"></div>
 </div>
 <button class="btn btn-review" onclick="markReview()">Mark for Review</button>
@@ -61,17 +66,17 @@ body{margin:0;background:#f0f2f5;display:flex;height:100vh}
 </div>
 
 <div id="result" class="hide">
-<h2>🎉 Test Submitted!</h2>
+<h2>Test Submitted!</h2>
 <p class="score" id="finalScore">0/200</p>
 <p id="analysis"></p>
-<button class="btn btn-next" onclick="toggleSolution()">Check Answers + Explanation</button>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
 <div id="solutionBox" class="solution-box hide"></div>
 </div>
 </div>
-
+  
 <script>
-let current=0, time=3600, timer, answers=Array(100).fill(null), marked=Array(100).fill(false);
-
 const questions = [
 /* ====== GENERAL INTELLIGENCE & REASONING 1-25 ====== */
 {q:`1. Select the letter-cluster that can replace the question mark (?) in the following series.<br>KQG, JTK, HXO, ECS?`,o:["BIV","AIW","AHW","BIX"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>K-1=J[...]`},
@@ -182,19 +187,88 @@ const questions = [
 {q:`100. Synonym of GLORIOUS`,o:["splendid","unusual","enormous","gentle"],a:0,s:"English",exp:`<b>Explanation:</b><br>Glorious = splendid = shandaar<br><b>Answer: splendid</b>`}
 ];
 
-function init(){makePanel();loadQ();startTimer();}
-function makePanel(){let html='';for(let i=0;i<questions.length;i++){html+=`<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`}document.getElementById('qPanel').innerHTML=html}
-function loadQ(){document.getElementById('qNum').innerText=`Question ${current+1} / ${questions.length} | ${questions[current].s}`;document.getElementById('question').innerHTML=questions[current].q;let opt='';for(let i=0;i<questions[current].o.length;i++){opt+=`<label><input type="radio" name="opt" value="${i}" onchange="saveAns()">${questions[current].o[i]}</label>`}document.getElementById('options').innerHTML=opt;if(answers[current]!==null){document.querySelector(`input[name="opt"][value="${answers[current]}"]`).checked=true}updatePanel()}
-function saveAns(){answers[current]=parseInt(document.querySelector('input[name="opt"]:checked').value)}
-function markReview(){marked[current]=true;updatePanel()}
-function nextQ(){if(current<questions.length-1){current++;loadQ()}}
-function goQ(i){current=i;loadQ()}
-function updatePanel(){for(let i=0;i<questions.length;i++){let btn=document.getElementById('btn'+i);btn.className='q-btn';if(answers[i]!==null)btn.classList.add('answered');if(marked[i])btn.classList.add('review');if(i===current)btn.classList.add('current')}}
-function startTimer(){timer=setInterval(()=>{time--;let m=Math.floor(time/60),s=time%60;document.getElementById('timer').innerText=`Time Left: ${m}:${s<10?'0':''}${s}`;if(time<=0)submitTest()},1000)}
-function submitTest(){clearInterval(timer);document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');let score=0;questions.forEach((q,i)=>{if(answers[i]===q.a)score++});document.getElementById('finalScore').innerText=`${score}/100`;document.getElementById('analysis').innerText=`Correct: ${score} | Wrong: ${100-score} | Accuracy: ${(score).toFixed(1)}%`;showSolution()}
-function showSolution(){let html='';questions.forEach((q,i)=>{let cls=answers[i]===null?'not-att':answers[i]===q.a?'correct':'wrong';html+=`<div class="sol-que ${cls}"><b>Q${i+1}.</b> ${q.q}<br><b>Your Answer:</b> ${answers[i]===null?'Not Attempted':q.o[answers[i]]}<br><b>Correct Answer:</b> ${q.o[q.a]}<div class="explanation">${q.exp}</div></div>`});document.getElementById('solutionBox').innerHTML=html;document.getElementById('solutionBox').classList.remove('hide')}
-function toggleSolution(){document.getElementById('solutionBox').classList.toggle('hide')}
-init();
+
+
+let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
+let timeLeft = 60 * 60, timerInterval;
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
+
+const qPanel=document.getElementById('qPanel');
+for(let i=0;i<100;i++){
+  let btn=document.createElement('button');
+  btn.className='q-btn not-visited';
+  btn.innerText=i+1;
+  btn.onclick=()=>jumpQ(i);
+  qPanel.appendChild(btn);
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
+  document.getElementById('question').innerText=questions[current].q;
+  let optHtml='';
+  questions[current].o.forEach((opt,i)=>{
+    let checked=answers[current]===i?'checked':'';
+    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML=optHtml;
+  updatePanel();
+}
+
+function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
+function nextQ(){saveAns();if(current<99){current++;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
+function markReview(){review[current]=!review[current];updatePanel()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className='q-btn';
+    if(i===current)btn.classList.add('current');
+    if(review[i])btn.classList.add('review');
+    else if(answers[i]!==null)btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  });
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  if(!confirm("Submit test?"))return;
+  saveAns();
+  let score=0,correct=0,wrong=0,unattempted=0;
+  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
+  let solHTML='';
+
+  questions.forEach((q,i)=>{
+    let u=answers[i], c=q.a;
+    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=2;correct++;secScore[q.s]+=2; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.5;wrong++;secScore[q.s]-=0.5; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+  });
+
+  let percentage=((score/200)*100).toFixed(2);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText=`${score}/200`;
+  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML=solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+loadQ();
+startTimer();
 </script>
 </body>
 </html>
