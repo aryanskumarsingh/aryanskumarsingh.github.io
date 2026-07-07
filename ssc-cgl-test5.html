@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC-cgl-test4</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>SSC CGL Mock Test 04</h2>
+<div class="timer" id="timer">Time Left: 60:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/200</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+// Global Variables
+let current = 0;
+let answers = Array(100).fill(null);
+let marked = Array(100).fill(false);
+let time = 60 * 60;
+let timer = null;
+
+const questions = [
+/* ========== SECTION 1: REASONING 1-25 ========== */
+{q:`<div class="section-head">GENERAL INTELLIGENCE AND REASONING 1-25</div>1. After interchanging × and +, 3 and 9 what will be values of I. 7 × 9 – 8 ÷ 2 + 3 II. 4 × 9 – 3 + 8 ÷ 2<br>(a) 0, 1 (b) –26, – 29 (c) 6, 0 (d) 12, 13`,o:["0, 1","–26, – 29","6, 0","12, 13"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>I: 7 + 3 – 8 ÷ 2 × 9 = 10 - 36 = -26<br>II: 4 + 3 – 9 × 8 ÷ 2 = 7 - 36 = -29<br><b>Answer: –26, – 29</b>`},
+{q:`2. In code BEHOLD=BDEHLO, INDEED=DDEEIN. COURSE=?<br>(a) CEROSU (b) CEORUS (c) CEOSUR (d) CEORSU`,o:["CEROSU","CEORUS","CEOSUR","CEORSU"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Letters arranged in alphabetical order<br><b>Answer: CEORSU</b>`},
+{q:`3. Library : Books :: Museum : ?<br>(a) Building (b) Artefacts (c) People (d) Gallery`,o:["Building","Artefacts","People","Gallery"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Books kept in Library, Artefacts kept in Museum<br><b>Answer: Artefacts</b>`},
+{q:`4. 382, 322, 272, 232, 202, ?<br>(a) 168 (b) 150 (c) 182 (d) 132`,o:["168","150","182","132"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>-60, -50, -40, -30, -20<br><b>Answer: 182</b>`},
+{q:`5. Embedded figure?<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Figure embedded in option b<br><b>Answer: fig2</b>`},
+{q:`6. 16 * 4 * 156 * 13 * 11 = 83<br>(a) +,-,÷,× (b) ×,+,÷,- (c) ×,-,÷,+ (d) ÷,×,+,-`,o:["+,-,÷,×","×,+,÷,-","×,-,÷,+","÷,×,+,-"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>16 × 4 - 156 ÷ 13 + 11 = 64 - 12 + 11 = 83<br><b>Answer: ×,-,÷,+</b>`},
+{q:`7. P K G T X C O L F U ?<br>(a) FU (b) GT (c) HQ (d) IR`,o:["FU","GT","HQ","IR"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>+8, -8 alternate pattern<br><b>Answer: FU</b>`},
+{q:`8. 33:14 :: 43:36 :: 83:?<br>(a) 120 (b) 200 (c) 240 (d) 260`,o:["120","200","240","260"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>(3+13)/2=14, (4+23)/2=36, (8+23)/2=260<br><b>Answer: 260</b>`},
+{q:`9. 12 * 24 * 4 * 2 * 60<br>(a) +,+÷= (b) +,-,×,= (c) ×,-,+,= (d) ÷,+,×,=`,o:["+,+÷=","+,-,×,=","×,-,+,=","÷,+,×,="],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>12 + 24 × 4 ÷ 2 = 12 + 48 = 60<br><b>Answer: +,+÷=</b>`},
+{q:`10. HG, RQ, LK, ?<br>(a) UV (b) BA (c) WV (d) DC`,o:["UV","BA","WV","DC"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>-1 pattern, but WV has +1<br><b>Answer: WV</b>`},
+{q:`11. Phone : Talk :: Television : ?<br>(a) Listen (b) View (c) Hear (d) See`,o:["Listen","View","Hear","See"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Phone used for talk, TV used for view<br><b>Answer: View</b>`},
+{q:`12. Dice opposite faces?<br>(a) 5-1 (b) 6-2 (c) 3-4 (d) All correct`,o:["5-1","6-2","3-4","All correct"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Opposite faces<br><b>Answer: All correct</b>`},
+{q:`13. BLZK541M → ?<br>(a) BLZK541M (b) BLZK145M (c) BLZK415M (d) BLZK514M`,o:["BLZK541M","BLZK145M","BLZK415M","BLZK514M"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>No change<br><b>Answer: BLZK541M</b>`},
+{q:`14. Figure series next?<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Square and circle move clockwise<br><b>Answer: fig1</b>`},
+{q:`15. Cards, Boxes, Torches, Shoes. Conclusion?<br>(a) Only IV (b) Only I (c) Only II (d) None`,o:["Only IV","Only I","Only II","None"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Only conclusion IV follows<br><b>Answer: Only IV</b>`},
+{q:`16. FRUCTUS=108, SPRINTER=119. MASCULINE=?<br>(a) 96 (b) 99 (c) 97 (d) 98`,o:["96","99","97","98"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Sum of positional values<br><b>Answer: 97</b>`},
+{q:`17. All W are S. No D is W. Conclusions?<br>(a) Only III (b) I and III (c) I and II (d) All`,o:["Only III","I and III","I and II","All"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Some S are W and No W is D<br><b>Answer: I and III</b>`},
+{q:`18. NMRQ, NDZG, NUHW, NLPM, ?<br>(a) NQRC (b) NCXC (c) NHMH (d) MQRQ`,o:["NQRC","NCXC","NHMH","MQRQ"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>-9,+8,-10,+17 pattern<br><b>Answer: NCXC</b>`},
+{q:`19. Figure series next?<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Pattern of rotation<br><b>Answer: fig1</b>`},
+{q:`20. 19:324 :: 25:576 :: 9:?<br>(a) 16 (b) 64 (c) 88 (d) 72`,o:["16","64","88","72"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>(19-1)²=324, (25-1)²=576, (9-1)²=64<br><b>Answer: 64</b>`},
+{q:`21. Dictionary order: Popular, Population, Populace, Pope, Poppy. 5th?<br>(a) Population (b) Poppy (c) Popular (d) Populace`,o:["Population","Poppy","Popular","Populace"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Pope, Poppy, Populace, Popular, Population<br><b>Answer: Population</b>`},
+{q:`22. (20,6,4), (24,7,5). Find similar<br>(a) (65,9,4) (b) (22,5,2) (c) (40,8,5) (d) (42,7,3)`,o:["(65,9,4)","(22,5,2)","(40,8,5)","(42,7,3)"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>(a+b)*(a-b)=c. 13*5=65<br><b>Answer: (65,9,4)</b>`},
+{q:`23. A%B&C#D@E. B related to E?<br>(a) Brother (b) Son-in-law (c) Father (d) Son`,o:["Brother","Son-in-law","Father","Son"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>B is husband of C who is sister of D daughter of E<br><b>Answer: Son-in-law</b>`},
+{q:`24. P is paternal aunt of R?<br>(a) P-Q×R (b) P-Q+R (c) P×Q+R (d) P+Q-R`,o:["P-Q×R","P-Q+R","P×Q+R","P+Q-R"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>P sister of Q father of R<br><b>Answer: P-Q+R</b>`},
+{q:`25. Odd group: (7-343-331), (6-216-206), (5-125-115), (4-64-54)<br>(a) (7-343-331) (b) (6-216-206) (c) (5-125-115) (d) (4-64-54)`,o:["(7-343-331)","(6-216-206)","(5-125-115)","(4-64-54)"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>n³-10, but 343-10=333≠331<br><b>Answer: (7-343-331)</b>`},
+
+/* ========== SECTION 2: GK 26-50 ========== */
+{q:`<div class="section-head">GENERAL AWARENESS 26-50</div>26. 'Back-stick' used in?<br>(a) Basketball (b) Badminton (c) Hockey (d) Volleyball`,o:["Basketball","Badminton","Hockey","Volleyball"],a:2,s:"GK",exp:`<b>Answer: Hockey</b>`},
+{q:`27. Festival in Punjab to commemorate Khalsa Panth?<br>(a) Lohri (b) Hola Mohalla (c) Teej (d) Baisakhi`,o:["Lohri","Hola Mohalla","Teej","Baisakhi"],a:3,s:"GK",exp:`<b>Answer: Baisakhi</b>`},
+{q:`28. Theme of 2nd International Day of Yoga?<br>(a) SDGs (b) Yoga for Peace (c) Yoga for Wellness (d) Yoga for Heart`,o:["Yoga for SDGs","Yoga for Peace","Yoga for Wellness","Yoga for Heart"],a:0,s:"GK",exp:`<b>Answer: Yoga for SDGs</b>`},
+{q:`29. Chemical formula of quick lime?<br>(a) CaO (b) CO2 (c) CaCO3 (d) Ca(OH)2`,o:["CaO","CO2","CaCO3","Ca(OH)2"],a:0,s:"GK",exp:`<b>Answer: CaO</b>`},
+{q:`30. Unit of work done?<br>(a) Watt (b) Decibel (c) Ampere (d) Joule`,o:["Watt","Decibel","Ampere","Joule"],a:3,s:"GK",exp:`<b>Answer: Joule</b>`},
+{q:`31. Which does NOT have nuclear power plant?<br>(a) Vijayawada (b) Naraura (c) Tarapur (d) Rawat Bhata`,o:["Vijayawada","Naraura","Tarapur","Rawat Bhata"],a:0,s:"GK",exp:`<b>Answer: Vijayawada</b>`},
+{q:`32. Ramakrishna Mission stressed ideal of _____ through social service<br>(a) bhakti (b) education (c) salvation (d) God`,o:["bhakti","education","salvation","God"],a:2,s:"GK",exp:`<b>Answer: salvation</b>`},
+{q:`33. International Non-Violence Day?<br>(a) 15 Aug (b) 31 Oct (c) 2 Oct (d) 14 Nov`,o:["15 August","31 October","2 October","14 November"],a:2,s:"GK",exp:`<b>Answer: 2 October</b>`},
+{q:`34. Dynasty established Vijayanagara?<br>(a) Sangama (b) Nagama (c) Soma (d) Tuluva`,o:["Sangama Dynasty","Nagama Dynasty","Soma Dynasty","Tuluva Dynasty"],a:0,s:"GK",exp:`<b>Answer: Sangama Dynasty</b>`},
+{q:`35. Vayudoot airline setup?<br>(a) 1981 (b) 1991 (c) 1971 (d) 1969`,o:["1981","1991","1971","1969"],a:0,s:"GK",exp:`<b>Answer: 1981</b>`},
+{q:`36. Wearing away of landscape called?<br>(a) Weathering (b) Erosion (c) Metamorphosis (d) Sedimentation`,o:["Weathering","Erosion","Metamorphosis","Sedimentation"],a:1,s:"GK",exp:`<b>Answer: Erosion</b>`},
+{q:`37. New CBDT chairman June 2022?<br>(a) Nitin Gupta (b) Nidhi Chibber (c) Ashish Jha (d) M Jagadesh Kumar`,o:["Nitin Gupta","Nidhi Chibber","Ashish Jha","M Jagadesh Kumar"],a:0,s:"GK",exp:`<b>Answer: Nitin Gupta</b>`},
+{q:`38. 'Sarod Samrat'?<br>(a) Ravishankar (b) Aamir Ali (c) Amjad Ali Khan (d) Kishan Maharaj`,o:["Pandit Ravishankar Prasad","Aamir Ali Khan","Amjad Ali Khan","Kishan Mahara"],a:2,s:"GK",exp:`<b>Answer: Amjad Ali Khan</b>`},
+{q:`39. NOT method of national income?<br>(a) Banking (b) Expenditure (c) Product (d) Income`,o:["Banking method","Expenditure method","Product method","Income method"],a:0,s:"GK",exp:`<b>Answer: Banking method</b>`},
+{q:`40. 'Parliament' refers to?<br>(a) Rajya Sabha (b) Lok Sabha (c) State legislature (d) National legislature`,o:["Rajya Sabha","Lok Sabha","State legislature","National legislature"],a:3,s:"GK",exp:`<b>Answer: National legislature</b>`},
+{q:`41. CM inaugurated milk-eggs in anganwadis?<br>(a) Andhra (b) Kerala (c) Karnataka (d) Tamil Nadu`,o:["Andhra Pradesh","Kerala","Karnataka","Tamil Nadu"],a:1,s:"GK",exp:`<b>Answer: Kerala</b>`},
+{q:`42. 'Camel Protection Policy' by?<br>(a) Rajasthan (b) Punjab (c) Gujarat (d) Ladakh`,o:["Rajasthan","Punjab","Gujarat","Ladakh"],a:0,s:"GK",exp:`<b>Answer: Rajasthan</b>`},
+{q:`43. President who was Deputy Chairman Planning Commission?<br>(a) V V Giri (b) K R Narayanan (c) R Venkataraman (d) Pranab Mukherjee`,o:["V V Giri","K R Narayanan","Ramaswamy Venkataraman","Pranab Mukherjee"],a:3,s:"GK",exp:`<b>Answer: Pranab Mukherjee</b>`},
+{q:`44. Maturing face of Golgi apparatus?<br>(a) spherical (b) convex (c) bi-concave (d) concave`,o:["spherical","convex","bi-concave","concave"],a:1,s:"GK",exp:`<b>Answer: convex</b>`},
+{q:`45. Brahmo Sabha later known as?<br>(a) Dev Samaj (b) Arya Samaj (c) Brahmo School (d) Brahmo Samaj`,o:["Dev Samaj","Arya Samaj","Brahmo School","Brahmo Samaj"],a:3,s:"GK",exp:`<b>Answer: Brahmo Samaj</b>`},
+{q:`46. Part of xylem that stores food?<br>(a) Vessels (b) Xylem fibres (c) Xylem parenchyma (d) Tracheids`,o:["Vessels","Xylem fibres","Xylem parenchyma","Tracheids"],a:2,s:"GK",exp:`<b>Answer: Xylem parenchyma</b>`},
+{q:`47. Grammy 2015 'Winds of Samsara'?<br>(a) Mano Murthy (b) Raghu Dixit (c) Subhashish Ghosh (d) Ricky Kej`,o:["Mano Murthy","Raghu Dixit","Subhashish Ghosh","Ricky Kej"],a:3,s:"GK",exp:`<b>Answer: Ricky Kej</b>`},
+{q:`48. Harappan cities NOT found in?<br>(a) Uttarakhand (b) Gujarat (c) Rajasthan (d) Haryana`,o:["Uttarakhand","Gujarat","Rajasthan","Haryana"],a:0,s:"GK",exp:`<b>Answer: Uttarakhand</b>`},
+{q:`49. Burning of coal is?<br>(a) Decomposition (b) Double displacement (c) Combination (d) Displacement`,o:["decomposition reaction","double displacement reaction","combination reaction","displacement reaction"],a:2,s:"GK",exp:`<b>Answer: combination reaction</b>`},
+{q:`50. Foremost right among rights to freedom?<br>(a) Life and liberty (b) Preventive detention (c) Assemble (d) Speech`,o:["Right to life and personal liberty","Preventive detention","Freedom to assemble","Right to freedom of speech and expression"],a:0,s:"GK",exp:`<b>Answer: Right to life and personal liberty</b>`},
+
+/* ========== SECTION 3: QUANT 51-75 ========== */
+{q:`<div class="section-head">QUANTITATIVE APTITUDE 51-75</div>51. Sells at 12.5% loss, uses 28g instead 36g. Profit/Loss%?<br>(a) 6.25% loss (b) 12.5% gain (c) 18.75% gain (d) 10.5% loss`,o:["6.25% loss","12.5% gain","18.75% gain","10.5% loss"],a:1,s:"Quant",exp:`<b>Answer: 12.5% gain</b>`},
+{q:`52. HCF=12. Which can NEVER be LCM?<br>(a) 72 (b) 60 (c) 90 (d) 84`,o:["72","60","90","84"],a:2,s:"Quant",exp:`<b>Answer: 90</b><br>LCM must be divisible by HCF`},
+{q:`53. Two circles touch externally. ∠PAB=40°. ∠ABP=?<br>(a) 45° (b) 55° (c) 50° (d) 40°`,o:["45°","55°","50°","40°"],a:2,s:"Quant",exp:`<b>Answer: 50°</b>`},
+{q:`54. Mean proportion of 169 and 144?<br>(a) 156 (b) 147 (c) 126 (d) 165`,o:["156","147","126","165"],a:0,s:"Quant",exp:`<b>Answer: 156</b><br>√(169×144)=156`},
+{q:`55. Length +8%, Breadth +5%. Area increase%?<br>(a) 13.4% (b) 15.4% (c) 12.4% (d) 16.4%`,o:["13.4%","15.4%","12.4%","16.4%"],a:0,s:"Quant",exp:`<b>Answer: 13.4%</b><br>8+5+8*5/100=13.4`},
+{q:`56. cos45/(sec30+cosec30)=?<br>(a) (3√2+√6)/8 (b) (2√2-√6)/3 (c) (3√2-√6)/8 (d) (√6-√2)/3`,o:["(3√2+√6)/8","(2√2-√6)/3","(3√2-√6)/8","(√6-√2)/3"],a:2,s:"Quant",exp:`<b>Answer: (3√2-√6)/8</b>`},
+{q:`57. Divisor of (49¹⁵-1)?<br>(a) 46 (b) 14 (c) 8 (d) 50`,o:["46","14","8","50"],a:2,s:"Quant",exp:`<b>Answer: 8</b><br>aⁿ-1 divisible by a+1 when n even`},
+{q:`58. 1500m race: A beats B by 150m, B beats C by 75m. A beats C by?<br>(a) 217.50 (b) 200.15 (c) 293.50 (d) 313.75`,o:["217.50 m","200.15 m","293.50 m","313.75 m"],a:0,s:"Quant",exp:`<b>Answer: 217.50 m</b>`},
+{q:`59. ₹2500 for 8 years → ₹3725. Rate%?<br>(a) 6% (b) 6.125% (c) 6.25% (d) 5.875%`,o:["6%","6.125%","6.25%","5.875%"],a:1,s:"Quant",exp:`<b>Answer: 6.125%</b><br>SI=1225, R=1225*100/2500*8=6.125`},
+{q:`60. Average pages by printer Z in 3 days: 210,160,218<br>(a) 196 (b) 194 (c) 192 (d) 190`,o:["196","194","192","190"],a:0,s:"Quant",exp:`<b>Answer: 196</b><br>(210+160+218)/3=196`},
+{q:`61. Avg 27 innings=47. Highest-lowest=157. Excluding 2, avg 25=42. Highest?<br>(a) 176 (b) 188 (c) 186 (d) 174`,o:["176","188","186","174"],a:1,s:"Quant",exp:`<b>Answer: 188</b>`},
+{q:`62. P=15d, Q=10d. Together 2d then Q leaves. Total time?<br>(a) 11 (b) 12 (c) 13 (d) 10`,o:["11","12","13","10"],a:1,s:"Quant",exp:`<b>Answer: 12</b>`},
+{q:`63. Pie chart: B27%,C18%,F7%,H14%. % less than total?<br>(a) 46% (b) 22% (c) 34% (d) 14%`,o:["46 percent","22 percent","34 percent","14 percent"],a:2,s:"Quant",exp:`<b>Answer: 34 percent</b><br>100-66=34`},
+{q:`64. x²-5x+1=0. Find (x⁶+x⁴+x²+1)/5x³<br>(a) 30 (b) 25 (c) 23 (d) 28`,o:["30","25","23","28"],a:2,s:"Quant",exp:`<b>Answer: 23</b>`},
+{q:`65. Right ΔPQR, PR=17,QR=8,PQ=15. sinα+cosα?<br>(a) 18/17 (b) 23/17 (c) 21/17 (d) 15/17`,o:["18/17","23/17","21/17","15/17"],a:1,s:"Quant",exp:`<b>Answer: 23/17</b><br>8/17+15/17=23/17`},
+{q:`66. (17³+7³)/24 = (17+7)²-k. Find k<br>(a) 119 (b) 128 (c) 24 (d) 109`,o:["119","128","24","109"],a:0,s:"Quant",exp:`<b>Answer: 119</b>`},
+{q:`67. Circumference 198, 352. Difference in radii?<br>(a) 45 (b) 16.5 (c) 49.5 (d) 24.5`,o:["45 cm","16.5 cm","49.5 cm","24.5 cm"],a:3,s:"Quant",exp:`<b>Answer: 24.5 cm</b>`},
+{q:`68. Radius 10cm, central angle 60°. Chord length?<br>(a) 40 (b) 20 (c) 30 (d) 10`,o:["40 cm","20 cm","30 cm","10 cm"],a:3,s:"Quant",exp:`<b>Answer: 10 cm</b><br>Equilateral triangle`},
+{q:`69. Lead shots d=8.4cm from 88×63×42 solid?<br>(a) 920 (b) 750 (c) 650 (d) 860`,o:["920","750","650","860"],a:1,s:"Quant",exp:`<b>Answer: 750</b>`},
+{q:`70. Ratio P:R = 100:150<br>(a) 3:2 (b) 2:3 (c) 14:1 (d) 1:3`,o:["3 : 2","2 : 3","14 : 1","1 : 3"],a:1,s:"Quant",exp:`<b>Answer: 2 : 3</b>`},
+{q:`71. ΔABC, AB=12, AC=10, ∠A=60°. BC=?<br>(a) 10 (b) 7.13 (c) 13.20 (d) 11.13`,o:["10 cm","7.13 cm","13.20 cm","11.13 cm"],a:3,s:"Quant",exp:`<b>Answer: 11.13 cm</b><br>Cosine rule`},
+{q:`72. tan²θ+cot²θ-sec²θcosec²θ=?<br>(a) 2 (b) -2 (c) 0 (d) 1/2`,o:["2","-2","0","1/2"],a:1,s:"Quant",exp:`<b>Answer: -2</b>`},
+{q:`73. Bar graph ratio: Branch1 total : Branch4 total<br>(a) 4:3 (b) 5:9 (c) 8:11 (d) 37:36`,o:["4 : 3","5 : 9","8 : 11","37 : 36"],a:3,s:"Quant",exp:`<b>Answer: 37 : 36</b>`},
+{q:`74. [4(17³-7³)]/40 = (17+7)^p. Find p<br>(a) -119 (b) -129 (c) 119 (d) 129`,o:["-119","-129","119","129"],a:2,s:"Quant",exp:`<b>Answer: 119</b>`},
+{q:`75. 30% vs 25%+5% on ₹3840. Difference?<br>(a) ₹44 (b) ₹48 (c) ₹42 (d) ₹46`,o:["₹44","₹48","₹42","₹46"],a:1,s:"Quant",exp:`<b>Answer: ₹48</b>`},
+{q:`<div class="section-head">ENGLISH COMPREHENSION 76-100</div>76. Arrange sentences: A.When water vapour condenses... B.The atmosphere can store... C.More water evaporates... D.One of the most obvious...<br>(a) CBDA (b) DCBA (c) ACDB (d) BCAD`,o:["CBDA","DCBA","ACDB","BCAD"],a:1,s:"English",exp:`<b>Explanation:</b><br>D-C-B-A is correct sequence<br><b>Answer: DCBA</b>`},
+{q:`77. Indirect speech: She said, "I am in no mood to work now."<br>(a) she has been...then (b) she was...now (c) she was...then (d) she has been...now`,o:["She said that she has been in no mood to work then.","She said that she was is no mood to work now.","She said that she was in no mood to work then.","She said that she has been in no mood to work now."],a:2,s:"English",exp:`<b>Explanation:</b><br>Present → Past, Now → Then<br><b>Answer: She said that she was in no mood to work then.</b>`},
+{q:`78. Passive voice: Manu will tell her later.<br>(a) She will be tell later by Manu (b) She will tell later by Manu (c) She will be told later by Manu (d) She will be tell later`,o:["She will be tell later by Manu.","She will tell later by Manu.","She will be told later by Manu.","She will be tell later."],a:2,s:"English",exp:`<b>Explanation:</b><br>Future Simple Passive: will be + V3<br><b>Answer: She will be told later by Manu.</b>`},
+{q:`79. Active voice: Has the villa been occupied by them?<br>(a) Did they occupied (b) Had they occupied (c) Have they occupied (d) Do they occupied`,o:["Did they occupied the villa?","Had they occupied the villa?","Have they occupied the villa?","Do they occupied the villa?"],a:2,s:"English",exp:`<b>Explanation:</b><br>Present Perfect Active<br><b>Answer: Have they occupied the villa?</b>`},
+{q:`80. Spelling: The erroneous information spread...<br>(a) erronous (b) No error (c) eronneous (d) errauneous`,o:["erronous","No error","eronneous","errauneous"],a:1,s:"English",exp:`<b>Explanation:</b><br>Spelling is correct: erroneous<br><b>Answer: No error</b>`},
+{q:`81. Antonym of SINKS: Groups work together to create Christmas parade themes, which are then carried out in floats...<br>(a) Floats (b) Create (c) Parade (d) Strolling`,o:["Floats","Create","Parade","Strolling"],a:0,s:"English",exp:`<b>Explanation:</b><br>Sink opposite = Float<br><b>Answer: Floats</b>`},
+{q:`82. The angles are equal, consequently the sides are ________.<br>(a) equal (b) unequal (c) larger (d) smaller`,o:["equal","unequal","larger","smaller"],a:0,s:"English",exp:`<b>Explanation:</b><br>Equal angles → Equal sides<br><b>Answer: equal</b>`},
+{q:`83. Idiom: Like a cakewalk<br>(a) Smooth surface (b) Pleasant experience (c) Easy task (d) Active`,o:["Smooth surface","Pleasant experience","Easy task","Active"],a:2,s:"English",exp:`<b>Explanation:</b><br>Cakewalk = Easy task<br><b>Answer: Easy task</b>`},
+{q:`84. After finishing high school, I plan to pursuing law.<br>(a) No substitution (b) plan to pursue (c) plan in pursue (d) plan to pursuing`,o:["No substitution","plan to pursue","plan in pursue","plan to pursuing"],a:1,s:"English",exp:`<b>Explanation:</b><br>plan to + V1<br><b>Answer: plan to pursue</b>`},
+{q:`85. Synonym of Confusion<br>(a) Intrepidity (b) Stagnation (c) Perusal (d) Commotion`,o:["Intrepidity","Stagnation","Perusal","Commotion"],a:3,s:"English",exp:`<b>Explanation:</b><br>Commotion = confusion<br><b>Answer: Commotion</b>`},
+{q:`86. Our guests arrived; they are sitting in the garden.<br>(a) shall arrive (b) have arrived (c) are arriving (d) might arrive`,o:["shall arrive","have arrived","are arriving","might arrive"],a:1,s:"English",exp:`<b>Explanation:</b><br>Present perfect for recent action<br><b>Answer: have arrived</b>`},
+{q:`87. During an earthquake, it is advised to take cover above a table...<br>(a) cover above a table (b) During an earthquake (c) it is advised to take (d) to save your life`,o:["cover above a table","During an earthquake,","it is advised to take","to save your life."],a:0,s:"English",exp:`<b>Explanation:</b><br>'above' → 'under' a table<br><b>Answer: cover above a table</b>`},
+{q:`88. INCORRECTLY spelt word<br>(a) Finery (b) Hiest (c) Cringe (d) Defer`,o:["Finery","Hiest","Cringe","Defer"],a:1,s:"English",exp:`<b>Explanation:</b><br>Correct: Heist<br><b>Answer: Hiest</b>`},
+{q:`89. Idiom: All eyes<br>(a) Watching with anger (b) Watching eagerly (c) Watching with no interest (d) Not watching at all`,o:["Watching with anger","Watching eagerly","Watching with no interest","Not watching at all"],a:1,s:"English",exp:`<b>Explanation:</b><br>All eyes = watching eagerly<br><b>Answer: Watching eagerly</b>`},
+{q:`90. He was looking into his book for the last two hours...<br>(a) looking down on (b) looking above (c) looking for (d) looking after`,o:["looking down on his book","looking above his book","looking for his book","looking after his book"],a:2,s:"English",exp:`<b>Explanation:</b><br>looking for = searching<br><b>Answer: looking for his book</b>`},
+{q:`91. Ram was praised for his ______ leadership.<br>(a) imaginary (b) visionary (c) magical (d) broad`,o:["imaginary","visionary","magical","broad"],a:1,s:"English",exp:`<b>Explanation:</b><br>Visionary leadership<br><b>Answer: visionary</b>`},
+{q:`92. Pintu has been advised to reduce smoking...<br>(a) cut down (b) less down (c) lower down (d) up down`,o:["cut down","less down","lower down","up down"],a:0,s:"English",exp:`<b>Explanation:</b><br>cut down = reduce<br><b>Answer: cut down</b>`},
+{q:`93. Antonym of Rebellion<br>(a) Uprising (b) Loyalty (c) Sedition (d) Allotment`,o:["Uprising","Loyalty","Sedition","Allotment"],a:1,s:"English",exp:`<b>Explanation:</b><br>Rebellion opposite = Loyalty<br><b>Answer: Loyalty</b>`},
+{q:`94. Antonym of Hospitality<br>(a) Complaint (b) Cordiality (c) Coldness (d) Wrathful`,o:["Complaint","Cordiality","Coldness","Wrathful"],a:2,s:"English",exp:`<b>Explanation:</b><br>Hospitality opposite = Coldness<br><b>Answer: Coldness</b>`},
+{q:`95. Sentence with adverb of manner<br>(a) He done his work regularly (b) He has just done his work (c) He does his work carefully (d) He has done his work on my table`,o:["He done his work regularly.","He has just done his work.","He does his work carefully.","He has done his work on my table."],a:2,s:"English",exp:`<b>Explanation:</b><br>carefully = adverb of manner<br><b>Answer: He does his work carefully.</b>`},
+{q:`96. Digital India can be the prime (1) _______ behind making...<br>(a) impact (b) might (c) factors (d) force`,o:["impact","might","factors","force"],a:3,s:"English",exp:`<b>Explanation:</b><br>prime force<br><b>Answer: force</b>`},
+{q:`97. Technology to be firmly (2) _______ into government...<br>(a) inserted (b) embedded (c) planted (d) stuck`,o:["inserted","embedded","planted","stuck"],a:1,s:"English",exp:`<b>Explanation:</b><br>embedded into<br><b>Answer: embedded</b>`},
+{q:`98. Embedding technology into government (3) _______<br>(a) offices (b) details (c) processes (d) hierarchies`,o:["offices","details","processes","hierarchies"],a:2,s:"English",exp:`<b>Explanation:</b><br>government processes<br><b>Answer: processes</b>`},
+{q:`99. ...those at the bottom of the (4) _______ pyramid<br>(a) mythical (b) proverbial (c) hypothetical (d) classified`,o:["mythical","proverbial","hypothetical","classified"],a:1,s:"English",exp:`<b>Explanation:</b><br>proverbial pyramid<br><b>Answer: proverbial</b>`},
+{q:`100. Large-scale (5) _______ of technology...<br>(a) enhancement (b) anticipation (c) adaptation (d) monitoring`,o:["enhancement","anticipation","adaptation","monitoring"],a:2,s:"English",exp:`<b>Explanation:</b><br>adaptation of technology<br><b>Answer: adaptation</b>`}
+];
+/* ========== SECTION 4: ENGLISH 76-100 ========== */
+{q:`<div class="section-head">ENGLISH COMPREHENSION 76-100</div>76. Arrange: A.Water vapour condenses. B.Atmosphere stores 4% more. C.More evaporation. D.Heavier rainfall<br>(a) CBDA (b) DCBA (c) ACDB (d) BCAD`,o:["CBDA","DCBA","ACDB","BCAD"],a:1,s:"English",exp:`<b>Answer: DCBA</b>`},
+{q:`77. Indirect: She said, "I am in no mood to work now."<br>(a) has been...then (b) was...now (c)
+function init(){
+  makePanel();
+  loadQ();
+  startTimer();
+}
+
+function makePanel(){
+  let html = '';
+  for(let i = 0; i < questions.length; i++){
+    html += `<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`;
+  }
+  document.getElementById('qPanel').innerHTML = html;
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText = `Question ${current+1} / ${questions.length} | ${questions[current].s}`;
+  document.getElementById('question').innerHTML = questions[current].q;
+  
+  let optHtml = '';
+  questions[current].o.forEach((opt, i) => {
+    let checked = answers[current] === i ? 'checked' : '';
+    optHtml += `<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML = optHtml;
+  updatePanel();
+}
+
+function saveAns(){
+  let selected = document.querySelector('input[name="opt"]:checked');
+  if(selected){
+    answers[current] = parseInt(selected.value);
+  }
+  updatePanel();
+}
+
+function markReview(){
+  marked[current] = !marked[current];
+  updatePanel();
+}
+
+function nextQ(){
+  if(current < questions.length - 1){
+    current++;
+    loadQ();
+  }
+}
+
+function goQ(i){
+  current = i;
+  loadQ();
+}
+
+function updatePanel(){
+  for(let i = 0; i < questions.length; i++){
+    let btn = document.getElementById('btn' + i);
+    btn.className = 'q-btn';
+    if(i === current) btn.classList.add('current');
+    if(marked[i]) btn.classList.add('review');
+    else if(answers[i] !== null) btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  }
+}
+
+function startTimer(){
+  timer = setInterval(() => {
+    time--;
+    let m = Math.floor(time / 60), s = time % 60;
+    document.getElementById('timer').innerText = `Time Left: ${m}:${s < 10 ? '0' : ''}${s}`;
+    if(time <= 0) {
+      clearInterval(timer);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function submitTest(){
+  clearInterval(timer);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  
+  let score = 0, correct = 0, wrong = 0, unattempted = 0;
+  let secScore = {GK: 0, Quant: 0, Reasoning: 0, English: 0};
+  let solHTML = '';
+  
+  questions.forEach((q, i) => {
+    if(answers[i] === null){
+      unattempted++;
+      solHTML += `<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[q.a]}</div>`;
+    } else if(answers[i] === q.a){
+      score += 2;
+      correct++;
+      secScore[q.s] += 2;
+      solHTML += `<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[answers[i]]} ✔️ | Correct: ${q.o[q.a]}</div>`;
+    } else {
+      score -= 0.5;
+      wrong++;
+      secScore[q.s] -= 0.5;
+      solHTML += `<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[answers[i]]} ❌ | Correct: ${q.o[q.a]}</div>`;
+    }
+  });
+  
+  let percentage = ((score / 200) * 100).toFixed(2);
+  document.getElementById('finalScore').innerText = `${score}/200`;
+  document.getElementById('analysis').innerHTML = `Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML = `GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML = solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+init();
+</script>
+</body>
+</html>
