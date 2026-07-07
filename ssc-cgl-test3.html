@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC-cgl-test3</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>SSC CGL Mock Test 03</h2>
+<div class="timer" id="timer">Time Left: 60:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/200</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+const questions = [
+/* ========== SECTION 1: GENERAL INTELLIGENCE AND REASONING 1-25 ========== */
+{q:`1. What will come in place of the question mark (?) in the following equation, if '+' and '–' are interchanged and '×' and '÷' are interchanged? 4515 × 5 – 431 ÷ 3 + 821 =?<br>(a) 1335 (b) 1775 (c) 1575 (d) 1375`,o:["1335","1775","1575","1375"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>After interchanging: 4515 ÷ 5 + 431 × 3 – 821<br>= 903 + 1293 – 821 = 2196 – 821 = 1375<br><b>Answer: 1375</b>`},
+{q:`2. 31 is related to 152 by certain logic. Following the same logic, 47 is related to 168. To which of the following is 66 related, following the same logic? (NOTE: Operations should be performed on the whole numbers)<br>(a) 180 (b) 187 (c) 185 (d) 190`,o:["180","187","185","190"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: n + 11² = n + 121<br>31 + 121 = 152<br>47 + 121 = 168<br>66 + 121 = 187<br><b>Answer: 187</b>`},
+{q:`3. Six letters Q, Z, V, T, L and A are written on different faces of a dice. Two positions of this dice are shown. Find the letter on the face opposite to Q.<br>(a) Z (b) T (c) V (d) A`,o:["Z","T","V","A"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>From dice positions: Opposite pairs are Z-V, Q-T, V-L<br><b>Answer: T</b>`},
+{q:`4. In the following number-pairs, the second number is obtained by applying certain mathematical operations to the first number. Which pair follows the same logic?<br>(a) 335-119 (b) 358-152 (c) 317-101 (d) 308-92`,o:["335-119","358-152","317-101","308-92"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: a - b = 216<br>335-119=216, 317-101=216, 308-92=216<br>But 358-152=206<br><b>Answer: 358-152</b>`},
+{q:`5. MEK : NVP :: GYT : TBG :: JWH :?<br>(a) QDS (b) PCR (c) QDT (d) PCS`,o:["QDS","PCR","QDT","PCS"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: Opposite letters<br>M-E-K → N-V-P<br>G-Y-T → T-B-G<br>J-W-H → Q-D-S<br><b>Answer: QDS</b>`},
+{q:`6. Three statements are given followed by three conclusions. Statements: No card is a parcel. All cards are envelopes. Some envelopes are bags.<br>Conclusions: I. All envelopes can never be parcels. II. No card is a bag. III. At least some bags are postcards.<br>(a) Only I follows (b) Only II follows (c) Only I and III follow (d) Only II and III follow`,o:["Only I follows","Only II follows","Only I and III follow","Only II and III follow"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Only Conclusion I follows from the Venn diagram.<br><b>Answer: Only I follows</b>`},
+{q:`7. Select the correct mirror image of the given figure when the mirror is placed at MN<br>(a) b c F g I (b) I c b (c) I g (d) I g`,o:["b c F g I","I c b","I g","I g"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Mirror image will be lateral inversion.<br><b>Answer: b c F g I</b>`},
+{q:`8. Which of the four options will replace the question mark (?) in the series? UE 88, VG 84, WI 80, XK76,?<br>(a) ZM72 (b) ZN71 (c) YN73 (d) YM72`,o:["ZM72","ZN71","YN73","YM72"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>U+1=V+1=W+1=X+1=Y<br>E+2=G+2=I+2=K+2=M<br>88-4=84-4=80-4=76-4=72<br><b>Answer: YM72</b>`},
+{q:`9. Six numbers 21, 22, 23, 24, 25 and 26 are written on different faces of a dice. Three positions of this dice are shown. Find the number on the face opposite to 24.<br>(a) 26 (b) 25 (c) 22 (d) 21`,o:["26","25","22","21"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>25 and 22 are common. So 24 is opposite to 21.<br><b>Answer: 21</b>`},
+{q:`10. In a certain code language, 'what where how' is written as 'aa dd ff'; 'where there that' is written as 'dd zz pp' and 'which what here' is written as 'ff kk ll'. How is 'how' written in that language?<br>(a) aa (b) kk (c) zz (d) ff`,o:["aa","kk","zz","ff"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>what=ff, where=dd, so how=aa<br><b>Answer: aa</b>`},
+{q:`11. Three statements are given followed by three conclusions. Statements: Some tears are drops. Some drops are streams. All streams are rivers.<br>Conclusions: I. All tears can never be rivers. II. Some drops are rivers. III. All tears being streams is a possibility.<br>(a) Only conclusion I follows (b) Both II and III conclusion follow (c) Only conclusion III follows (d) Both I and II conclusion follow`,o:["Only conclusion I follows","Both II and III conclusion follow","Only conclusion III follows","Both I and II conclusion follow"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>From Venn diagram, II and III follow.<br><b>Answer: Both II and III conclusion follow</b>`},
+{q:`12. Which of the following terms will replace the question mark (?) in the given series? YZUW,?, QTQU, MQOT, INMS<br>(a) UWSV (b) UWVS (c) USWV (d) WUSV`,o:["UWSV","UWVS","USWV","WUSV"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Y-4=U, Z-3=W, U-2=S, W-1=V<br><b>Answer: UWSV</b>`},
+{q:`13. 19 is related to 209 following a certain logic. Following the same logic, 27 is related to 297. To which of the following is 61 related, following the same logic?<br>(a) 653 (b) 600 (c) 571 (d) 671`,o:["653","600","571","671"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: n × 11 = result<br>19×11=209, 27×11=297, 61×11=671<br><b>Answer: 671</b>`},
+{q:`14. Which of the following numbers will replace the question mark (?) in the given series? 1, 3, 10, 41,?, 1237<br>(a) 202 (b) 210 (c) 200 (d) 206`,o:["202","210","200","206"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>1×2+1=3, 3×3+1=10, 10×4+1=41, 41×5+1=206, 206×6+1=1237<br><b>Answer: 206</b>`},
+{q:`15. In a certain code language, 'A + B' means 'A is the mother of B', 'A – B' means 'A is the father of B'. Which of the following means A is the daughter of K?<br>(a) A + K / J – P = D (b) J % P = K + A = D (c) K + A / P – D % J (d) D + K = A / P – J`,o:["i","ii","iii","iv"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>K + A / P – D % J means K is mother of A, A is wife of P<br><b>Answer: iii</b>`},
+
+/* ========== SECTION 2: GENERAL AWARENESS 26-50 ========== */
+{q:`26. In which year was Project Tiger launched in India?<br>(a) 1973 (b) 1970 (c) 1972 (d) 1985`,o:["1973","1970","1972","1985"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Project Tiger was launched on 1st April 1973.<br><b>Answer: 1973</b>`},
+{q:`27. Lathmar Holi is primarily celebrated in the state of:<br>(a) Karnataka (b) Himachal Pradesh (c) Arunachal Pradesh (d) Uttar Pradesh`,o:["Karnataka","Himachal Pradesh","Arunachal Pradesh","Uttar Pradesh"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Lathmar Holi is celebrated in Barsana and Nandgaon, UP.<br><b>Answer: Uttar Pradesh</b>`},
+{q:`28. Which of the following awards was won by Lata Mangeshkar in the year 2001?<br>(a) Dadasaheb Phalke Award (b) Padma Vibhushan (c) Bharat Ratna (d) Filmfare Lifetime Achievement Award`,o:["Dadasaheb Phalke Award","Padma Vibhushan","Bharat Ratna","Filmfare Lifetime Achievement Award"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Lata Mangeshkar received Bharat Ratna in 2001.<br><b>Answer: Bharat Ratna</b>`},
+{q:`29. Details about Sudarshana lake is given in a rock inscription at Girnar, which was composed to record the achievements of the Shaka ruler ______.<br>(a) Chashtana (b) Rudradaman I (c) Rudrasimha III (d) Maues`,o:["Chashtana","Rudradaman I","Rudrasimha III","Maues"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Junagarh Rock Inscription records achievements of Rudradaman I.<br><b>Answer: Rudradaman I</b>`},
+{q:`30. ______ is an industry association and self-regulatory organisation whose primary objective is to work towards the robust development of the microfinance sector.<br>(a) NABARD (b) Self-help Group Association (c) Microfinance and Investments Regulatory Authority (d) Microfinance Institutions Network`,o:["NABARD","Self-help Group Association","Microfinance and Investments Regulatory Authority","Microfinance Institutions Network"],a:3,s:"GK",exp:`<b>Explanation:</b><br>MFIN = Microfinance Institutions Network<br><b>Answer: Microfinance Institutions Network</b>`},
+
+/* ========== SECTION 3: QUANTITATIVE APTITUDE 51-75 ========== */
+{q:`51. A grocer professes to sell rice at the cost price, but uses a fake weight of 870 g for 1 kg. Find his profit percentage.<br>(a) 11.11% (b) 14.94% (c) 15.11% (d) 18.21%`,o:["11.11%","14.94%","15.11%","18.21%"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Profit% = (130/870)×100 = 14.94%<br><b>Answer: 14.94%</b>`},
+{q:`52. The value of cos²29° + cos²61° is:<br>(a) 3/2 (b) 2 (c) 0 (d) 1`,o:["3/2","2","0","1"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>cos²29 + cos²61 = cos²29 + sin²29 = 1<br><b>Answer: 1</b>`},
+{q:`53. In a circular race of 840 m, A and B start running in the same direction at the same time from the same point at the speeds of 6 m/s and 12 m/s, respectively. After how much time will they meet next?<br>(a) 140 s (b) 40 s (c) 70 s (d) 20 s`,o:["140 s","40 s","70 s","20 s"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Relative speed = 6 m/s. Time = 840/6 = 140s<br><b>Answer: 140 s</b>`},
+{q:`54. Let O be the centre of the circle and AB and CD are two parallel chords. AB = 10 cm, CD = 24 cm and PQ = 7 cm. Then the diameter of the circle is:<br>(a) 24 (b) 13 (c) 12 (d) 26`,o:["24","13","12","26"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Using Pythagoras, radius = 13 cm. Diameter = 26 cm<br><b>Answer: 26</b>`},
+{q:`55. Which of the following statements is sufficient to conclude that two triangles are congruent?<br>(a) One side and one angle equal (b) Two equal sides and same perimeter (c) Same area and same base (d) Same base and same height`,o:["One side and one angle equal","Two equal sides and same perimeter","Same area and same base","Same base and same height"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>SSS congruency rule<br><b>Answer: Two equal sides and same perimeter</b>`},
+
+/* ========== SECTION 4: ENGLISH COMPREHENSION 76-100 ========== */
+{q:`76. Select the most appropriate synonym of the given word. Fatal<br>(a) Additional (b) Easy (c) Deadly (d) Jovial`,o:["Additional","Easy","Deadly","Jovial"],a:2,s:"English",exp:`<b>Explanation:</b><br>Fatal means causing death = Deadly<br><b>Answer: Deadly</b>`},
+{q:`77. Select the option that expresses the given sentence in active voice. Lovely tunes are composed by Domnica.<br>(a) Domnica composes tunes lovely. (b) Domnica will compose lovely tunes. (c) Domnica composes lovely tunes. (d) Domnica composed lovely tunes.`,o:["Domnica composes tunes lovely.","Domnica will compose lovely tunes.","Domnica composes lovely tunes.","Domnica composed lovely tunes."],a:2,s:"English",exp:`<b>Explanation:</b><br>Active voice: Subject + Verb + Object<br><b>Answer: Domnica composes lovely tunes.</b>`},
+{q:`78. Select the option that expresses the opposite meaning of the underlined word. The explosive used is of my own formulation, and I can vouch for its efficiency.<br>(a) Invalidate (b) Maintain (c) Witness (d) Certify`,o:["Invalidate","Maintain","Witness","Certify"],a:0,s:"English",exp:`<b>Explanation:</b><br>Vouch = confirm. Opposite = Invalidate<br><b>Answer: Invalidate</b>`},
+{q:`79. The following sentence has been divided into four segments. Identify the segment that contains an error. Mr. Abhilash and his family / have received / no informations / about the incident.<br>(a) about the incident. (b) Mr. Abhilash and his family (c) have received (d) no informations`,o:["about the incident.","Mr. Abhilash and his family","have received","no informations"],a:3,s:"English",exp:`<b>Explanation:</b><br>'Information' is uncountable. No 's'<br><b>Answer: no informations</b>`},
+{q:`80. Select the most appropriate synonym of the given word. Toxic<br>(a) Lethal (b) Licit (c) Laudatory (d) Lanky`,o:["Lethal","Licit","Laudatory","Lanky"],a:0,s:"English",exp:`<b>Explanation:</b><br>Toxic = poisonous = Lethal<br><b>Answer: Lethal</b>`}
+{q:`81. Select the word which means the same as the group of words given. Unit of weight for precious stones<br>(a) Pure (b) Accurate (c) Reliable (d) Carat`,o:["Pure","Accurate","Reliable","Carat"],a:3,s:"English",exp:`<b>Explanation:</b><br>Carat is the unit of weight for diamonds and precious stones.<br><b>Answer: Carat</b>`},
+{q:`82. Select the option that can be used as a one-word substitute for the underlined group of words. She is proficient in speaking many languages.<br>(a) Heterolinguistic (b) Bilingual (c) Multilingual (d) Monolithic`,o:["Heterolinguistic","Bilingual","Multilingual","Monolithic"],a:2,s:"English",exp:`<b>Explanation:</b><br>Multilingual = one who knows many languages.<br><b>Answer: Multilingual</b>`},
+{q:`83. Select the option that expresses the given sentence in passive voice. Ishika saw the tiger in the forest.<br>(a) The tiger saw by Ishika in the forest. (b) The tiger sees Ishika in the forest. (c) The tiger was seen by Ishika in the forest. (d) The tiger was seen by the forest in Ishika.`,o:["The tiger saw by Ishika in the forest.","The tiger sees Ishika in the forest.","The tiger was seen by Ishika in the forest.","The tiger was seen by the forest in Ishika."],a:2,s:"English",exp:`<b>Explanation:</b><br>Active: S + V2 + O → Passive: O + was/were + V3 + by + S<br><b>Answer: The tiger was seen by Ishika in the forest.</b>`},
+{q:`84. Select the option that can be used as a one-word substitute for the given group of words. A person who likes to argue about anything<br>(a) Veracious (b) Reticent (c) Contentious (d) Coward`,o:["Veracious","Reticent","Contentious","Coward"],a:2,s:"English",exp:`<b>Explanation:</b><br>Contentious = argumentative person.<br><b>Answer: Contentious</b>`},
+{q:`85. Select the most appropriate option that can substitute the underlined segment in the given sentence. ‘Spy Family’ is a graphic novel that is a narrative work in which the story is conveyed to the reader using uninterrupted art in a traditional comics format.<br>(a) sedimental art (b) longitudinal art (c) existential art (d) sequential art`,o:["sedimental art in a traditional","longitudinal art in a traditional","existential art in a traditional","sequential art in a traditional"],a:3,s:"English",exp:`<b>Explanation:</b><br>Sequential art = storytelling through images in sequence.<br><b>Answer: sequential art in a traditional</b>`},
+{q:`86. The following sentence has been split into four segments. Identify the segment that contains a grammatical error. My brother performed/extremely good/in the class test/held yesterday.<br>(a) held yesterday (b) extremely good (c) in the class test (d) My brother performed`,o:["held yesterday","extremely good","in the class test","My brother performed"],a:1,s:"English",exp:`<b>Explanation:</b><br>'good' is adjective. Here adverb 'well' should be used. 'extremely well'<br><b>Answer: extremely good</b>`},
+{q:`87. Select the INCORRECTLY spelt word.<br>(a) Bureaucracy (b) Embarrass (c) Connoisseur (d) Relevent`,o:["Bureaucracy","Embarrass","Connoisseur","Relevent"],a:3,s:"English",exp:`<b>Explanation:</b><br>Correct spelling is 'Relevant'<br><b>Answer: Relevent</b>`},
+{q:`88. Select the most appropriate synonym to replace the underlined word in the given sentence. No altruistic act is truly sincere.<br>(a) phenomenal (b) phonotypical (c) philanthropic (d) phantasmal`,o:["phenomenal","phonotypical","philanthropic","phantasmal"],a:2,s:"English",exp:`<b>Explanation:</b><br>Altruistic = Philanthropic = selfless, caring for others.<br><b>Answer: philanthropic</b>`},
+{q:`89. Select the most appropriate synonym of the given word. Innuendo<br>(a) Crude (b) Prose (c) Ragged (d) Insinuation`,o:["Crude","Prose","Ragged","Insinuation"],a:3,s:"English",exp:`<b>Explanation:</b><br>Innuendo = indirect hint = Insinuation<br><b>Answer: Insinuation</b>`},
+{q:`90. Select the most appropriate option to fill in the blank. Vinod had a ________ escape in the car accident.<br>(a) comfortable (b) full (c) narrow (d) wide`,o:["comfortable","full","narrow","wide"],a:2,s:"English",exp:`<b>Explanation:</b><br>Narrow escape = baal-baal bacha<br><b>Answer: narrow</b>`},
+{q:`91. Select the option that can be used as a one-word substitute for the given phrase. A short interesting story about a real person or event<br>(a) Anecdote (b) Sketch (c) Poem (d) Narrative`,o:["Anecdote","Sketch","Poem","Narrative"],a:0,s:"English",exp:`<b>Explanation:</b><br>Anecdote = choti kahaani<br><b>Answer: Anecdote</b>`},
+{q:`92. Select the most appropriate synonym of the word in bold. We’d better watch our step and not give him any excuse to harass us further.<br>(a) betray (b) intimidate (c) relish (d) soothe`,o:["betray","intimidate","relish","soothe"],a:1,s:"English",exp:`<b>Explanation:</b><br>Harass = intimidate = pareshan karna, dhamkana<br><b>Answer: intimidate</b>`},
+{q:`93. Select the most appropriate meaning of the given idiom. To have bigger fish to fry<br>(a) To have bigger things to take care of than the menial task at hand (b) To take calculated risks (c) To know different kinds of fishing techniques (d) To have an interest in cooking`,o:["To have bigger things to take care of than the menial task at hand","To take calculated risks","To know different kinds of fishing techniques","To have an interest in cooking"],a:0,s:"English",exp:`<b>Explanation:</b><br>Idiom means having more important work to do.<br><b>Answer: To have bigger things to take care of than the menial task at hand</b>`},
+{q:`94. In the following sentence, four words are underlined out of which one word is misspelt. Identify the INCORRECTLY spelt word. After the recapture (A) of Tololing and the adjacent features, evacting (B) the enemy from this well-fortified (C) position became a priority.(D)<br>(a) A (b) B (c) C (d) D`,o:["A","B","C","D"],a:1,s:"English",exp:`<b>Explanation:</b><br>Correct spelling: Evacuating<br><b>Answer: B</b>`},
+{q:`95. Select the most appropriate option to substitute the underlined segment in the given sentence. She has been studying for two o’clock.<br>(a) study from two o’clock (b) studying since two o’clock (c) studying two o’clock (d) study for two o’clock`,o:["study from two o’clock","studying since two o’clock","studying two o’clock","study for two o’clock"],a:1,s:"English",exp:`<b>Explanation:</b><br>For point of time 'since' is used with Perfect Continuous Tense.<br><b>Answer: studying since two o’clock</b>`},
+
+/* ========== PASSAGE Q96-Q100 ========== */
+{q:`96. There is a saying that coming events cast their shadows before. __________, it is not universally true. <br>(a) Therefore (b) Furthermore (c) Moreover (d) However`,o:["Therefore","Furthermore","Moreover","However"],a:3,s:"English",exp:`<b>Explanation:</b><br>Contrast is shown. So 'However' is correct.<br><b>Answer: However</b>`},
+{q:`97. Something can happen within a second, and one may not __________ it. <br>(a) rescind (b) foresee (c) legalise (d) affect`,o:["rescind","foresee","legalise","affect"],a:1,s:"English",exp:`<b>Explanation:</b><br>Foresee = pehle se bhap lena<br><b>Answer: foresee</b>`},
+{q:`98. ___________, some instances show that predictions based on certain signs have gone wrong. <br>(a) Therefore (b) Moreover (c) However (d) Nevertheless`,o:["Therefore","Moreover","However","Nevertheless"],a:3,s:"English",exp:`<b>Explanation:</b><br>Nevertheless = phir bhi, is context me sahi hai.<br><b>Answer: Nevertheless</b>`},
+{q:`99. ___________, some unnatural calamities that are likely to appear may forecast their shadows by some bad omens. <br>(a) Therefore (b) Secondly (c) Besides (d) Despite`,o:["Therefore","Secondly","Besides","Despite"],a:0,s:"English",exp:`<b>Explanation:</b><br>Conclusion ke liye 'Therefore' use hota hai.<br><b>Answer: Therefore</b>`},
+{q:`100. ___________, we should not completely cancel out the possibilities that animals can sense certain unnatural happenings. <br>(a) Therefore (b) However (c) Nevertheless (d) Moreover`,o:["Therefore","However","Nevertheless","Moreover"],a:2,s:"English",exp:`<b>Explanation:</b><br>Nevertheless = phir bhi, despite everything.<br><b>Answer: Nevertheless</b>`}
+];
+
+function init(){makePanel();loadQ();startTimer();}
+function makePanel(){let html='';for(let i=0;i<questions.length;i++){html+=`<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`}document.getElementById('qPanel').innerHTML=html}
+function loadQ(){document.getElementById('qNum').innerText=`Question ${current+1} / ${questions.length} | ${questions[current].s}`;document.getElementById('question').innerHTML=questions[current].q;let optHtml='';questions[current].o.forEach((opt,i)=>{let checked=answers[current]===i?'checked':'';optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`});document.getElementById('options').innerHTML=optHtml;updatePanel()}
+function saveAns(){answers[current]=parseInt(document.querySelector('input[name="opt"]:checked').value)}
+function markReview(){marked[current]=true;updatePanel()}
+function nextQ(){if(current<questions.length-1){current++;loadQ()}}
+function goQ(i){current=i;loadQ()}
+function updatePanel(){for(let i=0;i<questions.length;i++){let btn=document.getElementById('btn'+i);btn.className='q-btn';if(answers[i]!==null)btn.classList.add('answered');if(marked[i])btn.classList.add('review');if(i===current)btn.classList.add('current')}}
+function startTimer(){timer=setInterval(()=>{time--;let m=Math.floor(time/60),s=time%60;document.getElementById('timer').innerText=`Time Left: ${m}:${s<10?'0':''}${s}`;if(time<=0)submitTest()},1000)}
+function submitTest(){clearInterval(timer);document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');let score=0;questions.forEach((q,i)=>{if(answers[i]===q.a)score+=2});document.getElementById('finalScore').innerText=`${score}/200`;let attempted=answers.filter(x=>x!==null).length;document.getElementById('analysis').innerText=`Attempted: ${attempted} | Correct: ${score/2} | Wrong: ${attempted-(score/2)}`;showSolution()}
+function showSolution(){let html='';questions.forEach((q,i)=>{let cls=answers[i]===null?'not-att':answers[i]===q.a?'correct':'wrong';html+=`<div class="sol-que ${cls}"><b>Q${i+1}.</b> ${q.q}<br><b>Your Answer:</b> ${answers[i]===null?'Not Attempted':q.o[answers[i]]}<br><b>Correct Answer:</b> ${q.o[q.a]}<div class="explanation">${q.exp}</div></div>`});document.getElementById('solutionBox').innerHTML=html}
+function toggleSolution(){document.getElementById('solutionBox').classList.toggle('hide')}
+init();
+</script>
+</body>
+</html>
+let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
+let timeLeft = 60 * 60, timerInterval;
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
+
+const qPanel=document.getElementById('qPanel');
+for(let i=0;i<100;i++){
+  let btn=document.createElement('button');
+  btn.className='q-btn not-visited';
+  btn.innerText=i+1;
+  btn.onclick=()=>jumpQ(i);
+  qPanel.appendChild(btn);
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
+  document.getElementById('question').innerText=questions[current].q;
+  let optHtml='';
+  questions[current].o.forEach((opt,i)=>{
+    let checked=answers[current]===i?'checked':'';
+    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML=optHtml;
+  updatePanel();
+}
+
+function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
+function nextQ(){saveAns();if(current<99){current++;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
+function markReview(){review[current]=!review[current];updatePanel()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className='q-btn';
+    if(i===current)btn.classList.add('current');
+    if(review[i])btn.classList.add('review');
+    else if(answers[i]!==null)btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  });
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  if(!confirm("Submit test?"))return;
+  saveAns();
+  let score=0,correct=0,wrong=0,unattempted=0;
+  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
+  let solHTML='';
+
+  questions.forEach((q,i)=>{
+    let u=answers[i], c=q.a;
+    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=2;correct++;secScore[q.s]+=2; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.5;wrong++;secScore[q.s]-=0.5; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+  });
+
+  let percentage=((score/200)*100).toFixed(2);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText=`${score}/200`;
+  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML=solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+loadQ();
+startTimer();
+</script>
+</body>
+</html>
