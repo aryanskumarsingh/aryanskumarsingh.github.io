@@ -77,8 +77,6 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 </div>
 
 <script>
-let current=0, time=3600, timer, answers=Array(100).fill(null), marked=Array(100).fill(false);
-
 const questions = [
 /* ========== SECTION 1: GENERAL INTELLIGENCE AND REASONING 1-25 ========== */
 {q:`1. What will come in place of the question mark (?) in the following equation, if '+' and '–' are interchanged and '×' and '÷' are interchanged? 4515 × 5 – 431 ÷ 3 + 821 =?<br>(a) 1335 (b) 1775 (c) 1575 (d) 1375`,o:["1335","1775","1575","1375"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>After interchanging: 4515 ÷ 5 + 431 × 3 – 821<br>= 903 + 1293 – 821 = 2196 – 821 = 1375<br><b>Answer: 1375</b>`},
@@ -107,7 +105,6 @@ const questions = [
 {q:`24. Select the correct mirror image of the given figure when the mirror is placed at MN<br>(a) b c F g I (b) I c b (c) I g (d) I g`,o:["b c F g I","I c b","I g","I g"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Mirror image will be lateral inversion.<br><b>Answer: b c F g I</b>`},
 {q:`25. Which of the four options will replace the question mark (?) in the following series? UE 88, VG 84, WI 80, XK76,?<br>(a) ZM72 (b) ZN71 (c) YN73 (d) YM72`,o:["ZM72","ZN71","YN73","YM72"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>U+1=V+1=W+1=X+1=Y<br>E+2=G+2=I+2=K+2=M<br>88-4=84-4=80-4=76-4=72<br><b>Answer: YM72</b>`},
 {q:`26. In which year was Project Tiger launched in India?<br>(a) 1973 (b) 1970 (c) 1972 (d) 1985`,o:["1973","1970","1972","1985"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Project Tiger was launched on 1st April 1973.<br><b>Answer: 1973</b>`},
-
 
 /* ========== SECTION 2: GENERAL AWARENESS 26-50 ========== */
 {q:`26. In which year was Project Tiger launched in India?<br>(a) 1973 (b) 1970 (c) 1972 (d) 1985`,o:["1973","1970","1972","1985"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Project Tiger was launched on 1st April 1973.<br><b>Answer: 1973</b>`},
