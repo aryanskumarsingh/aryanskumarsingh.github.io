@@ -85,80 +85,6 @@ let time = 60 * 60;
 let timer = null;
 
 const questions = [
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC CGL TIER-I 2023 Shift-2 Mock Test 2</title>
-<style>
-*{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{margin:0;background:#f0f2f5;display:flex;height:100vh}
-.sidebar{width:320px;background:#fff;border-right:2px solid #ddd;padding:15px;overflow-y:auto}
-.main{flex:1;padding:20px;overflow-y:auto}
-.header{background:#0d47a1;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.timer{background:#fff;color:#d32f2f;padding:10px 18px;border-radius:6px;font-weight:bold;font-size:20px}
-.q-panel{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:15px}
-.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:5px;font-weight:600;font-size:12px}
-.q-btn.answered{background:#4caf50;color:white;border:none}
-.q-btn.review{background:#ff9800;color:white;border:none}
-.q-btn.current{border:3px solid #0d47a1}
-.question-box{background:white;padding:25px;border-radius:10px;margin-bottom:20px;box-shadow:0 3px 6px rgba(0,0,0,0.1)}
-.options label{display:block;padding:14px;margin:10px 0;border:2px solid #ddd;border-radius:6px;cursor:pointer;font-size:16px}
-.options label:hover{background:#e3f2fd;border-color:#0d47a1}
-.options input{margin-right:12px;transform:scale(1.2)}
-.btn{padding:12px 25px;border:none;border-radius:6px;cursor:pointer;font-size:16px;font-weight:600;margin:5px}
-.btn-next{background:#0d47a1;color:white}
-.btn-review{background:#ff9800;color:white}
-.btn-submit{background:#d32f2f;color:white}
-.hide{display:none}
-#result{background:white;padding:30px;border-radius:10px;text-align:center}
-.score{font-size:56px;color:#0d47a1;margin:15px;font-weight:bold}
-.solution-box{text-align:left;max-height:650px;overflow-y:auto;margin-top:25px}
-.sol-que{padding:18px;margin:12px 0;border-radius:8px;border-left:6px solid #ccc}
-.correct{background:#e8f5e9;border-color:#4caf50}
-.wrong{background:#ffebee;border-color:#d32f2f}
-.not-att{background:#f5f5f5;border-color:#9e9e9e}
-.explanation{background:#fff8e1;padding:14px;border-radius:6px;margin-top:12px;font-size:15px;line-height:1.7;border-left:3px solid #ff9800}
-.section-head{background:#0d47a1;color:white;padding:10px;border-radius:6px;margin:15px 0;text-align:center;font-weight:bold}
-</style>
-</head>
-<body>
-<div class="sidebar">
-<h3>📋 Question Panel 1-100</h3>
-<div class="q-panel" id="qPanel"></div>
-<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
-</div>
-
-<div class="main">
-<div class="header">
-<h2>SSC CGL TIER-I 2023 Shift-2 Mock Test 2</h2>
-<div class="timer" id="timer">Time Left: 60:00</div>
-</div>
-
-<div id="quizArea">
-<div class="question-box">
-<h3 id="qNum">Question 1</h3>
-<div id="question"></div>
-<div class="options" id="options"></div>
-</div>
-<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
-<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
-</div>
-
-<div id="result" class="hide">
-<h2>🎉 Test Submitted!</h2>
-<p class="score" id="finalScore">0/200</p>
-<p id="analysis"></p>
-<button class="btn btn-next" onclick="toggleSolution()">Check Answers + Explanation</button>
-<div id="solutionBox" class="solution-box hide"></div>
-</div>
-</div>
-
-<script>
-let current=0, time=3600, timer, answers=Array(100).fill(null), marked=Array(100).fill(false);
-
-const questions = [
 /* ========== SECTION 1: ENGLISH COMPREHENSION 1-25 ========== */
 {q:`<div class="section-head">ENGLISH COMPREHENSION</div>1. Select the most appropriate option that can substitute the underlined words in the given sentence. He did not stop until it was remarked that he was speaking at length about trivial things.<br>(a) twittering (b) writing (c) rambling (d) littering`,o:["twittering","writing","rambling","littering"],a:2,s:"English",exp:`<b>Explanation:</b><br>Rambling = talking at length about trivial things.<br><b>Answer: rambling</b>`},
 {q:`2. Select the nearest homonym of the given word. Accept<br>(a) Accent (b) Expect (c) Except (d) Expert`,o:["Accent","Expect","Except","Expert"],a:2,s:"English",exp:`<b>Explanation:</b><br>Except sounds similar to Accept and is nearest homonym.<br><b>Answer: Except</b>`},
@@ -220,8 +146,53 @@ const questions = [
 {q:`54. Select the option that represents the letters that, when placed from left to right in the blanks below, will complete the letter series. _TM_PT_R__MRP__R<br>(a) MPTRMTT (b) PRMPTTM (c) PMTRRMT (d) MTPRTMR`,o:["MPTRMTT","PRMPTTM","PMTRRMT","MTPRTMR"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>PTMR repeated<br><b>Answer: PRMPTTM</b>`},
 {q:`55. The sequence of folding a piece of paper and the manner in which the folded paper has been cut is shown. Choose the figure that would most closely resemble the unfolded form.<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Paper folding pattern<br><b>Answer: fig3</b>`},
 {q:`56. Three statements: Some teachers are scientists. All scientists are doctors. All doctors are engineers. Conclusions: I. Some doctors are teachers. II. Some engineers are teachers. III. Some doctors are scientists.<br>(a) Only I and II (b) All follow (c) Only I and III (d) Only II and III`,o:["Only I and II","All follow","Only I and III","Only II and III"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>All conclusions follow from Venn diagram<br><b>Answer: All follow</b>`},
-{q:`57. Which of the given figures when placed in the position would continue the series?<br>(a) S (b) S (c) S (d) S`,o:["S","S","S","S"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Anticlockwise
+{q:`57. Which of the given figures when placed in the position would continue the series?<br>(a) S (b) S (c) S (d) S`,o:["S","S","S","S"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>All symbols move 1 step anticlockwise.<br><b>Answer: S</b>`},
+{q:`58. Which number will replace ? in series: 232, 221, 199, ?, 122, 67<br>(a) 155 (b) 165 (c) 177 (d) 166`,o:["155","165","177","166"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>232-11=221, 221-22=199, 199-33=166, 166-44=122, 122-55=67<br><b>Answer: 166</b>`},
+{q:`59. If '<' means '-', '!' means 'x', '>' means '+' and '$' means '÷', then 205 > 210 $ 15 ! 2 < 19 = ?<br>(a) 242 (b) 238 (c) 214 (d) 226`,o:["242","238","214","226"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>205 + 210 ÷ 15 × 2 - 19 = 205 + 28 - 19 = 214<br><b>Answer: 214</b>`},
+{q:`60. In code, PLIERS=MMAFJO, SHOVEL=FZRLFR. WRENCH=?<br>(a) CXJBQU (b) BXJBPV (c) BXJBQU (d) CXIBPV`,o:["CXJBQU","BXJBPV","BXJBQU","CXIBPV"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Each letter -1,-2,-3,-4,-5,-6<br><b>Answer: BXJBPV</b>`},
+{q:`61. SPIT=USKW, COPY=ERRB. MOCK=?<br>(a) OQEN (b) PREN (c) PQEN (d) OREN`,o:["OQEN","PREN","PQEN","OREN"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>+3,+3,+2,+2 pattern<br><b>Answer: OREN</b>`},
+{q:`62. Odd one out: ADZV, MPNK, FIUR, TWGD<br>(a) ADZV (b) MPNK (c) FIUR (d) TWGD`,o:["ADZV","MPNK","FIUR","TWGD"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Others are opposite letter pairs. ADZV is different.<br><b>Answer: ADZV</b>`},
+{q:`63. (12,8,20), (7,3,15). Find similar: (a, b, c)<br>(a) (9,4,19) (b) (10,5,45) (c) (8,5,12) (d) (11,7,17)`,o:["(9,4,19)","(10,5,45)","(8,5,12)","(11,7,17)"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: a*3 - b*2 = c. 9*3 - 4*2 = 19<br><b>Answer: (9,4,19)</b>`},
+{q:`64. Odd number pair: (8,320), (11,968), (5,100), (6,108)<br>(a) (8,320) (b) (11,968) (c) (5,100) (d) (6,108)`,o:["(8,320)","(11,968)","(5,100)","(6,108)"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: n² * (n-3). 5²*2=50 ≠100<br><b>Answer: (5,100)</b>`},
+{q:`65. Interchange signs to make correct: 312 - 13 × 14 + 207 ÷ 4 = 539<br>(a) ÷ and - (b) - and + (c) ÷ and + (d) + and ×`,o:["÷ and -","- and +","÷ and +","+ and ×"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>312 ÷ 13 × 14 + 207 - 4 = 24×14+203=539<br><b>Answer: ÷ and -</b>`},
+{q:`66. Dictionary order: Appear, Approach, Approximate, Apparition, Apparel<br>(a) 4,5,1,2,3 (b) 4,1,5,2,3 (c) 5,4,1,2,3 (d) 5,1,4,2,3`,o:["4,5,1,2,3","4,1,5,2,3","5,4,1,2,3","5,1,4,2,3"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Apparel, Apparition, Appear, Approach, Approximate<br><b>Answer: 5,4,1,2,3</b>`},
+{q:`67. Embedded figure?<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Given figure is embedded in option d.<br><b>Answer: fig4</b>`},
+{q:`68. Complete series: M__KS _ON _SMO _K _ _NKS<br>(a) ONMNKOMS (b) ONMKNSMO (c) ONMMMMMO (d) NMOKNSMO`,o:["ONMNKOMS","ONMKNSMO","ONMMMMMO","NMOKNSMO"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>MONKS / MONKS / MONKS / MONKS<br><b>Answer: ONMKNSMO</b>`},
+{q:`69. Vacant:Empty :: Enormous:? <br>(a) Sufficient (b) Ample (c) Huge (d) Small`,o:["Sufficient","Ample","Huge","Small"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Synonym<br><b>Answer: Huge</b>`},
+{q:`70. 32 * 14 * 18 * 9 * 12 * 22. Balance it<br>(a) -,+÷×= (b) +,-÷×= (c) ×,+÷-= (d) ÷,-+×=`,o:["-,+÷×=","+,-÷×=","×,+÷-=","÷,-+×="],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>32 + 14 - 18 ÷ 9 × 12 = 22<br><b>Answer: +,-÷×=</b>`},
+{q:`71. (3,9,2), (8,6,8), (5,3,?)<br>(a) 22 (b) 13 (c) 10 (d) 5`,o:["22","13","10","5"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>2nd × 3rd ÷ 6 = 1st. 3×10÷6=5<br><b>Answer: 10</b>`},
+{q:`72. Azad points to picture: mother's father's only granddaughter's only brother. Relation?<br>(a) Sister (b) Son (c) Father (d) Azad himself`,o:["Sister","Son","Father","Azad himself"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Mother's father = maternal grandfather. His granddaughter = Azad's sister. Her brother = Azad<br><b>Answer: Azad himself</b>`},
+{q:`73. Dice: X US and S UT. Opposite of X?<br>(a) W (b) S (c) V (d) T`,o:["W","S","V","T"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>U,S common. Opposite: X-T<br><b>Answer: T</b>`},
+{q:`74. Embedded figure?<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Figure embedded in option c<br><b>Answer: fig3</b>`},
+{q:`75. Series: CM, EP, GO, IS, KQ, MV, OS, ?<br>(a) PY (b) QY (c) QZ (d) QX`,o:["PY","QY","QZ","QX"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>C+2=E+2=G+2=I+2=K+2=M+2=O+2=Q<br>M+3=P+1=O+4=S+2=Q+3=V+1=S+3=V+2=Y<br><b>Answer: QY</b>`},
 
+/* ========== GK 76-100 ========== */
+{q:`76. RBI sub-committee on microfinance chaired by?<br>(a) KC Chakrabarty (b) YH Malegam (c) Shashi Rajagopalan (d) Kumar Mangalam Birla`,o:["KC Chakrabarty","YH Malegam","Shashi Rajagopalan","Kumar Mangalam Birla"],a:1,s:"GK",exp:`<b>Explanation:</b><br>YH Malegam Committee 2011<br><b>Answer: YH Malegam</b>`},
+{q:`77. Harrod-Domar model based which Five Year Plan?<br>(a) First (b) Second (c) Fourth (d) Third`,o:["First","Second","Fourth","Third"],a:0,s:"GK",exp:`<b>Explanation:</b><br>First Five Year Plan 1951-56<br><b>Answer: First</b>`},
+{q:`78. Fundamental duties are ________ and not enforceable<br>(a) regulatory (b) non-statutory (c) statutory (d) common`,o:["regulatory","non-statutory","statutory","common"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Part IV-A, statutory but not enforceable<br><b>Answer: statutory</b>`},
+{q:`79. Mendeleev invented periodic table in?<br>(a) 1794 (b) 1869 (c) 1890 (d) 1779`,o:["1794","1869","1890","1779"],a:1,s:"GK",exp:`<b>Explanation:</b><br>1869 me diya tha<br><b>Answer: 1869</b>`},
+{q:`80. FIFA World Cup 2026 hosted by?<br>(a) Canada,USA,Mexico (b) Canada,USA,Brazil (c) Argentina,Brazil,USA (d) USA,Brazil,Chile`,o:["Canada,USA,Mexico","Canada,USA,Brazil","Argentina,Brazil,USA","USA,Brazil,Chile"],a:0,s:"GK",exp:`<b>Explanation:</b><br>First time 3 countries<br><b>Answer: Canada,USA,Mexico</b>`},
+{q:`81. Ethanoic acid is synonym of?<br>(a) Apple Juice (b) Vanillin (c) Caustic Soda (d) Vinegar`,o:["Apple Juice","Vanillin","Caustic Soda","Vinegar"],a:3,s:"GK",exp:`<b>Explanation:</b><br>CH3COOH = Vinegar<br><b>Answer: Vinegar</b>`},
+{q:`82. Who devised Doctrine of Lapse?<br>(a) Lord Ellenborough (b) Lord William Bentinck (c) Lord Dalhousie (d) Lord Canning`,o:["Lord Ellenborough","Lord William Bentinck","Lord Dalhousie","Lord Canning"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Lord Dalhousie 1848-56<br><b>Answer: Lord Dalhousie</b>`},
+{q:`83. Sonal Mansingh is dancer of Bharatanatyam + ?<br>(a) Kathakali (b) Kathak (c) Sattriya (d) Odissi`,o:["Kathakali","Kathak","Sattriya","Odissi"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Bharatanatyam and Odissi exponent<br><b>Answer: Odissi</b>`},
+{q:`84. Quwwat al-Islam mosque situated in?<br>(a) Panipat (b) Lahore (c) Ajmer (d) Delhi`,o:["Panipat","Lahore","Ajmer","Delhi"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Qutub Complex, Delhi<br><b>Answer: Delhi</b>`},
+{q:`85. 'Mati-Akhora' associated with?<br>(a) Odissi (b) Kathakali (c) Sattriya (d) Kathak`,o:["Odissi","Kathakali","Sattriya","Kathak"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Sattriya dance of Assam<br><b>Answer: Sattriya</b>`},
+{q:`86. Scheme for 18-50 age, ₹2 lakh cover, ₹436 premium?<br>(a) PMJJBY (b) PMSBY (c) PM-SYM (d) PMVVY`,o:["PMJJBY","PMSBY","PM-SYM","PMVVY"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Pradhan Mantri Jeevan Jyoti Bima Yojana<br><b>Answer: PMJJBY</b>`},
+{q:`87. Chittaranjan Das + _____ formed Swaraj Party 1923?<br>(a) Vallabhbhai Patel (b) Rajendra Prasad (c) Motilal Nehru (d) Jawahar Lal Nehru`,o:["Vallabhbhai Patel","Rajendra Prasad","Motilal Nehru","Jawahar Lal Nehru"],a:2,s:"GK",exp:`<b>Explanation:</b><br>C.R. Das and Motilal Nehru<br><b>Answer: Motilal Nehru</b>`},
+{q:`88. First Indian at Lincoln Centre Hall USA?<br>(a) M.S.Subbalakshmi (b) Zakir Hussain (c) Ravi Shankar (d) Bismillah Khan`,o:["M.S.Subbalakshmi","Zakir Hussain","Ravi Shankar","Bismillah Khan"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Ustad Bismillah Khan<br><b>Answer: Bismillah Khan</b>`},
+{q:`89. Sealed glass vacuum tube with electron beam on phosphor screen?<br>(a) Cathode ray tube (b) Flat array tube (c) LED tube (d) LCD tube`,o:["Cathode ray tube","Flat array tube","Light Emitting Diode tube","Liquid Crystal Display tube"],a:0,s:"GK",exp:`<b>Explanation:</b><br>CRT technology<br><b>Answer: Cathode ray tube</b>`},
+{q:`90. Oldest aluminium refinery plant in India?<br>(a) Damanjodi (b) Muri Alumina (c) Mettur (d) Belgaum`,o:["Damanjodi Plant","Muri Alumina Plant","Mettur Plant","Belgaum Plant"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Muri, Jharkhand 1948<br><b>Answer: Muri Alumina Plant</b>`},
+{q:`91. Rajgir Zoo located in?<br>(a) Tamil Nadu (b) Madhya Pradesh (c) Gujarat (d) Bihar`,o:["Tamil Nadu","Madhya Pradesh","Gujarat","Bihar"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Rajgir, Nalanda district<br><b>Answer: Bihar</b>`},
+{q:`92. 'Direct free kick' related to?<br>(a) Basketball (b) Baseball (c) Volleyball (d) Football`,o:["Basketball","Baseball","Volleyball","Football"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Football term<br><b>Answer: Football</b>`},
+{q:`93. 'Padhe Bharat' campaign started for how many days?<br>(a) 100 (b) 200 (c) 50 (d) 150`,o:["100","200","50","150"],a:0,s:"GK",exp:`<b>Explanation:</b><br>100 days reading campaign<br><b>Answer: 100</b>`},
+{q:`94. 'Swachh Bharat Mission' associated with?<br>(a) Mahatma Gandhi (b) Jawaharlal Nehru (c) Vallabhbhai Patel (d) Lal Bahadur Shastri`,o:["Mahatma Gandhi","Jawaharlal Nehru","Vallabhbhai Patel","Lal Bahadur Shastri"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Launched on Gandhi Jayanti<br><b>Answer: Mahatma Gandhi</b>`},
+{q:`95. Dec 2021, ___ approved $500mn loan for school education?<br>(a) Central Bank Bahrain (b) European Central Bank (c) Asian Development Bank (d) National Development Bank`,o:["Central Bank of Bahrain","European Central Bank","Asian Development Bank","National Development Bank"],a:2,s:"GK",exp:`<b>Explanation:</b><br>ADB loan<br><b>Answer: Asian Development Bank</b>`},
+{q:`96. Till which year Delhi HC had jurisdiction over Himachal?<br>(a) 1969 (b) 1967 (c) 1971 (d) 1968`,o:["1969","1967","1971","1968"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Till 25 Jan 1971<br><b>Answer: 1971</b>`},
+{q:`97. Ecologist famous for Indiana Dunes 1896?<br>(a) Robert MacArthur (b) G Evelyn Hutchinson (c) Henry Chandler Cowles (d) Aldo Leopold`,o:["Robert MacArthur","G Evelyn Hutchinson","Henry Chandler Cowles","Aldo Leopold"],a:2,s:"GK",exp:`<b>Explanation:</b><br>H.C. Cowles<br><b>Answer: Henry Chandler Cowles</b>`},
+{q:`98. Layer separating crust from core?<br>(a) Stratosphere (b) Mantle (c) magma layer (d) country`,o:["Stratosphere","Mantle","magma layer","country"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Mantle is between crust and core<br><b>Answer: Mantle</b>`},
+{q:`99. Iron Age replaced ______ in implements?<br>(a) wood (b) brass (c) bronze (d) stone`,o:["wood","brass","bronze","stone"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Bronze replaced by Iron<br><b>Answer: bronze</b>`},
+{q:`100. Country celebrating Paro Tschechu festival?<br>(a) Japan (b) Bhutan (c) Thailand (d) Burma`,o:["Japan","Bhutan","Thailand","Burma"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Paro Tshechu in Bhutan<br><b>Answer: Bhutan</b>`}
+];
 function init(){
   makePanel();
   loadQ();
