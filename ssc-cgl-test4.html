@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC-cgl-test3</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>SSC CGL Mock Test 03</h2>
+<div class="timer" id="timer">Time Left: 60:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/200</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+// Global Variables
+let current = 0;
+let answers = Array(100).fill(null);
+let marked = Array(100).fill(false);
+let time = 60 * 60;
+let timer = null;
+
+const questions = [
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC CGL TIER-I 2023 Shift-2 Mock Test 2</title>
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{margin:0;background:#f0f2f5;display:flex;height:100vh}
+.sidebar{width:320px;background:#fff;border-right:2px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#0d47a1;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.timer{background:#fff;color:#d32f2f;padding:10px 18px;border-radius:6px;font-weight:bold;font-size:20px}
+.q-panel{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:5px;font-weight:600;font-size:12px}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:3px solid #0d47a1}
+.question-box{background:white;padding:25px;border-radius:10px;margin-bottom:20px;box-shadow:0 3px 6px rgba(0,0,0,0.1)}
+.options label{display:block;padding:14px;margin:10px 0;border:2px solid #ddd;border-radius:6px;cursor:pointer;font-size:16px}
+.options label:hover{background:#e3f2fd;border-color:#0d47a1}
+.options input{margin-right:12px;transform:scale(1.2)}
+.btn{padding:12px 25px;border:none;border-radius:6px;cursor:pointer;font-size:16px;font-weight:600;margin:5px}
+.btn-next{background:#0d47a1;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:10px;text-align:center}
+.score{font-size:56px;color:#0d47a1;margin:15px;font-weight:bold}
+.solution-box{text-align:left;max-height:650px;overflow-y:auto;margin-top:25px}
+.sol-que{padding:18px;margin:12px 0;border-radius:8px;border-left:6px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+.explanation{background:#fff8e1;padding:14px;border-radius:6px;margin-top:12px;font-size:15px;line-height:1.7;border-left:3px solid #ff9800}
+.section-head{background:#0d47a1;color:white;padding:10px;border-radius:6px;margin:15px 0;text-align:center;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>📋 Question Panel 1-100</h3>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>SSC CGL TIER-I 2023 Shift-2 Mock Test 2</h2>
+<div class="timer" id="timer">Time Left: 60:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<div id="question"></div>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>🎉 Test Submitted!</h2>
+<p class="score" id="finalScore">0/200</p>
+<p id="analysis"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers + Explanation</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+let current=0, time=3600, timer, answers=Array(100).fill(null), marked=Array(100).fill(false);
+
+const questions = [
+/* ========== SECTION 1: ENGLISH COMPREHENSION 1-25 ========== */
+{q:`<div class="section-head">ENGLISH COMPREHENSION</div>1. Select the most appropriate option that can substitute the underlined words in the given sentence. He did not stop until it was remarked that he was speaking at length about trivial things.<br>(a) twittering (b) writing (c) rambling (d) littering`,o:["twittering","writing","rambling","littering"],a:2,s:"English",exp:`<b>Explanation:</b><br>Rambling = talking at length about trivial things.<br><b>Answer: rambling</b>`},
+{q:`2. Select the nearest homonym of the given word. Accept<br>(a) Accent (b) Expect (c) Except (d) Expert`,o:["Accent","Expect","Except","Expert"],a:2,s:"English",exp:`<b>Explanation:</b><br>Except sounds similar to Accept and is nearest homonym.<br><b>Answer: Except</b>`},
+{q:`3. The following sentence has been divided into parts. One of them may contain an error. They usually allege that there is / a delay in procuring stationery / due to faulty purchase orders.<br>(a) due to faulty purchase orders (b) a delay in procuring stationery (c) They usually allege that there is (d) No error`,o:["due to faulty purchase orders","a delay in procuring stationery","They usually allege that there is","No error"],a:3,s:"English",exp:`<b>Explanation:</b><br>The sentence is grammatically correct.<br><b>Answer: No error</b>`},
+{q:`4. Select the correct sentence in active voice from the following options<br>(a) The neighbours have called the police. (b) The police are being called by the neighbours. (c) The Police said to me, "I will call the neighbours." (d) The police have been called by the neighbours.`,o:["The neighbours have called the police.","The police are being called by the neighbours.","The Police said to me, I will call the neighbours.","The police have been called by the neighbours."],a:0,s:"English",exp:`<b>Explanation:</b><br>Option a is in Active Voice.<br><b>Answer: The neighbours have called the police.</b>`},
+{q:`5. Select the most appropriate synonym of the given word. Connote<br>(a) Comment (b) Criticise (c) Care (d) Convey`,o:["Comment","Criticise","Care","Convey"],a:3,s:"English",exp:`<b>Explanation:</b><br>Connote means to convey or imply.<br><b>Answer: Convey</b>`},
+{q:`6. Select the most appropriate homonym to fill in the blank. The children enjoyed the _________ very much.<br>(a) feer (b) fear (c) fere (d) fair`,o:["feer","fear","fere","fair"],a:3,s:"English",exp:`<b>Explanation:</b><br>Fair = mela. Children enjoy fair.<br><b>Answer: fair</b>`},
+{q:`7. Select the most appropriate idiom or phrase to fill in the blank in the given sentence. He is rich and famous and expects everyone to _________ on him.<br>(a) BCDA (b) CBAD (c) DACB (d) ADBC`,o:["BCDA","CBAD","DACB","ADBC"],a:3,s:"English",exp:`<b>Explanation:</b><br>Correct idiom: dance attendance on him.<br><b>Answer: ADBC</b>`},
+{q:`8. Select the synonym of the word 'reproduce' from the sentence. Many scientific researches have proved that DNA replicates itself in the human body.<br>(a) Replicates (b) Reaction (c) Proved (d) Researches`,o:["Replicates","Reaction","Proved","Researches"],a:0,s:"English",exp:`<b>Explanation:</b><br>Replicates = reproduce<br><b>Answer: Replicates</b>`},
+{q:`9. Select the most appropriate option to fill in the blank. A _________ is a female horse.<br>(a) vixen (b) doe (c) mare (d) rooster`,o:["vixen","doe","mare","rooster"],a:2,s:"English",exp:`<b>Explanation:</b><br>Female horse = Mare<br><b>Answer: mare</b>`},
+{q:`10. Select the option that expresses the given sentence in passive voice. We compelled the teacher to finish the class sooner.<br>(a) The teacher was compelled to finish the class sooner. (b) The teacher finished the class compelled by us (c) Finishing the class sooner was what the teacher was compelled to do. (d) The teacher compelled us to finish the class sooner.`,o:["The teacher was compelled to finish the class sooner.","The teacher finished the class compelled by us","Finishing the class sooner was what the teacher was compelled to do.","The teacher compelled us to finish the class sooner."],a:0,s:"English",exp:`<b>Explanation:</b><br>Active to Passive: Object + was + V3<br><b>Answer: The teacher was compelled to finish the class sooner.</b>`},
+{q:`11. Select the most appropriate ANTONYM of the underlined word. I don't like to work with people who are not flexible.<br>(a) Capable (b) Malleable (c) Open-ended (d) Rigid`,o:["Capable","Malleable","Open-ended","Rigid"],a:3,s:"English",exp:`<b>Explanation:</b><br>Flexible opposite = Rigid<br><b>Answer: Rigid</b>`},
+{q:`12. The challenge in Madras High Court to the Emergency-era shifting of education...blank 1<br>(a) have (b) were (c) had (d) is`,o:["have","were","had","is"],a:3,s:"English",exp:`<b>Explanation:</b><br>Present tense 'is' is correct.<br><b>Answer: is</b>`},
+{q:`13. Forty-six years have passed _________ the 42 Constitution Amendment Act. blank 2<br>(a) from (b) for (c) as (d) since`,o:["from","for","as","since"],a:3,s:"English",exp:`<b>Explanation:</b><br>'since' used for point of time.<br><b>Answer: since</b>`},
+{q:`14. In this period, the education sector has seen far too many changes, and most can't be _________. blank 3<br>(a) turned (b) backed (c) returned (d) reversed`,o:["turned","backed","returned","reversed"],a:3,s:"English",exp:`<b>Explanation:</b><br>Cannot be reversed.<br><b>Answer: reversed</b>`},
+{q:`15. States still enjoy _________ to operate their own universities. blank 4<br>(a) flexible (b) flexibility (c) suitable (d) suitability`,o:["flexible","flexibility","suitable","suitability"],a:1,s:"English",exp:`<b>Explanation:</b><br>Noun form 'flexibility' is correct.<br><b>Answer: flexibility</b>`},
+{q:`16. Instruction in English seems to have lost favour...society is _________ headed in the opposite direction. blank 5<br>(a) irrevocably (b) irrevocable (c) irrelevant (d) suddenly`,o:["irrevocably","irrevocable","irrelevant","suddenly"],a:0,s:"English",exp:`<b>Explanation:</b><br>Adverb 'irrevocably' is correct.<br><b>Answer: irrevocably</b>`},
+{q:`17. Select the most appropriate option that can substitute the underlined words. He did not stop until it was remarked that he was speaking at length about trivial things.<br>(a) twittering (b) writing (c) rambling (d) littering`,o:["twittering","writing","rambling","littering"],a:2,s:"English",exp:`<b>Explanation:</b><br>Rambling = talking at length about trivial things.<br><b>Answer: rambling</b>`},
+{q:`18. Select the nearest homonym of the given word. Accept<br>(a) Accent (b) Expect (c) Except (d) Expert`,o:["Accent","Expect","Except","Expert"],a:2,s:"English",exp:`<b>Explanation:</b><br>Except is nearest homonym of Accept.<br><b>Answer: Except</b>`},
+{q:`19. Select the most appropriate synonym of the given word. Connote<br>(a) Comment (b) Criticise (c) Care (d) Convey`,o:["Comment","Criticise","Care","Convey"],a:3,s:"English",exp:`<b>Explanation:</b><br>Connote = Convey<br><b>Answer: Convey</b>`},
+{q:`20. Select the most appropriate homonym to fill in the blank. The children enjoyed the _________ very much.<br>(a) feer (b) fear (c) fere (d) fair`,o:["feer","fear","fere","fair"],a:3,s:"English",exp:`<b>Explanation:</b><br>Fair = mela<br><b>Answer: fair</b>`},
+{q:`21. Select the most appropriate idiom or phrase to fill in the blank. He is rich and famous and expects everyone to _________ on him.`,o:["BCDA","CBAD","DACB","ADBC"],a:3,s:"English",exp:`<b>Explanation:</b><br>Correct idiom: dance attendance on him.<br><b>Answer: ADBC</b>`},
+{q:`22. Select the synonym of the word 'reproduce' from the sentence. DNA replicates itself in the human body.<br>(a) Replicates (b) Reaction (c) Proved (d) Researches`,o:["Replicates","Reaction","Proved","Researches"],a:0,s:"English",exp:`<b>Explanation:</b><br>Replicates = reproduce<br><b>Answer: Replicates</b>`},
+{q:`23. Select the most appropriate option to fill in the blank. A _________ is a female horse.<br>(a) vixen (b) doe (c) mare (d) rooster`,o:["vixen","doe","mare","rooster"],a:2,s:"English",exp:`<b>Explanation:</b><br>Female horse = Mare<br><b>Answer: mare</b>`},
+{q:`24. Select the option that expresses the given sentence in passive voice. We compelled the teacher to finish the class sooner.<br>(a) The teacher was compelled to finish the class sooner. (b) The teacher finished the class compelled by us (c) Finishing the class sooner was what the teacher was compelled to do. (d) The teacher compelled us to finish the class sooner.`,o:["The teacher was compelled to finish the class sooner.","The teacher finished the class compelled by us","Finishing the class sooner was what the teacher was compelled to do.","The teacher compelled us to finish the class sooner."],a:0,s:"English",exp:`<b>Explanation:</b><br>Passive voice structure.<br><b>Answer: The teacher was compelled to finish the class sooner.</b>`},
+{q:`25. Select the most appropriate ANTONYM of the underlined word. I don't like to work with people who are not flexible.<br>(a) Capable (b) Malleable (c) Open-ended (d) Rigid`,o:["Capable","Malleable","Open-ended","Rigid"],a:3,s:"English",exp:`<b>Explanation:</b><br>Flexible opposite = Rigid<br><b>Answer: Rigid</b>`},
+
+/* ========== SECTION 2: QUANTITATIVE APTITUDE 26-50 ========== */
+{q:`<div class="section-head">QUANTITATIVE APTITUDE</div>26. The simple interest on an amount for 6 years at 4% p.a. is ₹7,500 less than the simple interest on the same amount for 11 years. Find the amount.<br>(a) ₹38,000 (b) ₹37,500 (c) ₹37,000 (d) ₹38,500`,o:["₹38,000","₹37,500","₹37,000","₹38,500"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>SI for 5 years = 7500. So SI for 1 year = 1500. P = 1500*100/4 = 37500<br><b>Answer: ₹37,500</b>`},
+{q:`27. A laptop is sold for ₹54,000 after giving a discount of 20%. What is the list price of the laptop?<br>(a) 69500 (b) 67500 (c) 70000 (d) 64800`,o:["69500","67500","70000","64800"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>List Price = 54000*100/80 = 67500<br><b>Answer: 67500</b>`},
+{q:`28. If x² - 1/x² = 42, what is the value of x⁴ - 1/x⁴ ?<br>(a) 16√2 (b) 82 (c) 24√2 (d) 32√2`,o:["16√2","82","24√2","32√2"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>(x²-1/x²)² = x⁴+1/x⁴-2 = 1764. So x⁴+1/x⁴=1766. x⁴-1/x⁴ = √[(1766)²-4] = 82<br><b>Answer: 82</b>`},
+{q:`29. P, Q and R can complete a piece of work in 9, 12 and 18 days, respectively. Working together, how much work can they complete in one day?<br>(a) 2/3 (b) 1/2 (c) 1/3 (d) 1/4`,o:["2/3","1/2","1/3","1/4"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>1/9 + 1/12 + 1/18 = 4+3+2/36 = 9/36 = 1/4<br><b>Answer: 1/4</b>`},
+{q:`30. Ram and Ramesh can do a work in 12 days, Ramesh and Somesh in 15 days and Somesh and Ram in 10 days. If Ram, Ramesh and Somesh work together, in how many days will they complete the work?<br>(a) 10 (b) 8 (c) 12 (d) 6`,o:["10","8","12","6"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>2(R+S+R) = 1/12+1/15+1/10 = 1/4. So R+S+R = 1/8. 8 days<br><b>Answer: 8</b>`},
+{q:`31. A certain distance is covered by a person at a certain speed. If another person covers 25% of the distance in triple the time, the ratio of the speed of the first person to that of the second person is:<br>(a) 1:6 (b) 1:12 (c) 6:1 (d) 12:1`,o:["1:6","1:12","6:1","12:1"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>S1 = D/T, S2 = 0.25D/3T = D/12T. Ratio = 12:1<br><b>Answer: 12:1</b>`},
+{q:`32. A dishonest dealer sells articles at 15% loss on cost price but uses the weight of 20g instead of 25g. What is his profit or loss percentage?<br>(a) 6.25% Profit (b) 6.50% Profit (c) 7.55% Loss (d) 5.25% Loss`,o:["6.25% Profit","6.50% Profit","7.55% Loss","5.25% Loss"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>CP of 25g=100, SP=85, but he gives only 20g. Effective SP for 25g = 85*25/20=106.25. Profit=6.25%<br><b>Answer: 6.25% Profit</b>`},
+{q:`33. A one metre pipe is made with inner diameter equal to outer radius. How much material is required to make the pipe, if it can hold 88/7 cubic metres water in it?<br>(a) 37.7 (b) 35.5 (c) 33.3 (d) 36.6`,o:["37.7","35.5","33.3","36.6"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>πr²h=88/7, r=2, R=4. Material = π(R²-r²)h = 22/7*12*1=37.7<br><b>Answer: 37.7</b>`},
+{q:`34. What is the difference between the number of employees of Department E and Department C?<br>(a) 50 (b) 250 (c) 150 (d) 200`,o:["50","250","150","200"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>300-50=250<br><b>Answer: 250</b>`},
+{q:`35. If 3x=secA and 3/x=tanA then (9x-9/x)² is equal to<br>(a) 3 (b) 9 (c) 1 (d) 1/9`,o:["3","9","1","1/9"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>sec²A-tan²A=1. So 9x²-9/x²=1<br><b>Answer: 1</b>`},
+{q:`36. Angle subtended by the largest chord of the circle to a point on the same circle measures:<br>(a) <90° (b) 180° (c) >90° (d) 90°`,o:["<90°","180°",">90°","90°"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Largest chord = diameter. Angle in semicircle = 90°<br><b>Answer: 90°</b>`},
+{q:`37. [120×120×120 - 100×100×100]/[120×120 + 100×100 + 120×100] = ?<br>(a) 20 (b) 25 (c) 10 (d) 15`,o:["20","25","10","15"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>a³-b³/(a²+ab+b²) = a-b = 120-100=20<br><b>Answer: 20</b>`},
+{q:`38. A, B and C can do a piece of work in 20, 30 and 60 days, respectively. In how many days can A do the work if he is assisted by both B and C on every third day?<br>(a) 10 (b) 15 (c) 12 (d) 18`,o:["10","15","12","18"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>3 day work = 3+3+6=12 units. Total 60 units. 15 days<br><b>Answer: 15</b>`},
+{q:`39. Sohan's initial expenditure and savings were in the ratio of 5:3. His income increases by 25%. If his initial savings were ₹4,500, find his income after the increment.<br>(a) 16000 (b) 15000 (c) 9375 (d) 12000`,o:["16000","15000","9375","12000"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>3=4500, 1=1500. Income=8*1500=12000. After 25% increase=15000<br><b>Answer: 15000</b>`},
+{q:`40. If (a+b+c)=14, and (a³+b³+c³–3abc)=98, find the value of (a²+b²+c²)<br>(a) 70 (b) 64 (c) 68 (d) 72`,o:["70","64","68","72"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>(a+b+c)(a²+b²+c²-ab-bc-ca)=98. 14*X=98. X=7. a²+b²+c²=196-126=70<br><b>Answer: 70</b>`},
+{q:`41. ABC is a triangle and D is a point on the side BC. If BC=16cm, BD=11cm and ∠ADC=∠BAC, then the length of AC is equal to:<br>(a) 4√5 cm (b) 4cm (c) 3√5 cm (d) 5cm`,o:["4√5 cm","4cm","3√5 cm","5cm"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>ΔABC~ΔDAC. AC²=BC*DC=16*5=80. AC=4√5<br><b>Answer: 4√5 cm</b>`},
+{q:`42. A 6-digit number has digits as consecutive natural numbers. The number is always divisible by ______.<br>(a) 4 (b) 5 (c) 2 (d) 3`,o:["4","5","2","3"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Sum of 6 consecutive numbers = 3(2x+5) divisible by 3<br><b>Answer: 3</b>`},
+{q:`43. Benny can do a piece of work in 24 days. Chethan and David can do the same work individually in 36 and 48 days. All begin together. Benny leaves 4 days before completion and Chethan leaves 10 days before completion. Find total days.<br>(a) 16 (b) 20 (c) 18 (d) 15`,o:["16","20","18","15"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Total work=144. Efficiency=6+4+3=13. Solving gives 16 days<br><b>Answer: 16</b>`},
+{q:`44. A thief robs precious metals from a store which is 1150 m away from the police. The thief starts running at 6 km/h and the police starts chasing at 11 km/h at the same time. How much distance will the thief run before being caught?<br>(a) 1485 (b) 1380 (c) 1125 (d) 1280`,o:["1485","1380","1125","1280"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Relative speed=5km/h. Time=1150/1388.89h. Distance=6*1000*1150/1388.89=1380m<br><b>Answer: 1380</b>`},
+{q:`45. The value of 35/47 + 33/77 ÷ 11/22 × 7/7 = ?<br>(a) 11 1/28 (b) 13 2/28 (c) 13 3/28 (d) 23 4/28`,o:["11 1/28","13 2/28","13 3/28","23 4/28"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>35/47 + 33/77*22/11*1 = 35/47 + 6/7 = 13 3/28<br><b>Answer: 13 3/28</b>`},
+{q:`46. If the third proportional of 3x² and 4xy is 48, then find the positive value of y.<br>(a) 3 (b) 5 (c) 2 (d) 4`,o:["3","5","2","4"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>b²/ac=48. (4xy)²/3x²*48=1. 16y²/144=1. y=3<br><b>Answer: 3</b>`},
+{q:`47. The distance between centres of two circles having radii 22 cm and 18 cm, is 32cm. The length of direct common tangent is:<br>(a) 2√252 cm (b) 2√152 cm (c) 3√242 cm (d) 3√252 cm`,o:["2√252 cm","2√152 cm","3√242 cm","3√252 cm"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>L=√[d²-(R-r)²]=√[1024-16]=√1008=2√252<br><b>Answer: 2√252 cm</b>`},
+{q:`48. Ratio of delivery partners who joined Clipkart in 2019 and 2020 to Tomato in 2019 and 2020.<br>(a) 4:3 (b) 3:2 (c) 1:2 (d) 2:1`,o:["4:3","3:2","1:2","2:1"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>(5.6+6.4):(2.7+3.3)=12:6=2:1<br><b>Answer: 2:1</b>`},
+{q:`49. The length of a hall is 21m and width 14m. Sum of areas of floor and roof equals sum of areas of four walls. Find height.<br>(a) 8.4m (b) 8.2m (c) 8.6m (d) 8.8m`,o:["8.4m","8.2m","8.6m","8.8m"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>2lb=2h(l+b). 21*14=h*35. h=8.4m<br><b>Answer: 8.4m</b>`},
+{q:`50. If secA+tanA=5, then sinA is equal to:<br>(a) 5/13 (b) 5/12 (c) 13/12 (d) 12/13`,o:["5/13","5/12","13/12","12/13"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>secA-tanA=1/5. Solving secA=13/5, tanA=12/5. sinA=12/13<br><b>Answer: 12/13</b>`},
+
+/* ========== SECTION 3: GENERAL INTELLIGENCE AND REASONING 51-75 ========== */
+{q:`<div class="section-head">GENERAL INTELLIGENCE AND REASONING</div>51. Select the figure that will come in place of the question mark (?) in the following figure series.<br>(a) X (b) Y (c) Y (d) X`,o:["X","Y","Y","X"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Pattern of rotation<br><b>Answer: X</b>`},
+{q:`52. Select the set in which the numbers are related in the same way as (3,6,54) and (4,2,24).<br>(a) (9,6,60) (b) (5,3,30) (c) (3,4,36) (d) (2,6,48)`,o:["(9,6,60)","(5,3,30)","(3,4,36)","(2,6,48)"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: a*b*3=c. 3*4*3=36<br><b>Answer: (3,4,36)</b>`},
+{q:`53. Pointing to a man, Rocky said, "He is the father of the daughter of my daughter-in-law." How Rocky is related to that man?<br>(a) Uncle (b) Son (c) Father (d) Brother-in-law`,o:["Uncle","Son","Father","Brother-in-law"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>That man is Rocky's son.<br><b>Answer: Father</b>`},
+{q:`54. Select the option that represents the letters that, when placed from left to right in the blanks below, will complete the letter series. _TM_PT_R__MRP__R<br>(a) MPTRMTT (b) PRMPTTM (c) PMTRRMT (d) MTPRTMR`,o:["MPTRMTT","PRMPTTM","PMTRRMT","MTPRTMR"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>PTMR repeated<br><b>Answer: PRMPTTM</b>`},
+{q:`55. The sequence of folding a piece of paper and the manner in which the folded paper has been cut is shown. Choose the figure that would most closely resemble the unfolded form.<br>(a) fig1 (b) fig2 (c) fig3 (d) fig4`,o:["fig1","fig2","fig3","fig4"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Paper folding pattern<br><b>Answer: fig3</b>`},
+{q:`56. Three statements: Some teachers are scientists. All scientists are doctors. All doctors are engineers. Conclusions: I. Some doctors are teachers. II. Some engineers are teachers. III. Some doctors are scientists.<br>(a) Only I and II (b) All follow (c) Only I and III (d) Only II and III`,o:["Only I and II","All follow","Only I and III","Only II and III"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>All conclusions follow from Venn diagram<br><b>Answer: All follow</b>`},
+{q:`57. Which of the given figures when placed in the position would continue the series?<br>(a) S (b) S (c) S (d) S`,o:["S","S","S","S"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Anticlockwise
+
+function init(){
+  makePanel();
+  loadQ();
+  startTimer();
+}
+
+function makePanel(){
+  let html = '';
+  for(let i = 0; i < questions.length; i++){
+    html += `<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`;
+  }
+  document.getElementById('qPanel').innerHTML = html;
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText = `Question ${current+1} / ${questions.length} | ${questions[current].s}`;
+  document.getElementById('question').innerHTML = questions[current].q;
+  
+  let optHtml = '';
+  questions[current].o.forEach((opt, i) => {
+    let checked = answers[current] === i ? 'checked' : '';
+    optHtml += `<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML = optHtml;
+  updatePanel();
+}
+
+function saveAns(){
+  let selected = document.querySelector('input[name="opt"]:checked');
+  if(selected){
+    answers[current] = parseInt(selected.value);
+  }
+  updatePanel();
+}
+
+function markReview(){
+  marked[current] = !marked[current];
+  updatePanel();
+}
+
+function nextQ(){
+  if(current < questions.length - 1){
+    current++;
+    loadQ();
+  }
+}
+
+function goQ(i){
+  current = i;
+  loadQ();
+}
+
+function updatePanel(){
+  for(let i = 0; i < questions.length; i++){
+    let btn = document.getElementById('btn' + i);
+    btn.className = 'q-btn';
+    if(i === current) btn.classList.add('current');
+    if(marked[i]) btn.classList.add('review');
+    else if(answers[i] !== null) btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  }
+}
+
+function startTimer(){
+  timer = setInterval(() => {
+    time--;
+    let m = Math.floor(time / 60), s = time % 60;
+    document.getElementById('timer').innerText = `Time Left: ${m}:${s < 10 ? '0' : ''}${s}`;
+    if(time <= 0) {
+      clearInterval(timer);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function submitTest(){
+  clearInterval(timer);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  
+  let score = 0, correct = 0, wrong = 0, unattempted = 0;
+  let secScore = {GK: 0, Quant: 0, Reasoning: 0, English: 0};
+  let solHTML = '';
+  
+  questions.forEach((q, i) => {
+    if(answers[i] === null){
+      unattempted++;
+      solHTML += `<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[q.a]}</div>`;
+    } else if(answers[i] === q.a){
+      score += 2;
+      correct++;
+      secScore[q.s] += 2;
+      solHTML += `<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[answers[i]]} ✔️ | Correct: ${q.o[q.a]}</div>`;
+    } else {
+      score -= 0.5;
+      wrong++;
+      secScore[q.s] -= 0.5;
+      solHTML += `<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[answers[i]]} ❌ | Correct: ${q.o[q.a]}</div>`;
+    }
+  });
+  
+  let percentage = ((score / 200) * 100).toFixed(2);
+  document.getElementById('finalScore').innerText = `${score}/200`;
+  document.getElementById('analysis').innerHTML = `Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML = `GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML = solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+init();
+</script>
+</body>
+</html>
