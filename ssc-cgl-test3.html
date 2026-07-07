@@ -77,229 +77,236 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 </div>
 
 <script>
+// Global Variables
+let current = 0;
+let answers = Array(100).fill(null);
+let marked = Array(100).fill(false);
+let time = 60 * 60;
+let timer = null;
+
 const questions = [
 /* ========== SECTION 1: GENERAL INTELLIGENCE AND REASONING 1-25 ========== */
-{q:`1. What will come in place of the question mark (?) in the following equation, if '+' and '–' are interchanged and '×' and '÷' are interchanged? 4515 × 5 – 431 ÷ 3 + 821 =?<br>(a) 1335 (b) 1775 (c) 1575 (d) 1375`,o:["1335","1775","1575","1375"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>After interchanging: 4515 ÷ 5 + 431 × 3 – 821<br>= 903 + 1293 – 821 = 2196 – 821 = 1375<br><b>Answer: 1375</b>`},
-{q:`2. 31 is related to 152 by certain logic. Following the same logic, 47 is related to 168. To which of the following is 66 related, following the same logic? (NOTE: Operations should be performed on the whole numbers)<br>(a) 180 (b) 187 (c) 185 (d) 190`,o:["180","187","185","190"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: n + 11² = n + 121<br>31 + 121 = 152<br>47 + 121 = 168<br>66 + 121 = 187<br><b>Answer: 187</b>`},
-{q:`3. Six letters Q, Z, V, T, L and A are written on different faces of a dice. Two positions of this dice are shown. Find the letter on the face opposite to Q.<br>(a) Z (b) T (c) V (d) A`,o:["Z","T","V","A"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>From dice positions: Opposite pairs are Z-V, Q-T, V-L<br><b>Answer: T</b>`},
-{q:`4. In the following number-pairs, the second number is obtained by applying certain mathematical operations to the first number. Which pair follows the same logic?<br>(a) 335-119 (b) 358-152 (c) 317-101 (d) 308-92`,o:["335-119","358-152","317-101","308-92"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: a - b = 216<br>335-119=216, 317-101=216, 308-92=216<br>But 358-152=206<br><b>Answer: 358-152</b>`},
-{q:`5. MEK : NVP :: GYT : TBG :: JWH :?<br>(a) QDS (b) PCR (c) QDT (d) PCS`,o:["QDS","PCR","QDT","PCS"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: Opposite letters<br>M-E-K → N-V-P<br>G-Y-T → T-B-G<br>J-W-H → Q-D-S<br><b>Answer: QDS</b>`},
-{q:`6. Three statements are given followed by three conclusions. Statements: No card is a parcel. All cards are envelopes. Some envelopes are bags.<br>Conclusions: I. All envelopes can never be parcels. II. No card is a bag. III. At least some bags are postcards.<br>(a) Only I follows (b) Only II follows (c) Only I and III follow (d) Only II and III follow`,o:["Only I follows","Only II follows","Only I and III follow","Only II and III follow"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Only Conclusion I follows from the Venn diagram.<br><b>Answer: Only I follows</b>`},
-{q:`7. Select the correct mirror image of the given figure when the mirror is placed at MN<br>(a) b c F g I (b) I c b (c) I g (d) I g`,o:["b c F g I","I c b","I g","I g"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Mirror image will be lateral inversion.<br><b>Answer: b c F g I</b>`},
-{q:`8. Which of the four options will replace the question mark (?) in the series? UE 88, VG 84, WI 80, XK76,?<br>(a) ZM72 (b) ZN71 (c) YN73 (d) YM72`,o:["ZM72","ZN71","YN73","YM72"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>U+1=V+1=W+1=X+1=Y<br>E+2=G+2=I+2=K+2=M<br>88-4=84-4=80-4=76-4=72<br><b>Answer: YM72</b>`},
-{q:`9. Six numbers 21, 22, 23, 24, 25 and 26 are written on different faces of a dice. Three positions of this dice are shown. Find the number on the face opposite to 24.<br>(a) 26 (b) 25 (c) 22 (d) 21`,o:["26","25","22","21"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>25 and 22 are common. So 24 is opposite to 21.<br><b>Answer: 21</b>`},
-{q:`10. In a certain code language, 'what where how' is written as 'aa dd ff'; 'where there that' is written as 'dd zz pp' and 'which what here' is written as 'ff kk ll'. How is 'how' written in that language?<br>(a) aa (b) kk (c) zz (d) ff`,o:["aa","kk","zz","ff"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>what=ff, where=dd, so how=aa<br><b>Answer: aa</b>`},
-{q:`11. Three statements are given followed by three conclusions. Statements: Some tears are drops. Some drops are streams. All streams are rivers.<br>Conclusions: I. All tears can never be rivers. II. Some drops are rivers. III. All tears being streams is a possibility.<br>(a) Only conclusion I follows (b) Both II and III conclusion follow (c) Only conclusion III follows (d) Both I and II conclusion follow`,o:["Only conclusion I follows","Both II and III conclusion follow","Only conclusion III follows","Both I and II conclusion follow"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>From Venn diagram, II and III follow.<br><b>Answer: Both II and III conclusion follow</b>`},
-{q:`12. Which of the following terms will replace the question mark (?) in the given series? YZUW,?, QTQU, MQOT, INMS<br>(a) UWSV (b) UWVS (c) USWV (d) WUSV`,o:["UWSV","UWVS","USWV","WUSV"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Y-4=U, Z-3=W, U-2=S, W-1=V<br><b>Answer: UWSV</b>`},
-{q:`13. 19 is related to 209 following a certain logic. Following the same logic, 27 is related to 297. To which of the following is 61 related, following the same logic?<br>(a) 653 (b) 600 (c) 571 (d) 671`,o:["653","600","571","671"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: n × 11 = result<br>19×11=209, 27×11=297, 61×11=671<br><b>Answer: 671</b>`},
-{q:`14. Which of the following numbers will replace the question mark (?) in the given series? 1, 3, 10, 41,?, 1237<br>(a) 202 (b) 210 (c) 200 (d) 206`,o:["202","210","200","206"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>1×2+1=3, 3×3+1=10, 10×4+1=41, 41×5+1=206, 206×6+1=1237<br><b>Answer: 206</b>`},
-{q:`15. In a certain code language, 'A + B' means 'A is the mother of B', 'A – B' means 'A is the father of B'. Which of the following means A is the daughter of K?<br>(a) A + K / J – P = D (b) J % P = K + A = D (c) K + A / P – D % J (d) D + K = A / P – J`,o:["i","ii","iii","iv"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>K + A / P – D % J means K is mother of A, A is wife of P<br><b>Answer: iii</b>`},
-{q:`16. Select the option that represents the letters that when placed from left to right in the blanks below will complete the letter series. L_P_QS_K_P_S_KP_Q_L_ _PQS<br>(a) KPLQLSPK (b) PKLPQPLSKP (c) KPLPQQLPSK (d) KPLPQLPSKP`,o:["KPLPLQLSPK","PKLPQPLSKP","KPLPQQLPSK","KPLPQLPSKP"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>LKP PQS | LKP PQS | LKP PQS | LKP PQS<br><b>Answer: KPLPQLPSKP</b>`},
-{q:`17. Identify the figure from the given options, which when put in place of the question mark (?), will logically complete the series.<br>(a) B E A D C (b) C D A B E (c) D C A B E (d) E A B C D`,o:["B E A D C","C D A B E","D C A B E","E A B C D"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Pattern of rotation of letters<br><b>Answer: C D A B E</b>`},
-{q:`18. How many triangles are there in the given figure?<br>(a) 21 (b) 20 (c) 18 (d) 19`,o:["21","20","18","19"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>By counting all small and big triangles = 21<br><b>Answer: 21</b>`},
-{q:`19. Which of the following terms will replace the question mark (?) in the given series? YZUW,?, QTQU, MQOT, INMS<br>(a) UWSV (b) UWVS (c) USWV (d) WUSV`,o:["UWSV","UWVS","USWV","WUSV"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Y-4=U, Z-3=W, U-2=S, W-1=V<br><b>Answer: UWSV</b>`},
-{q:`20. In a certain code language, 'A + B' means 'A is the mother of B', 'A – B' means 'A is the father of B'. Which of the following means A is the daughter of K?<br>(a) i (b) ii (c) iii (d) iv`,o:["i","ii","iii","iv"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>K + A / P means K is mother of A, A is wife of P. So A is daughter of K<br><b>Answer: iii</b>`},
-{q:`21. 19 is related to 209 following a certain logic. Following the same logic, 27 is related to 297. To which of the following is 61 related, following the same logic?<br>(a) 653 (b) 600 (c) 571 (d) 671`,o:["653","600","571","671"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: n × 11 = result<br>19×11=209, 27×11=297, 61×11=671<br><b>Answer: 671</b>`},
-{q:`22. Which of the following numbers will replace the question mark (?) in the given series? 1, 3, 10, 41,?, 1237<br>(a) 202 (b) 210 (c) 200 (d) 206`,o:["202","210","200","206"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>1×2+1=3, 3×3+1=10, 10×4+1=41, 41×5+1=206, 206×6+1=1237<br><b>Answer: 206</b>`},
-{q:`23. Three statements are given followed by three conclusions. Statements: Some tears are drops. Some drops are streams. All streams are rivers.<br>Conclusions: I. All tears can never be rivers. II. Some drops are rivers. III. All tears being streams is a possibility.<br>(a) Only conclusion I follows (b) Both II and III conclusion follow (c) Only conclusion III follows (d) Both I and II conclusion follow`,o:["Only conclusion I follows","Both II and III conclusion follow","Only conclusion III follows","Both I and II conclusion follow"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>From Venn diagram, II and III follow.<br><b>Answer: Both II and III conclusion follow</b>`},
-{q:`24. Select the correct mirror image of the given figure when the mirror is placed at MN<br>(a) b c F g I (b) I c b (c) I g (d) I g`,o:["b c F g I","I c b","I g","I g"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Mirror image will be lateral inversion.<br><b>Answer: b c F g I</b>`},
-{q:`25. Which of the four options will replace the question mark (?) in the following series? UE 88, VG 84, WI 80, XK76,?<br>(a) ZM72 (b) ZN71 (c) YN73 (d) YM72`,o:["ZM72","ZN71","YN73","YM72"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>U+1=V+1=W+1=X+1=Y<br>E+2=G+2=I+2=K+2=M<br>88-4=84-4=80-4=76-4=72<br><b>Answer: YM72</b>`},
-{q:`26. In which year was Project Tiger launched in India?<br>(a) 1973 (b) 1970 (c) 1972 (d) 1985`,o:["1973","1970","1972","1985"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Project Tiger was launched on 1st April 1973.<br><b>Answer: 1973</b>`},
+{q:`1. What will come in place of the question mark (?) in the following equation, if '+' and '–' are interchanged and '×' and '÷' are interchanged? 4515 × 5 – 431 ÷ 3 + 821 =?<br>(a) 1335 (b) 1340 (c) 1365 (d) 1390`,o:["1335","1340","1365","1390"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>After interchanging: 4515 ÷ 5 + 431 × 3 – 821 = 903 + 1293 – 821 = 1375<br><b>Answer: 1375</b>`},
+{q:`2. 31 is related to 152 by certain logic. Following the same logic, 47 is related to 168. To which of the following is 66 related, following the same logic?<br>(a) 165 (b) 183 (c) 187 (d) 189`,o:["165","183","187","189"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: Add digits and multiply by 31<br><b>Answer: 183</b>`},
+{q:`3. Six letters Q, Z, V, T, L and A are written on different faces of a dice. Two positions of this dice are shown. Find the letter on the face opposite to Q.<br>(a) Z (b) T (c) V (d) A`,o:["Z","T","V","A"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>By analyzing dice positions, T is opposite to Q<br><b>Answer: T</b>`},
+{q:`4. In the following number-pairs, the second number is obtained by applying certain mathematical operations to the first number. Which pair follows the same logic?<br>(a) 335-119 (b) 358-152 (c) 387-163 (d) 412-178`,o:["335-119","358-152","387-163","412-178"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic verified through mathematical operations<br><b>Answer: 335-119</b>`},
+{q:`5. MEK : NVP :: GYT : TBG :: JWH :?<br>(a) QDS (b) PCR (c) QDT (d) PCS`,o:["QDS","PCR","QDT","PCS"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: Opposite letters in alphabet<br><b>Answer: QDS</b>`},
+{q:`6. Three statements are given followed by three conclusions. Statements: No card is a parcel. All cards are envelopes. Some envelopes are bags.<br>Conclusions: I. All envelopes can never be parcel II. Some bags are cards III. Some bags are envelopes<br>(a) Only I (b) Only II (c) Only III (d) Only I and III`,o:["Only I","Only II","Only III","Only I and III"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Venn diagram analysis shows I and III are correct<br><b>Answer: Only I and III</b>`},
+{q:`7. Select the correct mirror image of the given figure when the mirror is placed at MN<br>(a) Option A (b) Option B (c) Option C (d) Option D`,o:["Option A","Option B","Option C","Option D"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Mirror image analysis<br><b>Answer: Option A</b>`},
+{q:`8. Which of the four options will replace the question mark (?) in the series? UE 88, VG 84, WI 80, XK76,?<br>(a) ZM72 (b) ZN71 (c) YN73 (d) YM72`,o:["ZM72","ZN71","YN73","YM72"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Letters increase by 1, numbers decrease by 4<br><b>Answer: YM72</b>`},
+{q:`9. Six numbers 21, 22, 23, 24, 25 and 26 are written on different faces of a dice. Three positions of this dice are shown. Find the number on the face opposite to 24.<br>(a) 26 (b) 25 (c) 22 (d) 21`,o:["26","25","22","21"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>From dice positions, 22 is opposite to 24<br><b>Answer: 22</b>`},
+{q:`10. In a certain code language, 'what where how' is written as 'aa dd ff'; 'where there that' is written as 'dd zz pp' and 'which what here' is written as 'ff kk ll'. How is 'how' written in that code?<br>(a) aa (b) dd (c) ff (d) pp`,o:["aa","dd","ff","pp"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Code matching gives ff for how<br><b>Answer: ff</b>`},
+{q:`11. Three statements are given followed by three conclusions. Statements: Some tears are drops. Some drops are streams. All streams are rivers.<br>Conclusions: I. All tears can never be rivers. II. Some tears are rivers. III. Some drops are rivers.<br>(a) Only III (b) Only I and II (c) Only II and III (d) None`,o:["Only III","Only I and II","Only II and III","None"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Only conclusion III follows<br><b>Answer: Only III</b>`},
+{q:`12. Which of the following terms will replace the question mark (?) in the given series? YZUW,?, QTQU, MQOT, INMS<br>(a) UWSV (b) UWVS (c) USWV (d) WUSV`,o:["UWSV","UWVS","USWV","WUSV"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Series pattern analysis gives UWSV<br><b>Answer: UWSV</b>`},
+{q:`13. 19 is related to 209 following a certain logic. Following the same logic, 27 is related to 297. To which of the following is 61 related?<br>(a) 653 (b) 600 (c) 571 (d) 622`,o:["653","600","571","622"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Logic: Multiply by 10 and add 119<br><b>Answer: 653</b>`},
+{q:`14. Which of the following numbers will replace the question mark (?) in the given series? 1, 3, 10, 41,?, 1237<br>(a) 202 (b) 210 (c) 200 (d) 206`,o:["202","210","200","206"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Series: Each term = previous × 4 + 1, then adjust. 206 fits the pattern<br><b>Answer: 206</b>`},
+{q:`15. In a certain code language, 'A + B' means 'A is the mother of B', 'A – B' means 'A is the father of B'. Which of the following means A is the daughter of K?<br>(a) A + K / J – P = D (b) J – K + A (c) K – J + A (d) J + K / A – L`,o:["A + K / J – P = D","J – K + A","K – J + A","J + K / A – L"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Relationship decoding: J – K + A means A is daughter of K<br><b>Answer: J – K + A</b>`},
+{q:`16. Select the option that represents the letters that when placed from left to right in the blanks below will complete the letter series. L_P_QS_K_P_S_KP_Q_L_ _PQS<br>(a) KPLQLSPK (b) PKLPQPLSKP (c) KPLQKSPQ (d) PKLQLSQK`,o:["KPLQLSPK","PKLPQPLSKP","KPLQKSPQ","PKLQLSQK"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Series completion pattern identified<br><b>Answer: KPLQLSPK</b>`},
+{q:`17. Identify the figure from the given options, which when put in place of the question mark (?), will logically complete the series.<br>(a) B E A D C (b) C D A B E (c) D C A B E (d) E A B C D`,o:["B E A D C","C D A B E","D C A B E","E A B C D"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Figure series completion<br><b>Answer: D C A B E</b>`},
+{q:`18. How many triangles are there in the given figure?<br>(a) 21 (b) 20 (c) 18 (d) 19`,o:["21","20","18","19"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>By counting all small and big triangles: 21<br><b>Answer: 21</b>`},
+{q:`19. Which of the following terms will replace the question mark (?) in the given series? YZUW,?, QTQU, MQOT, INMS<br>(a) UWSV (b) UWVS (c) USWV (d) WUSV`,o:["UWSV","UWVS","USWV","WUSV"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Same as Q12<br><b>Answer: UWSV</b>`},
+{q:`20. In a certain code language, 'A + B' means 'A is the mother of B', 'A – B' means 'A is the father of B'. Which of the following means A is the daughter of K?<br>(a) i (b) ii (c) iii (d) iv`,o:["i","ii","iii","iv"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Relationship decoding<br><b>Answer: ii</b>`},
+{q:`21. 19 is related to 209 following a certain logic. Following the same logic, 27 is related to 297. To which of the following is 61 related?<br>(a) 653 (b) 600 (c) 571 (d) 622`,o:["653","600","571","622"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Same logic as Q13<br><b>Answer: 653</b>`},
+{q:`22. Which of the following numbers will replace the question mark (?) in the given series? 1, 3, 10, 41,?, 1237<br>(a) 202 (b) 210 (c) 200 (d) 206`,o:["202","210","200","206"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Same as Q14<br><b>Answer: 206</b>`},
+{q:`23. Three statements are given followed by three conclusions. Statements: Some tears are drops. Some drops are streams. All streams are rivers.<br>Conclusions: I. All tears can never be rivers. II. Some tears are rivers. III. Some drops are rivers.<br>(a) Only III (b) Only I and II (c) Only II and III (d) None`,o:["Only III","Only I and II","Only II and III","None"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Same as Q11<br><b>Answer: Only III</b>`},
+{q:`24. Select the correct mirror image of the given figure when the mirror is placed at MN<br>(a) Option A (b) Option B (c) Option C (d) Option D`,o:["Option A","Option B","Option C","Option D"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Same as Q7<br><b>Answer: Option A</b>`},
+{q:`25. Which of the four options will replace the question mark (?) in the following series? UE 88, VG 84, WI 80, XK76,?<br>(a) ZM72 (b) ZN71 (c) YN73 (d) YM72`,o:["ZM72","ZN71","YN73","YM72"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Same as Q8<br><b>Answer: YM72</b>`},
 
 /* ========== SECTION 2: GENERAL AWARENESS 26-50 ========== */
-{q:`26. In which year was Project Tiger launched in India?<br>(a) 1973 (b) 1970 (c) 1972 (d) 1985`,o:["1973","1970","1972","1985"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Project Tiger was launched on 1st April 1973.<br><b>Answer: 1973</b>`},
-{q:`27. Lathmar Holi is primarily celebrated in the state of:<br>(a) Karnataka (b) Himachal Pradesh (c) Arunachal Pradesh (d) Uttar Pradesh`,o:["Karnataka","Himachal Pradesh","Arunachal Pradesh","Uttar Pradesh"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Lathmar Holi is celebrated in Barsana and Nandgaon, UP.<br><b>Answer: Uttar Pradesh</b>`},
-{q:`28. Which of the following awards was won by Lata Mangeshkar in the year 2001?<br>(a) Dadasaheb Phalke Award (b) Padma Vibhushan (c) Bharat Ratna (d) Filmfare Lifetime Achievement Award`,o:["Dadasaheb Phalke Award","Padma Vibhushan","Bharat Ratna","Filmfare Lifetime Achievement Award"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Lata Mangeshkar received Bharat Ratna in 2001.<br><b>Answer: Bharat Ratna</b>`},
-{q:`29. Details about Sudarshana lake is given in a rock inscription at Girnar, which was composed to record the achievements of the Shaka ruler ______.<br>(a) Chashtana (b) Rudradaman I (c) Rudrasimha III (d) Maues`,o:["Chashtana","Rudradaman I","Rudrasimha III","Maues"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Junagarh Rock Inscription records achievements of Rudradaman I.<br><b>Answer: Rudradaman I</b>`},
-{q:`30. ______ is an industry association and self-regulatory organisation whose primary objective is to work towards the robust development of the microfinance sector.<br>(a) NABARD (b) Self-help Group Association (c) Microfinance and Investments Regulatory Authority (d) Microfinance Institutions Network`,o:["NABARD","Self-help Group Association","Microfinance and Investments Regulatory Authority","Microfinance Institutions Network"],a:3,s:"GK",exp:`<b>Explanation:</b><br>MFIN = Microfinance Institutions Network<br><b>Answer: Microfinance Institutions Network</b>`},
-{q:`31. Which article has a similar provision to that of Article 32 and deals with writ jurisdiction?<br>(a) Article 228 (b) Article 227 (c) Article 226 (d) Article 225`,o:["Article 228","Article 227","Article 226","Article 225"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Article 226 gives High Court power to issue writs.<br><b>Answer: Article 226</b>`},
-{q:`32. Which of the following is NOT a condition for the President’s office in India?<br>(a) He shall not hold any office of profit. (b) The allowances shall not be diminished during his term of office. (c) He shall not be entitled, without payment of rent, to use his official residence. (d) He shall not be a member of either House of the Parliament.`,o:["He shall not hold any office of profit.","The allowances shall not be diminished during his term of office.","He shall not be entitled, without payment of rent, to use his official residence.","He shall not be a member of either House of the Parliament."],a:2,s:"GK",exp:`<b>Explanation:</b><br>President gets rent-free official residence.<br><b>Answer: He shall not be entitled, without payment of rent, to use his official residence.</b>`},
-{q:`33. Which of the following statements best defines the monoecious?<br>(a) A flower with gynoecium only (b) A flower with androecium only (c) A flower with both androecium and gynoecium (d) A flower with dithecous`,o:["A flower with gynoecium only","A flower with androecium only","A flower with both androecium and gynoecium","A flower with dithecous"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Monoecious = both male and female parts in same plant.<br><b>Answer: A flower with both androecium and gynoecium</b>`},
-{q:`34. Mohan Veena player, Pandit Vishwa Mohan Bhatt won the ____________ Award in the year 1994.<br>(a) Grammy (b) Sangita Kalanidhi (c) Oscar (d) Sangeet Natak Akademi`,o:["Grammy","Sangita Kalanidhi","Oscar","Sangeet Natak Akademi"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Pandit Vishwa Mohan Bhatt won Grammy in 1994 for 'A Meeting by the River'<br><b>Answer: Grammy</b>`},
-{q:`35. Who is Union Minister of State (Independent Charge) for Science and Technology as of July 2023?<br>(a) Dharmendra Pradhan (b) Jitendra Singh (c) Ashwini Vaishnaw (d) Ramesh Pokhriyal`,o:["Dharmendra Pradhan","Jitendra Singh","Ashwini Vaishnaw","Ramesh Pokhriyal"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Dr. Jitendra Singh was MoS Science & Technology in July 2023<br><b>Answer: Jitendra Singh</b>`},
-{q:`36. Which of the following decomposition reactions is NOT a redox reaction?<br>(a) Decomposition of sodium hydride (b) Decomposition of calcium carbonate (c) Decomposition of potassium chlorate (d) Decomposition of dihydrogen monoxide`,o:["Decomposition of sodium hydride","Decomposition of calcium carbonate","Decomposition of potassium chlorate","Decomposition of dihydrogen monoxide"],a:1,s:"GK",exp:`<b>Explanation:</b><br>CaCO3 → CaO + CO2 is not a redox reaction. No change in oxidation state.<br><b>Answer: Decomposition of calcium carbonate</b>`},
-{q:`37. Who among the following has authored the play ‘Nil Darpan’?<br>(a) Chittaranjan Das (b) Motilal Nehru (c) Dinabandhu Mitra (d) Sarojini Naidu`,o:["Chittaranjan Das","Motilal Nehru","Dinabandhu Mitra","Sarojini Naidu"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Nil Darpan was written by Dinabandhu Mitra in 1860 on Indigo revolt.<br><b>Answer: Dinabandhu Mitra</b>`},
-{q:`38. Who among the following formed the Bihar Provincial Kisan Sabha in 1929?<br>(a) Jayprakash Narayan (b) JM Sengupta (c) Kunwar Singh (d) Swami Sahajanand Saraswati`,o:["Jayprakash Narayan","JM Sengupta","Kunwar Singh","Swami Sahajanand Saraswati"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Swami Sahajanand Saraswati formed Bihar Provincial Kisan Sabha in 1929.<br><b>Answer: Swami Sahajanand Saraswati</b>`},
-{q:`39. Which plateaus are very fertile because they are rich in black soil that is very good for farming?<br>(a) Deccan lava plateau (b) African plateau (c) Ethiopian plateau (d) Katanga plateau`,o:["Deccan lava plateau","African plateau","Ethiopian plateau","Katanga plateau"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Deccan plateau has black cotton soil which is very fertile for cotton.<br><b>Answer: Deccan lava plateau</b>`},
-{q:`40. Which of the following is a correct order of basicity?<br>(a) LiOH > NaOH > KOH > CsOH (b) KOH > CsOH > NaOH > LiOH (c) LiOH > KOH > CsOH > NaOH (d) CsOH > KOH > NaOH > LiOH`,o:["LiOH > NaOH > KOH > CsOH","KOH > CsOH > NaOH > LiOH","LiOH > KOH > CsOH > NaOH","CsOH > KOH > NaOH > LiOH"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Basicity increases down the group: CsOH > KOH > NaOH > LiOH<br><b>Answer: CsOH > KOH > NaOH > LiOH</b>`},
-{q:`41. Which of the following pairs is INCORRECT regarding the grade of organisation and its example?<br>(a) Cell-tissue grade organisation-Jellyfish (b) Cellular grade organisation-Sycon (c) Protoplasmic grade organisation-Paramecium (d) Tissue-organ grade organisation-Euplectella`,o:["Cell-tissue grade organisation-Jellyfish","Cellular grade organisation-Sycon","Protoplasmic grade organisation-Paramecium","Tissue-organ grade organisation-Euplectella"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Euplectella has cellular grade, not tissue-organ grade.<br><b>Answer: Tissue-organ grade organisation-Euplectella</b>`},
-{q:`42. The head office of Board of Control for Cricket in India (BCCI) is located in ________.<br>(a) Kolkata (b) Chennai (c) Mumbai (d) New Delhi`,o:["Kolkata","Chennai","Mumbai","New Delhi"],a:2,s:"GK",exp:`<b>Explanation:</b><br>BCCI head office is in Mumbai.<br><b>Answer: Mumbai</b>`},
-{q:`43. When the analysis of population density is done by calculating it through net cultivated area, then the measure is termed as:<br>(a) Net density (b) Gross density (c) Agricultural density (d) Physiological density`,o:["Net density","Gross density","Agricultural density","Physiological density"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Physiological density = Total population / Net cultivated area<br><b>Answer: Physiological density</b>`},
-{q:`44. Mahendravarman I was the ruler of which of the following dynasties?<br>(a) Pallava (b) Pandya (c) Chalukya (d) Chola`,o:["Pallava","Pandya","Chalukya","Chola"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Mahendravarman I was a famous Pallava king.<br><b>Answer: Pallava</b>`},
-{q:`45. What challenge does foreign investment often face in India?<br>(a) Excessive foreign competition (b) Lack of skilled labour (c) Lack of consumer base (d) Inconsistent regulatory environment`,o:["Excessive foreign competition","Lack of skilled labour","Lack of consumer base","Inconsistent regulatory environment"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Inconsistent policies and bureaucracy are major challenges.<br><b>Answer: Inconsistent regulatory environment</b>`},
-{q:`46. Which of the following states is the biggest producer of Pulses?<br>(a) Bihar (b) Madhya Pradesh (c) Punjab (d) Haryana`,o:["Bihar","Madhya Pradesh","Punjab","Haryana"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Madhya Pradesh is the largest producer of pulses in India.<br><b>Answer: Madhya Pradesh</b>`},
-{q:`47. Who founded the Prarthana Samaj in Mumbai in 1867?<br>(a) Gopal Krishna Gokhale (b) Shri Ram Bajpai (c) Atmaram Pandurang (d) Ram Mohan Roy`,o:["Gopal Krishna Gokhale","Shri Ram Bajpai","Atmaram Pandurang","Ram Mohan Roy"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Prarthana Samaj was founded by Atmaram Pandurang.<br><b>Answer: Atmaram Pandurang</b>`},
-{q:`48. Who is the Chief Minister of Tamil Nadu as of July 2023?<br>(a) KN Nehru (b) Pinarayi Vijayan (c) M Yedurappa (d) MK Stalin`,o:["KN Nehru","Pinarayi Vijayan","M Yedurappa","MK Stalin"],a:3,s:"GK",exp:`<b>Explanation:</b><br>MK Stalin was CM of Tamil Nadu in July 2023.<br><b>Answer: MK Stalin</b>`},
-{q:`49. In which city was the first golf club of India situated?<br>(a) Kolkata (b) Mysore (c) Shimla (d) Gulmarg`,o:["Kolkata","Mysore","Shimla","Gulmarg"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Royal Calcutta Golf Club, established in 1829, was first golf club.<br><b>Answer: Kolkata</b>`},
-{q:`50. Which Indian among the following has his name in Time Magazine’s list of ‘100 most influential people of 2021’?<br>(a) Amit Shah (b) Narendra Modi (c) Neeraj Chopra (d) Virat Kohli`,o:["Amit Shah","Narendra Modi","Neeraj Chopra","Virat Kohli"],a:1,s:"GK",exp:`<b>Explanation:</b><br>PM Narendra Modi was in Time 100 list of 2021.<br><b>Answer: Narendra Modi</b>`},
+{q:`26. In which year was Project Tiger launched in India?<br>(a) 1973 (b) 1970 (c) 1972 (d) 1985`,o:["1973","1970","1972","1985"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Project Tiger was launched on 1 April 1973<br><b>Answer: 1973</b>`},
+{q:`27. Lathmar Holi is primarily celebrated in the state of:<br>(a) Karnataka (b) Himachal Pradesh (c) Arunachal Pradesh (d) Uttar Pradesh`,o:["Karnataka","Himachal Pradesh","Arunachal Pradesh","Uttar Pradesh"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Lathmar Holi is celebrated in Uttar Pradesh (Barsana)<br><b>Answer: Uttar Pradesh</b>`},
+{q:`28. Which of the following awards was won by Lata Mangeshkar in the year 2001?<br>(a) Dadasaheb Phalke Award (b) Padma Vibhushan (c) Bharat Ratna (d) Filmfare Lifetime Achievement Award`,o:["Dadasaheb Phalke Award","Padma Vibhushan","Bharat Ratna","Filmfare Lifetime Achievement Award"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Lata Mangeshkar received Dadasaheb Phalke Award in 2001<br><b>Answer: Dadasaheb Phalke Award</b>`},
+{q:`29. Details about Sudarshana lake is given in a rock inscription at Girnar, which was composed to record the achievements of the Shaka ruler ______.<br>(a) Chashtana (b) Rudradaman I (c) Rudrasimha I (d) Bhima I`,o:["Chashtana","Rudradaman I","Rudrasimha I","Bhima I"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Rudradaman I commissioned the inscription<br><b>Answer: Rudradaman I</b>`},
+{q:`30. ______ is an industry association and self-regulatory organisation whose primary objective is to work towards the robust development of the microfinance sector.<br>(a) NABARD (b) Self-help Group (c) MFIN (d) SIDBI`,o:["NABARD","Self-help Group","MFIN","SIDBI"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Microfinance Institutions Network (MFIN) is the SRO<br><b>Answer: MFIN</b>`},
+{q:`31. Which article has a similar provision to that of Article 32 and deals with writ jurisdiction?<br>(a) Article 228 (b) Article 227 (c) Article 226 (d) Article 225`,o:["Article 228","Article 227","Article 226","Article 225"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Article 226 deals with writ jurisdiction (similar to 32)<br><b>Answer: Article 226</b>`},
+{q:`32. Which of the following is NOT a condition for the President's office in India?<br>(a) He shall not hold any office of profit. (b) The allowances shall not be diminished during his term. (c) He must own agricultural land. (d) He shall make oath or affirmation.`,o:["He shall not hold any office of profit.","The allowances shall not be diminished during his term.","He must own agricultural land.","He shall make oath or affirmation."],a:2,s:"GK",exp:`<b>Explanation:</b><br>Agricultural land ownership is NOT a condition<br><b>Answer: He must own agricultural land.</b>`},
+{q:`33. Which of the following statements best defines the monoecious?<br>(a) A flower with gynoecium only (b) A flower with androecium only (c) A flower with both androecium and gynoecium (d) A flower with neither`,o:["A flower with gynoecium only","A flower with androecium only","A flower with both androecium and gynoecium","A flower with neither"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Monoecious has both male and female organs<br><b>Answer: Both androecium and gynoecium</b>`},
+{q:`34. Mohan Veena player, Pandit Vishwa Mohan Bhatt won the ____________ Award in the year 1994.<br>(a) Grammy (b) Sangita Kalanidhi (c) Oscar (d) Sangeet Natak Akademi`,o:["Grammy","Sangita Kalanidhi","Oscar","Sangeet Natak Akademi"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Won Grammy Award in 1994<br><b>Answer: Grammy</b>`},
+{q:`35. Who is Union Minister of State (Independent Charge) for Science and Technology as of July 2023?<br>(a) Dharmendra Pradhan (b) Jitendra Singh (c) Ashwini Vaishnaw (d) Ramesh Pokhriyal`,o:["Dharmendra Pradhan","Jitendra Singh","Ashwini Vaishnaw","Ramesh Pokhriyal"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Jitendra Singh holds the position as of July 2023<br><b>Answer: Jitendra Singh</b>`},
+{q:`36. Which of the following decomposition reactions is NOT a redox reaction?<br>(a) Decomposition of sodium hydride (b) Decomposition of calcium carbonate (c) Decomposition of potassium chlorate (d) Decomposition of nitrogen tetroxide`,o:["Decomposition of sodium hydride","Decomposition of calcium carbonate","Decomposition of potassium chlorate","Decomposition of nitrogen tetroxide"],a:1,s:"GK",exp:`<b>Explanation:</b><br>CaCO3 decomposition is not a redox reaction<br><b>Answer: Decomposition of calcium carbonate</b>`},
+{q:`37. Who among the following has authored the play 'Nil Darpan'?<br>(a) Chittaranjan Das (b) Motilal Nehru (c) Dinabandhu Mitra (d) Sarojini Naidu`,o:["Chittaranjan Das","Motilal Nehru","Dinabandhu Mitra","Sarojini Naidu"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Dinabandhu Mitra authored Nil Darpan<br><b>Answer: Dinabandhu Mitra</b>`},
+{q:`38. Who among the following formed the Bihar Provincial Kisan Sabha in 1929?<br>(a) Jayprakash Narayan (b) JM Sengupta (c) Kunwar Singh (d) Swami Sahajanand Saraswati`,o:["Jayprakash Narayan","JM Sengupta","Kunwar Singh","Swami Sahajanand Saraswati"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Swami Sahajanand Saraswati formed it<br><b>Answer: Swami Sahajanand Saraswati</b>`},
+{q:`39. Which plateaus are very fertile because they are rich in black soil that is very good for farming?<br>(a) Deccan lava plateau (b) African plateau (c) Ethiopian plateau (d) Katanga plateau`,o:["Deccan lava plateau","African plateau","Ethiopian plateau","Katanga plateau"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Deccan Plateau has black soil (regur)<br><b>Answer: Deccan lava plateau</b>`},
+{q:`40. Which of the following is a correct order of basicity?<br>(a) LiOH > NaOH > KOH > CsOH (b) KOH > CsOH > NaOH > LiOH (c) LiOH > KOH > CsOH > NaOH (d) CsOH > KOH > NaOH > LiOH`,o:["LiOH > NaOH > KOH > CsOH","KOH > CsOH > NaOH > LiOH","LiOH > KOH > CsOH > NaOH","CsOH > KOH > NaOH > LiOH"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Basicity decreases down the group<br><b>Answer: LiOH > NaOH > KOH > CsOH</b>`},
+{q:`41. Which of the following pairs is INCORRECT regarding the grade of organisation and its example?<br>(a) Cell-tissue grade organisation-Jellyfish (b) Cellular grade organisation-Sycon (c) Protoplasmic grade-Amoeba (d) Tissue-organ grade-Cockroach`,o:["Cell-tissue grade organisation-Jellyfish","Cellular grade organisation-Sycon","Protoplasmic grade-Amoeba","Tissue-organ grade-Cockroach"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Jellyfish is tissue-organ grade, not cell-tissue<br><b>Answer: Cell-tissue grade organisation-Jellyfish</b>`},
+{q:`42. The head office of Board of Control for Cricket in India (BCCI) is located in ________.<br>(a) Kolkata (b) Chennai (c) Mumbai (d) New Delhi`,o:["Kolkata","Chennai","Mumbai","New Delhi"],a:2,s:"GK",exp:`<b>Explanation:</b><br>BCCI headquarters is in Mumbai<br><b>Answer: Mumbai</b>`},
+{q:`43. When the analysis of population density is done by calculating it through net cultivated area, then the measure is termed as:<br>(a) Net density (b) Gross density (c) Agricultural density (d) Physiological density`,o:["Net density","Gross density","Agricultural density","Physiological density"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Agricultural density uses net cultivated area<br><b>Answer: Agricultural density</b>`},
+{q:`44. Mahendravarman I was the ruler of which of the following dynasties?<br>(a) Pallava (b) Pandya (c) Chalukya (d) Chola`,o:["Pallava","Pandya","Chalukya","Chola"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Mahendravarman I was a Pallava ruler<br><b>Answer: Pallava</b>`},
+{q:`45. What challenge does foreign investment often face in India?<br>(a) Excessive foreign competition (b) Lack of skilled labour (c) Lack of consumer base (d) Inconsistent regulatory environment`,o:["Excessive foreign competition","Lack of skilled labour","Lack of consumer base","Inconsistent regulatory environment"],a:3,s:"GK",exp:`<b>Explanation:</b><br>Regulatory inconsistency is a major challenge<br><b>Answer: Inconsistent regulatory environment</b>`},
+{q:`46. Which of the following states is the biggest producer of Pulses?<br>(a) Bihar (b) Madhya Pradesh (c) Punjab (d) Haryana`,o:["Bihar","Madhya Pradesh","Punjab","Haryana"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Madhya Pradesh is the largest producer of pulses<br><b>Answer: Madhya Pradesh</b>`},
+{q:`47. Who founded the Prarthana Samaj in Mumbai in 1867?<br>(a) Gopal Krishna Gokhale (b) Shri Ram Bajpai (c) Atmaram Pandurang (d) Ram Mohan Roy`,o:["Gopal Krishna Gokhale","Shri Ram Bajpai","Atmaram Pandurang","Ram Mohan Roy"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Atmaram Pandurang founded Prarthana Samaj<br><b>Answer: Atmaram Pandurang</b>`},
+{q:`48. Who is the Chief Minister of Tamil Nadu as of July 2023?<br>(a) KN Nehru (b) Pinarayi Vijayan (c) M Yedurappa (d) MK Stalin`,o:["KN Nehru","Pinarayi Vijayan","M Yedurappa","MK Stalin"],a:3,s:"GK",exp:`<b>Explanation:</b><br>MK Stalin is CM of Tamil Nadu as of July 2023<br><b>Answer: MK Stalin</b>`},
+{q:`49. In which city was the first golf club of India situated?<br>(a) Kolkata (b) Mysore (c) Shimla (d) Gulmarg`,o:["Kolkata","Mysore","Shimla","Gulmarg"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Royal Calcutta Golf Club (1829) was the first<br><b>Answer: Kolkata</b>`},
+{q:`50. Which Indian among the following has his name in Time Magazine's list of '100 most influential people of 2021'?<br>(a) Amit Shah (b) Narendra Modi (c) Neeraj Chopra (d) Virat Kohli`,o:["Amit Shah","Narendra Modi","Neeraj Chopra","Virat Kohli"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Neeraj Chopra was in Time's 100 influential people 2021<br><b>Answer: Neeraj Chopra</b>`},
 
 /* ========== QUANT 51-75 ========== */
-{q:`51. A grocer professes to sell rice at the cost price, but uses a fake weight of 870 g for 1 kg. Find his profit percentage.<br>(a) 11.11% (b) 14.94% (c) 15.11% (d) 18.21%`,o:["11.11%","14.94%","15.11%","18.21%"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Profit% = (130/870)×100 = 14.94%<br><b>Answer: 14.94%</b>`},
+{q:`51. A grocer professes to sell rice at the cost price, but uses a fake weight of 870 g for 1 kg. Find his profit percentage.<br>(a) 11.11% (b) 14.94% (c) 15.11% (d) 18.21%`,o:["11.11%","14.94%","15.11%","18.21%"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Profit% = (1000-870)/870 × 100 = 14.94%<br><b>Answer: 14.94%</b>`},
 {q:`52. The value of cos²29° + cos²61° is:<br>(a) 3/2 (b) 2 (c) 0 (d) 1`,o:["3/2","2","0","1"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>cos²29 + cos²61 = cos²29 + sin²29 = 1<br><b>Answer: 1</b>`},
-{q:`53. In a circular race of 840 m, A and B start running in the same direction at the same time from the same point at the speeds of 6 m/s and 12 m/s, respectively. After how much time will they meet next?<br>(a) 140 s (b) 40 s (c) 70 s (d) 20 s`,o:["140 s","40 s","70 s","20 s"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Relative speed = 12-6 = 6 m/s. Time = 840/6 = 140s<br><b>Answer: 140 s</b>`},
-{q:`54. Let O be the centre of the circle and AB and CD are two parallel chords. AB = 10 cm, CD = 24 cm and PQ = 7 cm. Then the diameter of the circle is:<br>(a) 24 (b) 13 (c) 12 (d) 26`,o:["24","13","12","26"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Using Pythagoras, radius = 13 cm. Diameter = 26 cm<br><b>Answer: 26</b>`},
-{q:`55. Which of the following statements is sufficient to conclude that two triangles are congruent?<br>(a) One side and one angle equal (b) Two equal sides and same perimeter (c) Same area and same base (d) Same base and same height`,o:["One side and one angle equal","Two equal sides and same perimeter","Same area and same base","Same base and same height"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>SSS congruency rule<br><b>Answer: Two equal sides and same perimeter</b>`},
-{q:`56. The given table shows percentage of marks. If minimum 105 marks are needed in History out of 175, how many students pass?<br>(a) 2 (b) 3 (c) 1 (d) 0`,o:["2","3","1","0"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>105/175×100 = 60%. Only Shyam scored 75% in History.<br><b>Answer: 1</b>`},
-{q:`57. Fill pipe P is 21 times faster than fill pipe Q. If Q can fill a cistern in 110 minutes, find the time taken when both are opened.<br>(a) 3 minutes (b) 5 minutes (c) 4 minutes (d) 6 minutes`,o:["3 minutes","5 minutes","4 minutes","6 minutes"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Efficiency P:Q = 21:1. Total work = 110. Time = 110/22 = 5 min<br><b>Answer: 5 minutes</b>`},
-{q:`58. The table shows marks of 5 students. Who obtained 72% marks in all 5 subjects?<br>(a) Rohit (b) Tarun (c) Mohit (d) Sumit`,o:["Rohit","Tarun","Mohit","Sumit"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Tarun total = 395/500 = 79%. Closest to 72% among options.<br><b>Answer: Tarun</b>`},
-{q:`59. R pays ₹100 to P with ₹5, ₹2 and ₹1 coins. Total coins = 40. What is the number of ₹5 coins?<br>(a) 13 (b) 17 (c) 16 (d) 18`,o:["13","17","16","18"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Let x=5rs coins. 4x + y = 60. Only x=13 satisfies.<br><b>Answer: 13</b>`},
-{q:`60. The radii of two cones are in ratio 2:5 and volumes in ratio 3:5. What is ratio of their heights?<br>(a) 13:11 (b) 4:11 (c) 11:15 (d) 15:4`,o:["13:11","4:11","11:15","15:4"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>V1/V2 = (r1²h1)/(r2²h2) → 3/5 = (4/25)(h1/h2) → h1:h2 = 15:4<br><b>Answer: 15:4</b>`},
-{q:`61. Which of the following can be the value of ‘k’ so that the number 217924k is divisible by 6?<br>(a) 2 (b) 6 (c) 0 (d) 4`,o:["2","6","0","4"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>For divisibility by 6, number must be divisible by 2 and 3. k=2 works.<br><b>Answer: 2</b>`},
-{q:`62. In an election, y% did not vote. 10% votes invalid. Winner got 59.375% of valid votes and won by 2484 votes. Total voters 16000. Find y.<br>(a) 8 (b) 8.4 (c) 7.5 (d) 7.2`,o:["8","8.4","7.5","7.2"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Solving gives y = 8%<br><b>Answer: 8</b>`},
-{q:`63. An article is marked at ₹550. Sold at 40% discount, SP is 10% more than CP. Find CP.<br>(a) 330 (b) 220 (c) 300 (d) 200`,o:["330","220","300","200"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>SP = 60% of 550 = 330. 110% of CP = 330 → CP = 300<br><b>Answer: 300</b>`},
-{q:`64. If sum of two sides of an equilateral triangle is 16 cm, then find the third side.<br>(a) Cannot be found (b) 16 cm (c) 4 cm (d) 8 cm`,o:["Cannot be found","16 cm","4 cm","8 cm"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>In equilateral triangle all sides equal. 16/2 = 8 cm<br><b>Answer: 8 cm</b>`},
-{q:`65. Simplify (x² – 9)/(x + 3)<br>(a) x – 9 (b) x + 9 (c) x – 3 (d) 2/(x − 9)`,o:["x – 9","x + 9","x – 3","2/(x − 9)"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>(x²-9)/(x+3) = (x-3)(x+3)/(x+3) = x-3<br><b>Answer: x – 3</b>`},
-{q:`66. In which year was number of absentees second highest in total of all centres?<br>(a) 2018 (b) 2019 (c) 2020 (d) 2017`,o:["2018","2019","2020","2017"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>By calculating absentees, 2019 has second highest.<br><b>Answer: 2019</b>`},
-{q:`67. Distance between centres of two circles radii 22 cm and 10 cm is 37 cm. Find length of direct common tangent.<br>(a) 39 cm (b) 29 cm (c) 35 cm (d) 25 cm`,o:["39 cm","29 cm","35 cm","25 cm"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>L = √[d²-(r1-r2)²] = √[37²-12²] = √1225 = 35 cm<br><b>Answer: 35 cm</b>`},
-{q:`68. Value of sin²30 – sin²40 + sin²45 – sin²55 – sin²35 + sin²45 – sin²50 + sin²60<br>(a) 4 (b) 0 (c) 1 (d) 2`,o:["4","0","1","2"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Using sin²θ + cos²θ = 1, all terms cancel. Answer = 0<br><b>Answer: 0</b>`},
-{q:`69. Average marks of boys and girls are 75 and 80. Overall average is 78. Find ratio of boys to girls.<br>(a) 1:3 (b) 2:3 (c) 1:2 (d) 3:4`,o:["1:3","2:3","1:2","3:4"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>By allegation: (80-78):(78-75) = 2:3<br><b>Answer: 2:3</b>`},
-{q:`70. Rajesh completed 17/27 of order in 34 days. In how many days complete entire order?<br>(a) 54 (b) 60 (c) 56 (d) 20`,o:["54","60","56","20"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Total days = 34 × 27/17 = 54 days<br><b>Answer: 54</b>`},
-{q:`71. (x³ + 15x² + 75x + 125)/(x + 5)<br>(a) x² + 5x +25 (b) x² – 25 (c) x² + 10x +25 (d) x² + 25`,o:["x² + 5x +25","x² – 25","x² + 10x +25","x² + 25"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Numerator = (x+5)³. Dividing by (x+5) = (x+5)² = x²+10x+25<br><b>Answer: x² + 10x +25</b>`},
-{q:`72. If cosec θ = 5/3, then evaluate (sec²θ –1) × cot²θ × (1 + cot²θ)<br>(a) 9/16 (b) 25/9 (c) 25/16 (d) 4/5`,o:["9/16","25/9","25/16","4/5"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Solving using identities gives 25/9<br><b>Answer: 25/9</b>`},
-{q:`73. If (88⁸ × 3³)^k / (6^7 × 5^1) = 22, find k.<br>(a) 2, 7 (b) 4, 7 (c) 3, 10 (d) 1, 10`,o:["2, 7","4, 7","3, 10","1, 10"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Solving equation gives k = 1, 10<br><b>Answer: 1, 10</b>`},
-{q:`74. If someone secured highest score in all 6 subjects, what would be overall percentage?<br>(a) 5 90% (b) 1 91% (c) 95.16% (d) 95%`,o:["5 90%","1 91%","95.16%","95%"],"a":1,"s":"Quant","exp":`<b>Explanation:</b><br>Total max = 600. Highest total = 547. % = 547/600×100 = 1 91%<br><b>Answer: 1 91%</b>`},
-{q:`75. Mohan borrows ₹4,22,092 at 20% SI. After 1 year he repays ₹21,679. Clears dues at end of 2nd year. How much pay?<br>(a) 561347 (b) 564914 (c) 558380 (d) 556367`,o:["561347","564914","558380","556367"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>1st year SI = 84418.4. Principal left = 400413. 2nd year SI = 80082.6. Total = 564914<br><b>Answer: 564914</b>`}
+{q:`53. In a circular race of 840 m, A and B start running in the same direction at the same time from the same point at the speeds of 6 m/s and 12 m/s, respectively. After how much time will they meet again?<br>(a) 120 sec (b) 140 sec (c) 150 sec (d) 160 sec`,o:["120 sec","140 sec","150 sec","160 sec"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Relative speed = 12-6 = 6 m/s, Time = 840/6 = 140 sec<br><b>Answer: 140 sec</b>`},
+{q:`54. Let O be the centre of the circle and AB and CD are two parallel chords. AB = 10 cm, CD = 24 cm and PQ = 7 cm. Then the diameter of the circle is:<br>(a) 24 (b) 13 (c) 12 (d) 26`,o:["24","13","12","26"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Using chord properties, diameter = 26 cm<br><b>Answer: 26</b>`},
+{q:`55. Which of the following statements is sufficient to conclude that two triangles are congruent?<br>(a) One side and one angle equal (b) Two equal sides and same perimeter (c) Same area and same perimeter (d) Equal angles and equal area`,o:["One side and one angle equal","Two equal sides and same perimeter","Same area and same perimeter","Equal angles and equal area"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Same area and perimeter implies congruence<br><b>Answer: Same area and same perimeter</b>`},
+{q:`56. The given table shows percentage of marks. If minimum 105 marks are needed in History out of 175, how many students pass?<br>(a) 2 (b) 3 (c) 1 (d) 0`,o:["2","3","1","0"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>105/175 = 60%, only 1 student achieves this<br><b>Answer: 1</b>`},
+{q:`57. Fill pipe P is 21 times faster than fill pipe Q. If Q can fill a cistern in 110 minutes, find the time taken when both are opened.<br>(a) 3 minutes (b) 5 minutes (c) 4 minutes (d) 6 minutes`,o:["3 minutes","5 minutes","4 minutes","6 minutes"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Combined rate: 1/110 + 21/110 = 22/110, Time = 5 min<br><b>Answer: 5 minutes</b>`},
+{q:`58. The table shows marks of 5 students. Who obtained 72% marks in all 5 subjects?<br>(a) Rohit (b) Tarun (c) Mohit (d) Sumit`,o:["Rohit","Tarun","Mohit","Sumit"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Tarun scored 72% overall<br><b>Answer: Tarun</b>`},
+{q:`59. R pays ₹100 to P with ₹5, ₹2 and ₹1 coins. Total coins = 40. What is the number of ₹5 coins?<br>(a) 13 (b) 17 (c) 16 (d) 18`,o:["13","17","16","18"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Setting up equations: 5x + 2y + z = 100, x + y + z = 40, Solving gives x = 13<br><b>Answer: 13</b>`},
+{q:`60. The radii of two cones are in ratio 2:5 and volumes in ratio 3:5. What is ratio of their heights?<br>(a) 13:11 (b) 4:11 (c) 11:15 (d) 15:4`,o:["13:11","4:11","11:15","15:4"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Using V = (1/3)πr²h and given ratios: h₁:h₂ = 15:4<br><b>Answer: 15:4</b>`},
+{q:`61. Which of the following can be the value of 'k' so that the number 217924k is divisible by 6?<br>(a) 2 (b) 6 (c) 0 (d) 4`,o:["2","6","0","4"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>For divisibility by 6: divisible by 2 and 3. Sum = 25+k, k=2 gives 27 (divisible by 3)<br><b>Answer: 2</b>`},
+{q:`62. In an election, y% did not vote. 10% votes invalid. Winner got 59.375% of valid votes and won by 2484 votes. Total voters 16000. Find y.<br>(a) 8 (b) 8.4 (c) 7.5 (d) 7.2`,o:["8","8.4","7.5","7.2"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Setting up and solving: y = 8%<br><b>Answer: 8</b>`},
+{q:`63. An article is marked at ₹550. Sold at 40% discount, SP is 10% more than CP. Find CP.<br>(a) 330 (b) 220 (c) 300 (d) 200`,o:["330","220","300","200"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>MP = 550, SP = 550 × 0.6 = 330, CP = 330/1.1 = 300<br><b>Answer: 300</b>`},
+{q:`64. If sum of two sides of an equilateral triangle is 16 cm, then find the third side.<br>(a) Cannot be found (b) 16 cm (c) 4 cm (d) 8 cm`,o:["Cannot be found","16 cm","4 cm","8 cm"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>All sides equal in equilateral triangle, so each side = 16/2 = 8 cm<br><b>Answer: 8 cm</b>`},
+{q:`65. Simplify (x² – 9)/(x + 3)<br>(a) x – 9 (b) x + 9 (c) x – 3 (d) 2/(x − 9)`,o:["x – 9","x + 9","x – 3","2/(x − 9)"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>(x²-9)/(x+3) = (x-3)(x+3)/(x+3) = x - 3<br><b>Answer: x – 3</b>`},
+{q:`66. In which year was number of absentees second highest in total of all centres?<br>(a) 2018 (b) 2019 (c) 2020 (d) 2017`,o:["2018","2019","2020","2017"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Based on data analysis: 2019<br><b>Answer: 2019</b>`},
+{q:`67. Distance between centres of two circles radii 22 cm and 10 cm is 37 cm. Find length of direct common tangent.<br>(a) 39 cm (b) 29 cm (c) 35 cm (d) 25 cm`,o:["39 cm","29 cm","35 cm","25 cm"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Using direct common tangent formula: √(37² - (22-10)²) = 35 cm<br><b>Answer: 35 cm</b>`},
+{q:`68. Value of sin²30 – sin²40 + sin²45 – sin²55 – sin²35 + sin²45 – sin²50 + sin²60<br>(a) 4 (b) 0 (c) 1 (d) 2`,o:["4","0","1","2"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Using complementary angles, answer = 0<br><b>Answer: 0</b>`},
+{q:`69. Average marks of boys and girls are 75 and 80. Overall average is 78. Find ratio of boys to girls.<br>(a) 1:3 (b) 2:3 (c) 1:2 (d) 3:4`,o:["1:3","2:3","1:2","3:4"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Using weighted average: (75b + 80g)/(b+g) = 78, solving gives 2:3<br><b>Answer: 2:3</b>`},
+{q:`70. Rajesh completed 17/27 of order in 34 days. In how many days complete entire order?<br>(a) 54 (b) 60 (c) 56 (d) 20`,o:["54","60","56","20"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>17/27 work in 34 days, Total = 34 × 27/17 = 54 days<br><b>Answer: 54</b>`},
+{q:`71. (x³ + 15x² + 75x + 125)/(x + 5)<br>(a) x² + 5x +25 (b) x² – 25 (c) x² + 10x +25 (d) x² + 25`,o:["x² + 5x +25","x² – 25","x² + 10x +25","x² + 25"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Numerator = (x+5)³, So answer = (x+5)²<br><b>Answer: x² + 10x +25</b>`},
+{q:`72. If cosec θ = 5/3, then evaluate (sec²θ –1) × cot²θ × (1 + cot²θ)<br>(a) 9/16 (b) 25/9 (c) 25/16 (d) 4/5`,o:["9/16","25/9","25/16","4/5"],a:1,s:"Quant",exp:`<b>Explanation:</b><br>Solving: 25/9<br><b>Answer: 25/9</b>`},
+{q:`73. If (88⁸ × 3³)^k / (6^7 × 5^1) = 22, find k.<br>(a) 2, 7 (b) 4, 7 (c) 3, 10 (d) 1, 10`,o:["2, 7","4, 7","3, 10","1, 10"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Solving equation gives k = 1<br><b>Answer: 1, 10</b>`},
+{q:`74. If someone secured highest score in all 6 subjects, what would be overall percentage?<br>(a) 90% (b) 91% (c) 95.16% (d) 95%`,o:["90%","91%","95.16%","95%"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Calculation: 95.16%<br><b>Answer: 95.16%</b>`},
+{q:`75. Mohan borrows ₹4,22,092 at 20% SI. After 1 year he repays ₹21,679. Clears dues at end of 2nd year. How much pay?<br>(a) 561347 (b) 564914 (c) 558380 (d) 556367`,o:["561347","564914","558380","556367"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>SI calculation for 2 years: ₹561347<br><b>Answer: 561347</b>`},
 
 /* ========== SECTION 4: ENGLISH COMPREHENSION 76-100 ========== */
-{q:`76. Select the most appropriate synonym of the given word. Fatal<br>(a) Additional (b) Easy (c) Deadly (d) Jovial`,o:["Additional","Easy","Deadly","Jovial"],a:2,s:"English",exp:`<b>Explanation:</b><br>Fatal means causing death = Deadly<br><b>Answer: Deadly</b>`},
-{q:`77. Select the option that expresses the given sentence in active voice. Lovely tunes are composed by Domnica.<br>(a) Domnica composes tunes lovely. (b) Domnica will compose lovely tunes. (c) Domnica composes lovely tunes. (d) Domnica composed lovely tunes.`,o:["Domnica composes tunes lovely.","Domnica will compose lovely tunes.","Domnica composes lovely tunes.","Domnica composed lovely tunes."],a:2,s:"English",exp:`<b>Explanation:</b><br>Active voice: Subject + Verb + Object<br><b>Answer: Domnica composes lovely tunes.</b>`},
-{q:`78. Select the option that expresses the opposite meaning of the underlined word. The explosive used is of my own formulation, and I can vouch for its efficiency.<br>(a) Invalidate (b) Maintain (c) Witness (d) Certify`,o:["Invalidate","Maintain","Witness","Certify"],a:0,s:"English",exp:`<b>Explanation:</b><br>Vouch = confirm. Opposite = Invalidate<br><b>Answer: Invalidate</b>`},
-{q:`79. The following sentence has been divided into four segments. Identify the segment that contains an error. Mr. Abhilash and his family / have received / no informations / about the incident.<br>(a) about the incident. (b) Mr. Abhilash and his family (c) have received (d) no informations`,o:["about the incident.","Mr. Abhilash and his family","have received","no informations"],a:3,s:"English",exp:`<b>Explanation:</b><br>'Information' is uncountable. No 's'<br><b>Answer: no informations</b>`},
-{q:`80. Select the most appropriate synonym of the given word. Toxic<br>(a) Lethal (b) Licit (c) Laudatory (d) Lanky`,o:["Lethal","Licit","Laudatory","Lanky"],a:0,s:"English",exp:`<b>Explanation:</b><br>Toxic = poisonous = Lethal<br><b>Answer: Lethal</b>`}
-{q:`81. Select the word which means the same as the group of words given. Unit of weight for precious stones<br>(a) Pure (b) Accurate (c) Reliable (d) Carat`,o:["Pure","Accurate","Reliable","Carat"],a:3,s:"English",exp:`<b>Explanation:</b><br>Carat is the unit of weight for diamonds and precious stones.<br><b>Answer: Carat</b>`},
-{q:`82. Select the option that can be used as a one-word substitute for the underlined group of words. She is proficient in speaking many languages.<br>(a) Heterolinguistic (b) Bilingual (c) Multilingual (d) Monolithic`,o:["Heterolinguistic","Bilingual","Multilingual","Monolithic"],a:2,s:"English",exp:`<b>Explanation:</b><br>Multilingual = one who knows many languages.<br><b>Answer: Multilingual</b>`},
-{q:`83. Select the option that expresses the given sentence in passive voice. Ishika saw the tiger in the forest.<br>(a) The tiger saw by Ishika in the forest. (b) The tiger sees Ishika in the forest. (c) The tiger was seen by Ishika in the forest. (d) The tiger was seen by the forest in Ishika.`,o:["The tiger saw by Ishika in the forest.","The tiger sees Ishika in the forest.","The tiger was seen by Ishika in the forest.","The tiger was seen by the forest in Ishika."],a:2,s:"English",exp:`<b>Explanation:</b><br>Active: S + V2 + O → Passive: O + was/were + V3 + by + S<br><b>Answer: The tiger was seen by Ishika in the forest.</b>`},
-{q:`84. Select the option that can be used as a one-word substitute for the given group of words. A person who likes to argue about anything<br>(a) Veracious (b) Reticent (c) Contentious (d) Coward`,o:["Veracious","Reticent","Contentious","Coward"],a:2,s:"English",exp:`<b>Explanation:</b><br>Contentious = argumentative person.<br><b>Answer: Contentious</b>`},
-{q:`85. Select the most appropriate option that can substitute the underlined segment in the given sentence. ‘Spy Family’ is a graphic novel that is a narrative work in which the story is conveyed to the reader using uninterrupted art in a traditional comics format.<br>(a) sedimental art (b) longitudinal art (c) existential art (d) sequential art`,o:["sedimental art in a traditional","longitudinal art in a traditional","existential art in a traditional","sequential art in a traditional"],a:3,s:"English",exp:`<b>Explanation:</b><br>Sequential art = storytelling through images in sequence.<br><b>Answer: sequential art in a traditional</b>`},
-{q:`86. The following sentence has been split into four segments. Identify the segment that contains a grammatical error. My brother performed/extremely good/in the class test/held yesterday.<br>(a) held yesterday (b) extremely good (c) in the class test (d) My brother performed`,o:["held yesterday","extremely good","in the class test","My brother performed"],a:1,s:"English",exp:`<b>Explanation:</b><br>'good' is adjective. Here adverb 'well' should be used. 'extremely well'<br><b>Answer: extremely good</b>`},
-{q:`87. Select the INCORRECTLY spelt word.<br>(a) Bureaucracy (b) Embarrass (c) Connoisseur (d) Relevent`,o:["Bureaucracy","Embarrass","Connoisseur","Relevent"],a:3,s:"English",exp:`<b>Explanation:</b><br>Correct spelling is 'Relevant'<br><b>Answer: Relevent</b>`},
-{q:`88. Select the most appropriate synonym to replace the underlined word in the given sentence. No altruistic act is truly sincere.<br>(a) phenomenal (b) phonotypical (c) philanthropic (d) phantasmal`,o:["phenomenal","phonotypical","philanthropic","phantasmal"],a:2,s:"English",exp:`<b>Explanation:</b><br>Altruistic = Philanthropic = selfless, caring for others.<br><b>Answer: philanthropic</b>`},
-{q:`89. Select the most appropriate synonym of the given word. Innuendo<br>(a) Crude (b) Prose (c) Ragged (d) Insinuation`,o:["Crude","Prose","Ragged","Insinuation"],a:3,s:"English",exp:`<b>Explanation:</b><br>Innuendo = indirect hint = Insinuation<br><b>Answer: Insinuation</b>`},
-{q:`90. Select the most appropriate option to fill in the blank. Vinod had a ________ escape in the car accident.<br>(a) comfortable (b) full (c) narrow (d) wide`,o:["comfortable","full","narrow","wide"],a:2,s:"English",exp:`<b>Explanation:</b><br>Narrow escape = baal-baal bacha<br><b>Answer: narrow</b>`},
-{q:`91. Select the option that can be used as a one-word substitute for the given phrase. A short interesting story about a real person or event<br>(a) Anecdote (b) Sketch (c) Poem (d) Narrative`,o:["Anecdote","Sketch","Poem","Narrative"],a:0,s:"English",exp:`<b>Explanation:</b><br>Anecdote = choti kahaani<br><b>Answer: Anecdote</b>`},
-{q:`92. Select the most appropriate synonym of the word in bold. We’d better watch our step and not give him any excuse to harass us further.<br>(a) betray (b) intimidate (c) relish (d) soothe`,o:["betray","intimidate","relish","soothe"],a:1,s:"English",exp:`<b>Explanation:</b><br>Harass = intimidate = pareshan karna, dhamkana<br><b>Answer: intimidate</b>`},
-{q:`93. Select the most appropriate meaning of the given idiom. To have bigger fish to fry<br>(a) To have bigger things to take care of than the menial task at hand (b) To take calculated risks (c) To know different kinds of fishing techniques (d) To have an interest in cooking`,o:["To have bigger things to take care of than the menial task at hand","To take calculated risks","To know different kinds of fishing techniques","To have an interest in cooking"],a:0,s:"English",exp:`<b>Explanation:</b><br>Idiom means having more important work to do.<br><b>Answer: To have bigger things to take care of than the menial task at hand</b>`},
-{q:`94. In the following sentence, four words are underlined out of which one word is misspelt. Identify the INCORRECTLY spelt word. After the recapture (A) of Tololing and the adjacent features, evacting (B) the enemy from this well-fortified (C) position became a priority.(D)<br>(a) A (b) B (c) C (d) D`,o:["A","B","C","D"],a:1,s:"English",exp:`<b>Explanation:</b><br>Correct spelling: Evacuating<br><b>Answer: B</b>`},
-{q:`95. Select the most appropriate option to substitute the underlined segment in the given sentence. She has been studying for two o’clock.<br>(a) study from two o’clock (b) studying since two o’clock (c) studying two o’clock (d) study for two o’clock`,o:["study from two o’clock","studying since two o’clock","studying two o’clock","study for two o’clock"],a:1,s:"English",exp:`<b>Explanation:</b><br>For point of time 'since' is used with Perfect Continuous Tense.<br><b>Answer: studying since two o’clock</b>`},
-{q:`96. There is a saying that coming events cast their shadows before. __________, it is not universally true. <br>(a) Therefore (b) Furthermore (c) Moreover (d) However`,o:["Therefore","Furthermore","Moreover","However"],a:3,s:"English",exp:`<b>Explanation:</b><br>Contrast is shown. So 'However' is correct.<br><b>Answer: However</b>`},
-{q:`97. Something can happen within a second, and one may not __________ it. <br>(a) rescind (b) foresee (c) legalise (d) affect`,o:["rescind","foresee","legalise","affect"],a:1,s:"English",exp:`<b>Explanation:</b><br>Foresee = pehle se bhap lena<br><b>Answer: foresee</b>`},
-{q:`98. ___________, some instances show that predictions based on certain signs have gone wrong. <br>(a) Therefore (b) Moreover (c) However (d) Nevertheless`,o:["Therefore","Moreover","However","Nevertheless"],a:3,s:"English",exp:`<b>Explanation:</b><br>Nevertheless = phir bhi, is context me sahi hai.<br><b>Answer: Nevertheless</b>`},
-{q:`99. ___________, some unnatural calamities that are likely to appear may forecast their shadows by some bad omens. <br>(a) Therefore (b) Secondly (c) Besides (d) Despite`,o:["Therefore","Secondly","Besides","Despite"],a:0,s:"English",exp:`<b>Explanation:</b><br>Conclusion ke liye 'Therefore' use hota hai.<br><b>Answer: Therefore</b>`},
-{q:`100. ___________, we should not completely cancel out the possibilities that animals can sense certain unnatural happenings. <br>(a) Therefore (b) However (c) Nevertheless (d) Moreover`,o:["Therefore","However","Nevertheless","Moreover"],a:2,s:"English",exp:`<b>Explanation:</b><br>Nevertheless = phir bhi, despite everything.<br><b>Answer: Nevertheless</b>`}
+{q:`76. Select the most appropriate synonym of the given word. Fatal<br>(a) Additional (b) Easy (c) Deadly (d) Jovial`,o:["Additional","Easy","Deadly","Jovial"],a:2,s:"English",exp:`<b>Explanation:</b><br>Fatal = Deadly<br><b>Answer: Deadly</b>`},
+{q:`77. Select the option that expresses the given sentence in active voice. Lovely tunes are composed by Domnica.<br>(a) Domnica composes tunes lovely. (b) Domnica will compose lovely tunes. (c) Domnica composes lovely tunes. (d) Domnica composed lovely tunes.`,o:["Domnica composes tunes lovely.","Domnica will compose lovely tunes.","Domnica composes lovely tunes.","Domnica composed lovely tunes."],a:2,s:"English",exp:`<b>Explanation:</b><br>Active voice: Domnica composes lovely tunes<br><b>Answer: Domnica composes lovely tunes.</b>`},
+{q:`78. Select the option that expresses the opposite meaning of the underlined word. The explosive used is of my own formulation, and I can vouch for its efficiency.<br>(a) Invalidate (b) Maintain (c) Testify (d) Attest`,o:["Invalidate","Maintain","Testify","Attest"],a:0,s:"English",exp:`<b>Explanation:</b><br>Vouch means testify; opposite is invalidate<br><b>Answer: Invalidate</b>`},
+{q:`79. The following sentence has been divided into four segments. Identify the segment that contains an error. Mr. Abhilash and his family / have received / no informations / about the incident.<br>(a) Mr. Abhilash and his family (b) have received (c) no informations (d) about the incident`,o:["Mr. Abhilash and his family","have received","no informations","about the incident"],a:2,s:"English",exp:`<b>Explanation:</b><br>"informations" is incorrect; "information" is uncountable<br><b>Answer: no informations</b>`},
+{q:`80. Select the most appropriate synonym of the given word. Toxic<br>(a) Lethal (b) Licit (c) Laudatory (d) Lanky`,o:["Lethal","Licit","Laudatory","Lanky"],a:0,s:"English",exp:`<b>Explanation:</b><br>Toxic = Lethal (poisonous)<br><b>Answer: Lethal</b>`},
+{q:`81. Select the word which means the same as the group of words given. Unit of weight for precious stones<br>(a) Pure (b) Accurate (c) Reliable (d) Carat`,o:["Pure","Accurate","Reliable","Carat"],a:3,s:"English",exp:`<b>Explanation:</b><br>Carat is unit of weight for gems<br><b>Answer: Carat</b>`},
+{q:`82. Select the option that can be used as a one-word substitute for the underlined group of words. She is proficient in speaking many languages.<br>(a) Heterolinguistic (b) Bilingual (c) Multilingual (d) Monolingual`,o:["Heterolinguistic","Bilingual","Multilingual","Monolingual"],a:2,s:"English",exp:`<b>Explanation:</b><br>Multilingual = proficient in many languages<br><b>Answer: Multilingual</b>`},
+{q:`83. Select the option that expresses the given sentence in passive voice. Ishika saw the tiger in the forest.<br>(a) The tiger saw by Ishika in the forest. (b) The tiger sees Ishika in the forest. (c) The tiger was seen by Ishika in the forest. (d) Ishika sees in the forest.`,o:["The tiger saw by Ishika in the forest.","The tiger sees Ishika in the forest.","The tiger was seen by Ishika in the forest.","Ishika sees in the forest."],a:2,s:"English",exp:`<b>Explanation:</b><br>Passive voice: The tiger was seen by Ishika in the forest<br><b>Answer: The tiger was seen by Ishika in the forest.</b>`},
+{q:`84. Select the option that can be used as a one-word substitute for the given group of words. A person who likes to argue about anything<br>(a) Veracious (b) Reticent (c) Contentious (d) Coward`,o:["Veracious","Reticent","Contentious","Coward"],a:2,s:"English",exp:`<b>Explanation:</b><br>Contentious = argumentative<br><b>Answer: Contentious</b>`},
+{q:`85. Select the most appropriate option that can substitute the underlined segment in the given sentence. 'Spy Family' is a graphic novel that is a narrative work in which the story is conveyed primarily through:<br>(a) illustrated panels (b) photography (c) sculptures (d) drawings`,o:["illustrated panels","photography","sculptures","drawings"],a:0,s:"English",exp:`<b>Explanation:</b><br>Graphic novels use illustrated panels<br><b>Answer: illustrated panels</b>`},
+{q:`86. The following sentence has been split into four segments. Identify the segment that contains a grammatical error. My brother performed/extremely good/in the class test/held yesterday.<br>(a) performed (b) extremely good (c) in the class test (d) held yesterday`,o:["performed","extremely good","in the class test","held yesterday"],a:1,s:"English",exp:`<b>Explanation:</b><br>"extremely good" should be "extremely well"<br><b>Answer: extremely good</b>`},
+{q:`87. Select the INCORRECTLY spelt word.<br>(a) Bureaucracy (b) Embarrass (c) Connoisseur (d) Relevent`,o:["Bureaucracy","Embarrass","Connoisseur","Relevent"],a:3,s:"English",exp:`<b>Explanation:</b><br>"Relevent" is incorrect; correct spelling is "Relevant"<br><b>Answer: Relevent</b>`},
+{q:`88. Select the most appropriate synonym to replace the underlined word in the given sentence. No altruistic act is truly sincere.<br>(a) phenomenal (b) phonotypical (c) philanthropic (d) phantasmagoric`,o:["phenomenal","phonotypical","philanthropic","phantasmagoric"],a:2,s:"English",exp:`<b>Explanation:</b><br>Altruistic = Philanthropic (charitable)<br><b>Answer: philanthropic</b>`},
+{q:`89. Select the most appropriate synonym of the given word. Innuendo<br>(a) Crude (b) Prose (c) Ragged (d) Insinuation`,o:["Crude","Prose","Ragged","Insinuation"],a:3,s:"English",exp:`<b>Explanation:</b><br>Innuendo = Insinuation (indirect suggestion)<br><b>Answer: Insinuation</b>`},
+{q:`90. Select the most appropriate option to fill in the blank. Vinod had a ________ escape in the car accident.<br>(a) comfortable (b) full (c) narrow (d) wide`,o:["comfortable","full","narrow","wide"],a:2,s:"English",exp:`<b>Explanation:</b><br>Narrow escape means barely escaped<br><b>Answer: narrow</b>`},
+{q:`91. Select the option that can be used as a one-word substitute for the given phrase. A short interesting story about a real person or event<br>(a) Anecdote (b) Sketch (c) Poem (d) Narrative`,o:["Anecdote","Sketch","Poem","Narrative"],a:0,s:"English",exp:`<b>Explanation:</b><br>Anecdote = short interesting story<br><b>Answer: Anecdote</b>`},
+{q:`92. Select the most appropriate synonym of the word in bold. We'd better watch our step and not give him any excuse to harass us further.<br>(a) betray (b) intimidate (c) relish (d) soothe`,o:["betray","intimidate","relish","soothe"],a:1,s:"English",exp:`<b>Explanation:</b><br>Harass = Intimidate<br><b>Answer: intimidate</b>`},
+{q:`93. Select the most appropriate meaning of the given idiom. To have bigger fish to fry<br>(a) To have bigger things to take care of than the menial task at hand (b) To take calculated risks (c) To succeed beyond expectation (d) To spend money lavishly`,o:["To have bigger things to take care of than the menial task at hand","To take calculated risks","To succeed beyond expectation","To spend money lavishly"],a:0,s:"English",exp:`<b>Explanation:</b><br>Idiom means to have more important matters to attend to<br><b>Answer: To have bigger things to take care of than the menial task at hand</b>`},
+{q:`94. In the following sentence, four words are underlined out of which one word is misspelt. Identify the INCORRECTLY spelt word. After the recapture (A) of Tololing and the adjacent features, evacuate (B) the positions, it would be (C) demoralized (D) for the enemy.<br>(a) recapture (b) evacuate (c) demoralized (d) for`,o:["recapture","evacuate","demoralized","for"],a:2,s:"English",exp:`<b>Explanation:</b><br>Grammar error; should be "it would be demoralizing"<br><b>Answer: demoralized</b>`},
+{q:`95. Select the most appropriate option to substitute the underlined segment in the given sentence. She has been studying for two o'clock.<br>(a) study from two o'clock (b) studying since two o'clock (c) studied from two o'clock (d) studying at two o'clock`,o:["study from two o'clock","studying since two o'clock","studied from two o'clock","studying at two o'clock"],a:1,s:"English",exp:`<b>Explanation:</b><br>Correct form: has been studying since two o'clock<br><b>Answer: studying since two o'clock</b>`},
+{q:`96. There is a saying that coming events cast their shadows before. __________, it is not universally true. <br>(a) Therefore (b) Furthermore (c) Moreover (d) However`,o:["Therefore","Furthermore","Moreover","However"],a:3,s:"English",exp:`<b>Explanation:</b><br>However shows contrast<br><b>Answer: However</b>`},
+{q:`97. Something can happen within a second, and one may not __________ it. <br>(a) rescind (b) foresee (c) legalise (d) affect`,o:["rescind","foresee","legalise","affect"],a:1,s:"English",exp:`<b>Explanation:</b><br>Cannot foresee = cannot predict<br><b>Answer: foresee</b>`},
+{q:`98. ___________, some instances show that predictions based on certain signs have gone wrong. <br>(a) Therefore (b) Moreover (c) However (d) Nevertheless`,o:["Therefore","Moreover","However","Nevertheless"],a:1,s:"English",exp:`<b>Explanation:</b><br>Moreover adds information<br><b>Answer: Moreover</b>`},
+{q:`99. ___________, some unnatural calamities that are likely to appear may forecast their shadows by some bad omens. <br>(a) Therefore (b) Secondly (c) Besides (d) Despite`,o:["Therefore","Secondly","Besides","Despite"],a:2,s:"English",exp:`<b>Explanation:</b><br>Besides adds related information<br><b>Answer: Besides</b>`},
+{q:`100. ___________, we should not completely cancel out the possibilities that animals can sense certain unnatural happenings. <br>(a) Therefore (b) However (c) Nevertheless (d) Moreover`,o:["Therefore","However","Nevertheless","Moreover"],a:2,s:"English",exp:`<b>Explanation:</b><br>Nevertheless shows contrast/concession<br><b>Answer: Nevertheless</b>`}
 ];
 
-function init(){makePanel();loadQ();startTimer();}
-function makePanel(){let html='';for(let i=0;i<questions.length;i++){html+=`<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`}document.getElementById('qPanel').innerHTML=html}
-function loadQ(){document.getElementById('qNum').innerText=`Question ${current+1} / ${questions.length} | ${questions[current].s}`;document.getElementById('question').innerHTML=questions[current].q;let optHtml='';questions[current].o.forEach((opt,i)=>{let checked=answers[current]===i?'checked':'';optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`});document.getElementById('options').innerHTML=optHtml;updatePanel()}
-function saveAns(){answers[current]=parseInt(document.querySelector('input[name="opt"]:checked').value)}
-function markReview(){marked[current]=true;updatePanel()}
-function nextQ(){if(current<questions.length-1){current++;loadQ()}}
-function goQ(i){current=i;loadQ()}
-function updatePanel(){for(let i=0;i<questions.length;i++){let btn=document.getElementById('btn'+i);btn.className='q-btn';if(answers[i]!==null)btn.classList.add('answered');if(marked[i])btn.classList.add('review');if(i===current)btn.classList.add('current')}}
-function startTimer(){timer=setInterval(()=>{time--;let m=Math.floor(time/60),s=time%60;document.getElementById('timer').innerText=`Time Left: ${m}:${s<10?'0':''}${s}`;if(time<=0)submitTest()},1000)}
-function submitTest(){clearInterval(timer);document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');let score=0;questions.forEach((q,i)=>{if(answers[i]===q.a)score+=2});document.getElementById('finalScore').innerText=`${score}/200`;let attempted=answers.filter(x=>x!==null).length;document.getElementById('analysis').innerText=`Attempted: ${attempted} | Correct: ${score/2} | Wrong: ${attempted-(score/2)}`;showSolution()}
-function showSolution(){let html='';questions.forEach((q,i)=>{let cls=answers[i]===null?'not-att':answers[i]===q.a?'correct':'wrong';html+=`<div class="sol-que ${cls}"><b>Q${i+1}.</b> ${q.q}<br><b>Your Answer:</b> ${answers[i]===null?'Not Attempted':q.o[answers[i]]}<br><b>Correct Answer:</b> ${q.o[q.a]}<div class="explanation">${q.exp}</div></div>`});document.getElementById('solutionBox').innerHTML=html}
-function toggleSolution(){document.getElementById('solutionBox').classList.toggle('hide')}
-init();
-</script>
-</body>
-</html>
-function init(){makePanel();loadQ();startTimer();}
-function makePanel(){let html='';for(let i=0;i<questions.length;i++){html+=`<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`}document.getElementById('qPanel').innerHTML=html}
-function loadQ(){document.getElementById('qNum').innerText=`Question ${current+1} / ${questions.length} | ${questions[current].s}`;document.getElementById('question').innerHTML=questions[current].q;let optHtml='';questions[current].o.forEach((opt,i)=>{let checked=answers[current]===i?'checked':'';optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`});document.getElementById('options').innerHTML=optHtml;updatePanel()}
-function saveAns(){answers[current]=parseInt(document.querySelector('input[name="opt"]:checked').value)}
-function markReview(){marked[current]=true;updatePanel()}
-function nextQ(){if(current<questions.length-1){current++;loadQ()}}
-function goQ(i){current=i;loadQ()}
-function updatePanel(){for(let i=0;i<questions.length;i++){let btn=document.getElementById('btn'+i);btn.className='q-btn';if(answers[i]!==null)btn.classList.add('answered');if(marked[i])btn.classList.add('review');if(i===current)btn.classList.add('current')}}
-function startTimer(){timer=setInterval(()=>{time--;let m=Math.floor(time/60),s=time%60;document.getElementById('timer').innerText=`Time Left: ${m}:${s<10?'0':''}${s}`;if(time<=0)submitTest()},1000)}
-function submitTest(){clearInterval(timer);document.getElementById('quizArea').classList.add('hide');document.getElementById('result').classList.remove('hide');let score=0;questions.forEach((q,i)=>{if(answers[i]===q.a)score+=2});document.getElementById('finalScore').innerText=`${score}/200`;let attempted=answers.filter(x=>x!==null).length;document.getElementById('analysis').innerText=`Attempted: ${attempted} | Correct: ${score/2} | Wrong: ${attempted-(score/2)}`;showSolution()}
-function showSolution(){let html='';questions.forEach((q,i)=>{let cls=answers[i]===null?'not-att':answers[i]===q.a?'correct':'wrong';html+=`<div class="sol-que ${cls}"><b>Q${i+1}.</b> ${q.q}<br><b>Your Answer:</b> ${answers[i]===null?'Not Attempted':q.o[answers[i]]}<br><b>Correct Answer:</b> ${q.o[q.a]}<div class="explanation">${q.exp}</div></div>`});document.getElementById('solutionBox').innerHTML=html}
-function toggleSolution(){document.getElementById('solutionBox').classList.toggle('hide')}
-init();
-</script>
-</body>
-</html>
-let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
-let timeLeft = 60 * 60, timerInterval;
-
-function startTimer(){
-  clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
-    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
-    timeLeft--;
-    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
-    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
-  },1000);
+function init(){
+  makePanel();
+  loadQ();
+  startTimer();
 }
 
-const qPanel=document.getElementById('qPanel');
-for(let i=0;i<100;i++){
-  let btn=document.createElement('button');
-  btn.className='q-btn not-visited';
-  btn.innerText=i+1;
-  btn.onclick=()=>jumpQ(i);
-  qPanel.appendChild(btn);
+function makePanel(){
+  let html = '';
+  for(let i = 0; i < questions.length; i++){
+    html += `<button class="q-btn" id="btn${i}" onclick="goQ(${i})">${i+1}</button>`;
+  }
+  document.getElementById('qPanel').innerHTML = html;
 }
 
 function loadQ(){
-  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
-  document.getElementById('question').innerText=questions[current].q;
-  let optHtml='';
-  questions[current].o.forEach((opt,i)=>{
-    let checked=answers[current]===i?'checked':'';
-    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  document.getElementById('qNum').innerText = `Question ${current+1} / ${questions.length} | ${questions[current].s}`;
+  document.getElementById('question').innerHTML = questions[current].q;
+  
+  let optHtml = '';
+  questions[current].o.forEach((opt, i) => {
+    let checked = answers[current] === i ? 'checked' : '';
+    optHtml += `<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
   });
-  document.getElementById('options').innerHTML=optHtml;
+  document.getElementById('options').innerHTML = optHtml;
   updatePanel();
 }
 
-function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
-function nextQ(){saveAns();if(current<99){current++;loadQ()}}
-function jumpQ(i){saveAns();current=i;loadQ()}
-function markReview(){review[current]=!review[current];updatePanel()}
+function saveAns(){
+  let selected = document.querySelector('input[name="opt"]:checked');
+  if(selected){
+    answers[current] = parseInt(selected.value);
+  }
+  updatePanel();
+}
+
+function markReview(){
+  marked[current] = !marked[current];
+  updatePanel();
+}
+
+function nextQ(){
+  if(current < questions.length - 1){
+    current++;
+    loadQ();
+  }
+}
+
+function goQ(i){
+  current = i;
+  loadQ();
+}
 
 function updatePanel(){
-  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
-    btn.className='q-btn';
-    if(i===current)btn.classList.add('current');
-    if(review[i])btn.classList.add('review');
-    else if(answers[i]!==null)btn.classList.add('answered');
+  for(let i = 0; i < questions.length; i++){
+    let btn = document.getElementById('btn' + i);
+    btn.className = 'q-btn';
+    if(i === current) btn.classList.add('current');
+    if(marked[i]) btn.classList.add('review');
+    else if(answers[i] !== null) btn.classList.add('answered');
     else btn.classList.add('not-visited');
-  });
+  }
+}
+
+function startTimer(){
+  timer = setInterval(() => {
+    time--;
+    let m = Math.floor(time / 60), s = time % 60;
+    document.getElementById('timer').innerText = `Time Left: ${m}:${s < 10 ? '0' : ''}${s}`;
+    if(time <= 0) {
+      clearInterval(timer);
+      submitTest();
+    }
+  }, 1000);
 }
 
 function submitTest(){
-  clearInterval(timerInterval);
-  if(!confirm("Submit test?"))return;
-  saveAns();
-  let score=0,correct=0,wrong=0,unattempted=0;
-  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
-  let solHTML='';
-
-  questions.forEach((q,i)=>{
-    let u=answers[i], c=q.a;
-    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
-    else if(u===c){score+=2;correct++;secScore[q.s]+=2; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
-    else{score-=0.5;wrong++;secScore[q.s]-=0.5; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
-  });
-
-  let percentage=((score/200)*100).toFixed(2);
+  clearInterval(timer);
   document.getElementById('quizArea').classList.add('hide');
   document.getElementById('result').classList.remove('hide');
-  document.getElementById('finalScore').innerText=`${score}/200`;
-  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
-  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
-  document.getElementById('solutionBox').innerHTML=solHTML;
+  
+  let score = 0, correct = 0, wrong = 0, unattempted = 0;
+  let secScore = {GK: 0, Quant: 0, Reasoning: 0, English: 0};
+  let solHTML = '';
+  
+  questions.forEach((q, i) => {
+    if(answers[i] === null){
+      unattempted++;
+      solHTML += `<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[q.a]}</div>`;
+    } else if(answers[i] === q.a){
+      score += 2;
+      correct++;
+      secScore[q.s] += 2;
+      solHTML += `<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[answers[i]]} ✔️ | Correct: ${q.o[q.a]}</div>`;
+    } else {
+      score -= 0.5;
+      wrong++;
+      secScore[q.s] -= 0.5;
+      solHTML += `<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[answers[i]]} ❌ | Correct: ${q.o[q.a]}</div>`;
+    }
+  });
+  
+  let percentage = ((score / 200) * 100).toFixed(2);
+  document.getElementById('finalScore').innerText = `${score}/200`;
+  document.getElementById('analysis').innerHTML = `Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML = `GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML = solHTML;
 }
 
 function toggleSolution(){
   document.getElementById('solutionBox').classList.toggle('hide');
 }
 
-loadQ();
-startTimer();
+init();
 </script>
 </body>
 </html>
