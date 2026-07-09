@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bpsc-prelims-test2</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>BPSC Prelims Mock Test 02</h2>
+<div class="timer" id="timer">Time Left: 120:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/150</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+const questions = [
+{q:`<div class="section-head">BIHAR GK 1-30</div>1. The ancient university Vikramshila was established by: (a) Dharmapala (b) Gopala (c) Devapala (d) Mahipala`,o:["Dharmapala","Gopala","Devapala","Mahipala"],a:0,s:"Bihar History",exp:`<b>Explanation:</b><br>Vikramshila University was established by Pala king Dharmapala in 8th century<br><b>Answer: Dharmapala</b>`},
+{q:`2. The longest river flowing through Bihar is: (a) Son (b) Gandak (c) Ganga (d) Kosi`,o:["Son","Gandak","Ganga","Kosi"],a:2,s:"Bihar Geography",exp:`<b>Answer: Ganga</b> It flows ~445 km in Bihar`},
+{q:`3. Bihar was separated from Bengal in: (a) 1905 (b) 1912 (c) 1936 (d) 1947`,o:["1905","1912","1936","1947"],a:1,s:"Bihar History",exp:`<b>Answer: 1912</b> On 22 March 1912`},
+{q:`4. The state animal of Bihar is: (a) Tiger (b) Gaur (c) Bull (d) Nilgai`,o:["Tiger","Gaur","Bull","Nilgai"],a:2,s:"Bihar GK",exp:`<b>Answer: Bull</b>`},
+{q:`5. The famous Madhubani painting originated in: (a) Gaya (b) Darbhanga–Madhubani region (c) Patna (d) Bhagalpur`,o:["Gaya","Darbhanga–Madhubani region","Patna","Bhagalpur"],a:1,s:"Bihar Culture",exp:`<b>Answer: Darbhanga–Madhubani region</b>`},
+{q:`6. Which district is known as the Silk City of Bihar? (a) Muzaffarpur (b) Bhagalpur (c) Purnia (d) Gaya`,o:["Muzaffarpur","Bhagalpur","Purnia","Gaya"],a:1,s:"Bihar GK",exp:`<b>Answer: Bhagalpur</b>`},
+{q:`7. The Champaran Satyagraha took place in: (a) 1915 (b) 1917 (c) 1920 (d) 1930`,o:["1915","1917","1920","1930"],a:1,s:"Bihar History",exp:`<b>Answer: 1917</b> Led by Mahatma Gandhi`},
+{q:`8. Valmiki Tiger Reserve is located in: (a) West Champaran (b) Gaya (c) Rohtas (d) Jamui`,o:["West Champaran","Gaya","Rohtas","Jamui"],a:0,s:"Bihar Geography",exp:`<b>Answer: West Champaran</b>`},
+{q:`9. The capital of Magadha during the Mauryan period was: (a) Rajgir (b) Vaishali (c) Pataliputra (d) Nalanda`,o:["Rajgir","Vaishali","Pataliputra","Nalanda"],a:2,s:"Bihar History",exp:`<b>Answer: Pataliputra</b>`},
+{q:`10. The famous Shahi Litchi is mainly associated with: (a) Patna (b) Muzaffarpur (c) Gaya (d) Bhagalpur`,o:["Patna","Muzaffarpur","Gaya","Bhagalpur"],a:1,s:"Bihar Agriculture",exp:`<b>Answer: Muzaffarpur</b> GI tagged`},
+{q:`11. The Son River is a tributary of: (a) Yamuna (b) Ganga (c) Gandak (d) Kosi`,o:["Yamuna","Ganga","Gandak","Kosi"],a:1,s:"Bihar Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`12. Which district has the highest literacy rate in Bihar (Census 2011)? (a) Patna (b) Rohtas (c) Munger (d) Nalanda`,o:["Patna","Rohtas","Munger","Nalanda"],a:1,s:"Bihar GK",exp:`<b>Answer: Rohtas</b> 73.37%`},
+{q:`13. Nalanda University was founded during the reign of: (a) Chandragupta Maurya (b) Kumaragupta I (c) Ashoka (d) Harshavardhana`,o:["Chandragupta Maurya","Kumaragupta I","Ashoka","Harshavardhana"],a:1,s:"Bihar History",exp:`<b>Answer: Kumaragupta I</b> Gupta dynasty`},
+{q:`14. Bihar Diwas is celebrated on: (a) 15 August (b) 22 March (c) 26 January (d) 2 October`,o:["15 August","22 March","26 January","2 October"],a:1,s:"Bihar GK",exp:`<b>Answer: 22 March</b>`},
+{q:`15. Which river is called the "Sorrow of Bihar"? (a) Gandak (b) Son (c) Kosi (d) Punpun`,o:["Gandak","Son","Kosi","Punpun"],a:2,s:"Bihar Geography",exp:`<b>Answer: Kosi</b>`},
+{q:`16. The Mahabodhi Temple is located in: (a) Rajgir (b) Bodh Gaya (c) Vaishali (d) Patna`,o:["Rajgir","Bodh Gaya","Vaishali","Patna"],a:1,s:"Bihar GK",exp:`<b>Answer: Bodh Gaya</b>`},
+{q:`17. The ancient capital of the Licchavi Republic was: (a) Vaishali (b) Rajgir (c) Pataliputra (d) Nalanda`,o:["Vaishali","Rajgir","Pataliputra","Nalanda"],a:0,s:"Bihar History",exp:`<b>Answer: Vaishali</b>`},
+{q:`18. Bihar shares an international border with: (a) Bhutan (b) Nepal (c) Bangladesh (d) China`,o:["Bhutan","Nepal","Bangladesh","China"],a:1,s:"Bihar Geography",exp:`<b>Answer: Nepal</b>`},
+{q:`19. The Barabar Caves are located in: (a) Gaya district (b) Patna district (c) Bhagalpur district (d) Nalanda district`,o:["Gaya district","Patna district","Bhagalpur district","Nalanda district"],a:0,s:"Bihar GK",exp:`<b>Answer: Gaya district</b>`},
+{q:`20. The first President of India from Bihar was: (a) Jayaprakash Narayan (b) Dr. Rajendra Prasad (c) Sri Krishna Singh (d) Anugrah Narayan Sinha`,o:["Jayaprakash Narayan","Dr. Rajendra Prasad","Sri Krishna Singh","Anugrah Narayan Sinha"],a:1,s:"Bihar GK",exp:`<b>Answer: Dr. Rajendra Prasad</b>`},
+{q:`21. The Kharif crop mainly grown in Bihar is: (a) Wheat (b) Rice (c) Gram (d) Mustard`,o:["Wheat","Rice","Gram","Mustard"],a:1,s:"Bihar Agriculture",exp:`<b>Answer: Rice</b>`},
+{q:`22. Which city is known as the "Granary of Bihar"? (a) Begusarai (b) Patna (c) Purnia (d) Arrah`,o:["Begusarai","Patna","Purnia","Arrah"],a:2,s:"Bihar Geography",exp:`<b>Answer: Purnia</b>`},
+{q:`23. The Punpun River is a tributary of: (a) Son (b) Gandak (c) Ganga (d) Kosi`,o:["Son","Gandak","Ganga","Kosi"],a:2,s:"Bihar Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`24. Which festival is closely associated with Bihar? (a) Bihu (b) Chhath Puja (c) Onam (d) Pongal`,o:["Bihu","Chhath Puja","Onam","Pongal"],a:1,s:"Bihar Culture",exp:`<b>Answer: Chhath Puja</b>`},
+{q:`25. The famous archaeological site of Kumhrar is in: (a) Patna (b) Gaya (c) Bhagalpur (d) Darbhanga`,o:["Patna","Gaya","Bhagalpur","Darbhanga"],a:0,s:"Bihar History",exp:`<b>Answer: Patna</b> Ancient Pataliputra`},
+{q:`26. Which district is famous for Katarni rice? (a) Bhagalpur (b) Banka (c) Muzaffarpur (d) Gopalganj`,o:["Bhagalpur","Banka","Muzaffarpur","Gopalganj"],a:1,s:"Bihar Agriculture",exp:`<b>Answer: Banka</b>`},
+{q:`27. Bihar has how many administrative divisions? (a) 7 (b) 8 (c) 9 (d) 10`,o:["7","8","9","10"],a:2,s:"Bihar Polity",exp:`<b>Answer: 9</b>`},
+{q:`28. The official language of Bihar is: (a) Hindi (b) Urdu (c) Hindi and Urdu (d) Maithili`,o:["Hindi","Urdu","Hindi and Urdu","Maithili"],a:2,s:"Bihar Polity",exp:`<b>Answer: Hindi and Urdu</b>`},
+{q:`29. The Kosi Mega Bridge connects: (a) Patna and Hajipur (b) Nirmali and Saraigarh (c) Gaya and Nawada (d) Bhagalpur and Munger`,o:["Patna and Hajipur","Nirmali and Saraigarh","Gaya and Nawada","Bhagalpur and Munger"],a:1,s:"Bihar GK",exp:`<b>Answer: Nirmali and Saraigarh</b>`},
+{q:`30. Which district is known for the ancient city of Rajgir? (a) Gaya (b) Nalanda (c) Patna (d) Nawada`,o:["Gaya","Nalanda","Patna","Nawada"],a:1,s:"Bihar History",exp:`<b>Answer: Nalanda</b>`},
+  
+let current=0, answers=Array(150).fill(null), review=Array(150).fill(false);
+let timeLeft = 120 * 60, timerInterval;
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
+
+const qPanel=document.getElementById('qPanel');
+for(let i=0;i<150;i++){
+  let btn=document.createElement('button');
+  btn.className='q-btn not-visited';
+  btn.innerText=i+1;
+  btn.onclick=()=>jumpQ(i);
+  qPanel.appendChild(btn);
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
+  document.getElementById('question').innerText=questions[current].q;
+  let optHtml='';
+  questions[current].o.forEach((opt,i)=>{
+    let checked=answers[current]===i?'checked':'';
+    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML=optHtml;
+  updatePanel();
+}
+
+function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
+function nextQ(){saveAns();if(current<150){current++;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
+function markReview(){review[current]=!review[current];updatePanel()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className='q-btn';
+    if(i===current)btn.classList.add('current');
+    if(review[i])btn.classList.add('review');
+    else if(answers[i]!==null)btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  });
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  if(!confirm("Submit test?"))return;
+  saveAns();
+  let score=0,correct=0,wrong=0,unattempted=0;
+  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
+  let solHTML='';
+
+  questions.forEach((q,i)=>{
+    let u=answers[i], c=q.a;
+    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=1;correct++;secScore[q.s]+=1; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.33;wrong++;secScore[q.s]-=0.33; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+  });
+
+  let percentage=((score/150)*100).toFixed(2);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText=`${score}/150`;
+  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/150`;
+  document.getElementById('solutionBox').innerHTML=solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+loadQ();
+startTimer();
+</script>
+</body>
+</html>
