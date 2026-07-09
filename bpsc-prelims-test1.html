@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSC-chsl-test1</title>
+<title>bpsc-prelims-test1</title>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#f4f6f9;display:flex;height:100vh}
@@ -51,8 +51,8 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 
 <div class="main">
 <div class="header">
-<h2>SSC CHSL Mock Test 01</h2>
-<div class="timer" id="timer">Time Left: 90:00</div>
+<h2>BPSC Prelims Mock Test 01</h2>
+<div class="timer" id="timer">Time Left: 120:00</div>
 </div>
 
 <div id="quizArea">
@@ -67,7 +67,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 
 <div id="result" class="hide">
 <h2>Test Submitted!</h2>
-<p class="score" id="finalScore">0/200</p>
+<p class="score" id="finalScore">0/150</p>
 <p id="analysis"></p>
 <h3>Section Wise:</h3>
 <p id="sectionScore"></p>
@@ -183,9 +183,58 @@ const questions = [
 {q:`100. Which district of Bihar is famous for the Vishnupad Temple?<br>(a) Gaya (b) Patna (c) Nalanda (d) Bhagalpur`,o:["Gaya","Patna","Nalanda","Bhagalpur"],a:0,s:"GK",exp:`<b>Answer: Gaya</b>`},
 {q:`101. The Constitution of India describes India as a:<br>(a) Federation of States (b) Union of States (c) Confederation of States (d) Republic of Provinces`,o:["Federation of States","Union of States","Confederation of States","Republic of Provinces"],a:1,s:"Polity",exp:`<b>Answer: Union of States</b> Art 1`},
 {q:`102. The SI unit of work is:<br>(a) Watt (b) Newton (c) Joule (d) Pascal`,o:["Watt","Newton","Joule","Pascal"],a:2,s:"Science",exp:`<b>Answer: Joule</b>`},
-{q:`103. Which movement was started by Mahatma Gandhi in 1920?<br>(a) Civil Disobedience Movement (b) Non-Cooperation Movement (c) Quit India Movement (d) Swadeshi Movement
+{q:`103. Which movement was started by Mahatma Gandhi in 1920?<br>(a) Civil Disobedience Movement (b) Non-Cooperation Movement (c) Quit India Movement (d) Swadeshi Movement`,o:["Civil Disobedience Movement","Non-Cooperation Movement","Quit India Movement","Swadeshi Movement"],a:1,s:"History",exp:`<b>Answer: Non-Cooperation Movement</b>`},
+{q:`104. Which is the longest mountain range in India?<br>(a) Aravalli (b) Himalayas (c) Western Ghats (d) Vindhya`,o:["Aravalli","Himalayas","Western Ghats","Vindhya"],a:1,s:"Geography",exp:`<b>Answer: Himalayas</b>`},
+{q:`105. Which vitamin deficiency causes scurvy?<br>(a) Vitamin A (b) Vitamin B12 (c) Vitamin C (d) Vitamin D`,o:["Vitamin A","Vitamin B12","Vitamin C","Vitamin D"],a:2,s:"Science",exp:`<b>Answer: Vitamin C</b>`},
+{q:`106. The Governor of a state holds office for a term of:<br>(a) 4 years (b) 5 years (c) 6 years (d) 7 years`,o:["4 years","5 years","6 years","7 years"],a:1,s:"Polity",exp:`<b>Answer: 5 years</b> Art 156`},
+{q:`107. Which district of Bihar is famous for silk production?<br>(a) Bhagalpur (b) Muzaffarpur (c) Patna (d) Purnia`,o:["Bhagalpur","Muzaffarpur","Patna","Purnia"],a:0,s:"GK",exp:`<b>Answer: Bhagalpur</b> Silk City`},
+{q:`108. Which metal is the best conductor of electricity?<br>(a) Copper (b) Aluminium (c) Silver (d) Iron`,o:["Copper","Aluminium","Silver","Iron"],a:2,s:"Science",exp:`<b>Answer: Silver</b>`},
+{q:`109. The Indian National Congress was founded in:<br>(a) 1885 (b) 1905 (c) 1915 (d) 1947`,o:["1885","1905","1915","1947"],a:0,s:"History",exp:`<b>Answer: 1885</b> by A.O. Hume`},
+{q:`110. The headquarters of UNICEF is in:<br>(a) Geneva (b) New York (c) Paris (d) Rome`,o:["Geneva","New York","Paris","Rome"],a:1,s:"GK",exp:`<b>Answer: New York</b>`},
+{q:`111. Which river flows through the city of Patna?<br>(a) Yamuna (b) Ganga (c) Son (d) Gandak`,o:["Yamuna","Ganga","Son","Gandak"],a:1,s:"Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`112. Which Article provides protection of life and personal liberty?<br>(a) Article 19 (b) Article 20 (c) Article 21 (d) Article 22`,o:["Article 19","Article 20","Article 21","Article 22"],a:2,s:"Polity",exp:`<b>Answer: Article 21</b>`},
+{q:`113. The pH of lemon juice is generally:<br>(a) 2–3 (b) 7 (c) 9 (d) 11`,o:["2–3","7","9","11"],a:0,s:"Science",exp:`<b>Answer: 2–3</b> Acidic`},
+{q:`114. Which Mughal emperor built the Red Fort in Delhi?<br>(a) Akbar (b) Shah Jahan (c) Aurangzeb (d) Humayun`,o:["Akbar","Shah Jahan","Aurangzeb","Humayun"],a:1,s:"History",exp:`<b>Answer: Shah Jahan</b>`},
+{q:`115. Which is the highest civilian award in India?<br>(a) Padma Shri (b) Padma Bhushan (c) Bharat Ratna (d) Padma Vibhushan`,o:["Padma Shri","Padma Bhushan","Bharat Ratna","Padma Vibhushan"],a:2,s:"GK",exp:`<b>Answer: Bharat Ratna</b>`},
+{q:`116. Which district of Bihar is famous for Katarni rice?<br>(a) Bhagalpur (b) Banka (c) Patna (d) Gaya`,o:["Bhagalpur","Banka","Patna","Gaya"],a:1,s:"Geography",exp:`<b>Answer: Banka</b>`},
+{q:`117. Which constitutional amendment reduced the voting age from 21 years to 18 years?<br>(a) 42nd Amendment (b) 44th Amendment (c) 61st Amendment (d) 73rd Amendment`,o:["42nd Amendment","44th Amendment","61st Amendment","73rd Amendment"],a:2,s:"Polity",exp:`<b>Answer: 61st Amendment</b> 1989`},
+{q:`118. Which blood group is known as the universal recipient?<br>(a) O- (b) AB+ (c) A+ (d) B+`,o:["O-","AB+","A+","B+"],a:1,s:"Science",exp:`<b>Answer: AB+</b>`},
+{q:`119. The first battle of Panipat was fought in:<br>(a) 1526 (b) 1556 (c) 1761 (d) 1857`,o:["1526","1556","1761","1857"],a:0,s:"History",exp:`<b>Answer: 1526</b> Babur vs Ibrahim Lodi`},
+{q:`120. Which river is known as the "Sorrow of Bihar"?<br>(a) Gandak (b) Son (c) Kosi (d) Punpun`,o:["Gandak","Son","Kosi","Punpun"],a:2,s:"Geography",exp:`<b>Answer: Kosi</b>`},
+
+{q:`<div class="section-head">GENERAL STUDIES 121-150</div>121. Which is the highest waterfall in India?<br>(a) Jog Falls (b) Dudhsagar Falls (c) Kunchikal Falls (d) Athirappilly Falls`,o:["Jog Falls","Dudhsagar Falls","Kunchikal Falls","Athirappilly Falls"],a:2,s:"Geography",exp:`<b>Answer: Kunchikal Falls</b> 455m, Karnataka`},
+{q:`122. Which Article of the Constitution abolishes titles?<br>(a) Article 17 (b) Article 18 (c) Article 19 (d) Article 20`,o:["Article 17","Article 18","Article 19","Article 20"],a:1,s:"Polity",exp:`<b>Answer: Article 18</b>`},
+{q:`123. The headquarters of the World Bank is located in:<br>(a) Geneva (b) Washington, D.C. (c) New York (d) Paris`,o:["Geneva","Washington, D.C.","New York","Paris"],a:1,s:"GK",exp:`<b>Answer: Washington, D.C.</b>`},
+{q:`124. Which district of Bihar is known for Makhana production?<br>(a) Darbhanga (b) Madhubani (c) Sitamarhi (d) Kishanganj`,o:["Darbhanga","Madhubani","Sitamarhi","Kishanganj"],a:0,s:"Geography",exp:`<b>Answer: Darbhanga</b>`},
+{q:`125. Which vitamin deficiency causes night blindness?<br>(a) Vitamin A (b) Vitamin B12 (c) Vitamin C (d) Vitamin D`,o:["Vitamin A","Vitamin B12","Vitamin C","Vitamin D"],a:0,s:"Science",exp:`<b>Answer: Vitamin A</b>`},
+{q:`126. Who gave the slogan "Swaraj is my birthright and I shall have it"?<br>(a) Mahatma Gandhi (b) Bal Gangadhar Tilak (c) Subhas Chandra Bose (d) Jawaharlal Nehru`,o:["Mahatma Gandhi","Bal Gangadhar Tilak","Subhas Chandra Bose","Jawaharlal Nehru"],a:1,s:"History",exp:`<b>Answer: Bal Gangadhar Tilak</b>`},
+{q:`127. The SI unit of electric resistance is:<br>(a) Volt (b) Ampere (c) Ohm (d) Watt`,o:["Volt","Ampere","Ohm","Watt"],a:2,s:"Science",exp:`<b>Answer: Ohm</b>`},
+{q:`128. Which is the smallest state of India by area?<br>(a) Sikkim (b) Goa (c) Tripura (d) Manipur`,o:["Sikkim","Goa","Tripura","Manipur"],a:1,s:"Geography",exp:`<b>Answer: Goa</b>`},
+{q:`129. The President of India is elected by:<br>(a) Members of Lok Sabha only (b) Members of Rajya Sabha only (c) An Electoral College consisting of elected MPs and elected MLAs (d) Prime Minister`,o:["Members of Lok Sabha only","Members of Rajya Sabha only","An Electoral College consisting of elected MPs and elected MLAs","Prime Minister"],a:2,s:"Polity",exp:`<b>Answer: An Electoral College consisting of elected MPs and elected MLAs</b>`},
+{q:`130. Which river originates from Amarkantak Plateau?<br>(a) Godavari (b) Narmada (c) Krishna (d) Kaveri`,o:["Godavari","Narmada","Krishna","Kaveri"],a:1,s:"Geography",exp:`<b>Answer: Narmada</b>`},
+{q:`131. Which district of Bihar is famous for Laung-Lata sweet?<br>(a) Patna (b) Buxar (c) Gaya (d) Muzaffarpur`,o:["Patna","Buxar","Gaya","Muzaffarpur"],a:1,s:"GK",exp:`<b>Answer: Buxar</b>`},
+{q:`132. Which Indian scientist is known as the Missile Man of India?<br>(a) Homi J. Bhabha (b) A. P. J. Abdul Kalam (c) C. V. Raman (d) Vikram Sarabhai`,o:["Homi J. Bhabha","A. P. J. Abdul Kalam","C. V. Raman","Vikram Sarabhai"],a:1,s:"GK",exp:`<b>Answer: A. P. J. Abdul Kalam</b>`},
+{q:`133. Which gas is commonly used in fire extinguishers?<br>(a) Oxygen (b) Carbon dioxide (c) Hydrogen (d) Nitrogen`,o:["Oxygen","Carbon dioxide","Hydrogen","Nitrogen"],a:1,s:"Science",exp:`<b>Answer: Carbon dioxide</b>`},
+{q:`134. Which Schedule of the Constitution deals with the distribution of powers between the Union and States?<br>(a) Fifth Schedule (b) Sixth Schedule (c) Seventh Schedule (d) Eighth Schedule`,o:["Fifth Schedule","Sixth Schedule","Seventh Schedule","Eighth Schedule"],a:2,s:"Polity",exp:`<b>Answer: Seventh Schedule</b> Union, State, Concurrent List`},
+{q:`135. The Battle of Haldighati was fought in:<br>(a) 1526 (b) 1576 (c) 1761 (d) 1857`,o:["1526","1576","1761","1857"],a:1,s:"History",exp:`<b>Answer: 1576</b> Maharana Pratap vs Akbar`},
+{q:`136. Which is the largest freshwater lake in Northeast India?<br>(a) Dal Lake (b) Wular Lake (c) Loktak Lake (d) Chilika Lake`,o:["Dal Lake","Wular Lake","Loktak Lake","Chilika Lake"],a:2,s:"Geography",exp:`<b>Answer: Loktak Lake</b> Manipur`},
+{q:`137. Which district of Bihar is famous for Tilkut?<br>(a) Patna (b) Gaya (c) Bhagalpur (d) Nalanda`,o:["Patna","Gaya","Bhagalpur","Nalanda"],a:1,s:"GK",exp:`<b>Answer: Gaya</b>`},
+{q:`138. The human heart has how many chambers?<br>(a) Two (b) Three (c) Four (d) Five`,o:["Two","Three","Four","Five"],a:2,s:"Science",exp:`<b>Answer: Four</b>`},
+{q:`139. Which constitutional body conducts elections in India?<br>(a) UPSC (b) Finance Commission (c) Election Commission of India (d) NITI Aayog`,o:["UPSC","Finance Commission","Election Commission of India","NITI Aayog"],a:2,s:"Polity",exp:`<b>Answer: Election Commission of India</b> Art 324`},
+{q:`140. Which Indian state is the largest producer of tea?<br>(a) West Bengal (b) Kerala (c) Assam (d) Tamil Nadu`,o:["West Bengal","Kerala","Assam","Tamil Nadu"],a:2,s:"Geography",exp:`<b>Answer: Assam</b>`},
+{q:`141. Which metal is used in electric wires due to its high conductivity?<br>(a) Iron (b) Copper (c) Zinc (d) Lead`,o:["Iron","Copper","Zinc","Lead"],a:1,s:"Science",exp:`<b>Answer: Copper</b>`},
+{q:`142. The first woman Governor of an Indian state was:<br>(a) Sarojini Naidu (b) Indira Gandhi (c) Sucheta Kripalani (d) Pratibha Patil`,o:["Sarojini Naidu","Indira Gandhi","Sucheta Kripalani","Pratibha Patil"],a:0,s:"GK",exp:`<b>Answer: Sarojini Naidu</b> UP`},
+{q:`143. Which river is known as the 'Lifeline of Bihar'?<br>(a) Son (b) Kosi (c) Ganga (d) Punpun`,o:["Son","Kosi","Ganga","Punpun"],a:2,s:"Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`144. Which amendment added the words "Socialist", "Secular" and "Integrity" to the Preamble?<br>(a) 24th Amendment (b) 42nd Amendment (c) 44th Amendment (d) 52nd Amendment`,o:["24th Amendment","42nd Amendment","44th Amendment","52nd Amendment"],a:1,s:"Polity",exp:`<b>Answer: 42nd Amendment</b> 1976`},
+{q:`145. Which blood cells help in clotting of blood?<br>(a) RBCs (b) WBCs (c) Platelets (d) Plasma`,o:["RBCs","WBCs","Platelets","Plasma"],a:2,s:"Science",exp:`<b>Answer: Platelets</b>`},
+{q:`146. The headquarters of the International Monetary Fund (IMF) is located in:<br>(a) Geneva (b) Washington, D.C. (c) New York (d) Paris`,o:["Geneva","Washington, D.C.","New York","Paris"],a:1,s:"GK",exp:`<b>Answer: Washington, D.C.</b>`},
+{q:`147. Which district of Bihar is famous for Sonepur Mela?<br>(a) Saran (b) Vaishali (c) Patna (d) Gaya`,o:["Saran","Vaishali","Patna","Gaya"],a:0,s:"GK",exp:`<b>Answer: Saran</b>`},
+{q:`148. The Revolt of 1857 started from:<br>(a) Meerut (b) Delhi (c) Kanpur (d) Lucknow`,o:["Meerut","Delhi","Kanpur","Lucknow"],a:0,s:"History",exp:`<b>Answer: Meerut</b> 10 May 1857`},
+{q:`149. Which gas is released during photosynthesis?<br>(a) Carbon dioxide (b) Oxygen (c) Nitrogen (d) Hydrogen`,o:["Carbon dioxide","Oxygen","Nitrogen","Hydrogen"],a:1,s:"Science",exp:`<b>Answer: Oxygen</b>`},
+{q:`150. The Constitution of India was adopted on:<br>(a) 15 August 1947 (b) 26 November 1949 (c) 26 January 1950 (d) 2 October 1950`,o:["15 August 1947","26 November 1949","26 January 1950","2 October 1950"],a:1,s:"Polity",exp:`<b>Answer: 26 November 1949</b>`}
+];
 let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
-let timeLeft = 90 * 60, timerInterval;
+let timeLeft = 120 * 60, timerInterval;
 
 function startTimer(){
   clearInterval(timerInterval);
@@ -245,16 +294,16 @@ function submitTest(){
   questions.forEach((q,i)=>{
     let u=answers[i], c=q.a;
     if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
-    else if(u===c){score+=2;correct++;secScore[q.s]+=2; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
-    else{score-=0.5;wrong++;secScore[q.s]-=0.5; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=1;correct++;secScore[q.s]+=1; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.33;wrong++;secScore[q.s]-=0.33; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
   });
 
-  let percentage=((score/200)*100).toFixed(2);
+  let percentage=((score/200)*100).toFixed(1);
   document.getElementById('quizArea').classList.add('hide');
   document.getElementById('result').classList.remove('hide');
   document.getElementById('finalScore').innerText=`${score}/200`;
   document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
-  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/150`;
   document.getElementById('solutionBox').innerHTML=solHTML;
 }
 
