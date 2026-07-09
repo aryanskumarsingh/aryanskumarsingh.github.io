@@ -248,7 +248,7 @@ function startTimer(){
 }
 
 const qPanel=document.getElementById('qPanel');
-for(let i=0;i<100;i++){
+for(let i=0;i<150;i++){
   let btn=document.createElement('button');
   btn.className='q-btn not-visited';
   btn.innerText=i+1;
@@ -298,10 +298,10 @@ function submitTest(){
     else{score-=0.33;wrong++;secScore[q.s]-=0.33; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
   });
 
-  let percentage=((score/200)*100).toFixed(2);
+  let percentage=((score/150)*100).toFixed(2);
   document.getElementById('quizArea').classList.add('hide');
   document.getElementById('result').classList.remove('hide');
-  document.getElementById('finalScore').innerText=`${score}/200`;
+  document.getElementById('finalScore').innerText=`${score}/150`;
   document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
   document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/150`;
   document.getElementById('solutionBox').innerHTML=solHTML;
