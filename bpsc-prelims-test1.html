@@ -269,7 +269,7 @@ function loadQ(){
 }
 
 function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
-function nextQ(){saveAns();if(current<99){current++;loadQ()}}
+function nextQ(){saveAns();if(current<150){current++;loadQ()}}
 function jumpQ(i){saveAns();current=i;loadQ()}
 function markReview(){review[current]=!review[current];updatePanel()}
 
