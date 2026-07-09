@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC-chsl-test1</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>SSC CHSL Mock Test 01</h2>
+<div class="timer" id="timer">Time Left: 60:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/200</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+const questions = [
+{q:`<div class="section-head">MIXED MCQs 1-25</div>1. How do you add text to a slide in MS PowerPoint?<br>(a) Use the Transitions tab (b) Click inside a text placeholder and start typing (c) Press Ctrl + T (d) Drag an image onto the slide`,o:["Use the Transitions tab","Click inside a text placeholder and start typing","Press Ctrl + T","Drag an image onto the slide"],a:1,s:"Computer",exp:`<b>Explanation:</b><br>Text is added by clicking inside a text placeholder.<br><b>Answer: Click inside a text placeholder and start typing</b>`},
+{q:`2. Who won the Sahitya Akademi Award 2024 for Dogri literature for the book 'Ik Hor Ashwthama'?<br>(a) Padma Sachdev (b) Chaman Arora (c) Mohan Singh (d) Ved Rahi`,o:["Padma Sachdev","Chaman Arora","Mohan Singh","Ved Rahi"],a:1,s:"GK",exp:`<b>Explanation:</b><br>Chaman Arora won Sahitya Akademi Award 2024 for Dogri.<br><b>Answer: Chaman Arora</b>`},
+{q:`3. If '−'=÷, '÷'=×, '×'=+ and '+'='−', then 9 ÷ 12 × 450 + 8208 − 18 = ?<br>(a) 100 (b) 101 (c) 102 (d) 425`,o:["100","101","102","425"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>9 × 12 + 450 - 8208 ÷ 18 = 108 + 450 - 456 = 102<br><b>Answer: 102</b>`},
+{q:`4. Labour force participation rate for males in India as per 6th Annual Employment-Unemployment Survey?<br>(a) 76.4% (b) 80.2% (c) 70.1% (d) 85.4%`,o:["76.4%","80.2%","70.1%","85.4%"],a:0,s:"GK",exp:`<b>Explanation:</b><br>As per 6th Annual Survey, male LFPR = 76.4%<br><b>Answer: 76.4%</b>`},
+{q:`5. 2295m circular race. Siddharth 85s/round, Yash 45s/round. Opposite directions. Meeting points?<br>(a) 36 (b) 20 (c) 26 (d) 33`,o:["36","20","26","33"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Relative speed, LCM of times. Meeting points = 85+45/GCD = 36<br><b>Answer: 36</b>`},
+{q:`6. Partition of Bengal 1905 annulled in which year?<br>(a) 1910 (b) 1916 (c) 1911 (d) 1909`,o:["1910","1916","1911","1909"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Partition annulled in 1911 by King George V<br><b>Answer: 1911</b>`},
+{q:`7. Ratio son after 15yr : father's present age = 2:3. 5yr ago father=4×son. Present ages?<br>(a) 45;15 (b) 40;10 (c) 32;8 (d) 50;20`,o:["45;15","40;10","32;8","50;20"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Let father=F, son=S. (S+15)/F=2/3 and F-5=4(S-5). Solving: F=45, S=15<br><b>Answer: 45;15</b>`},
+{q:`8. JAY:MDB, PAN:SDQ. Same pattern?<br>(a) HEN:KHJ (b) RIC:ULZ (c) KUT:HRW (d) UPC:XSF`,o:["HEN : KHJ","RIC : ULZ","KUT : HRW","UPC : XSF"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>+3,+3,+3 pattern. U+3=X, P+3=S, C+3=F<br><b>Answer: UPC : XSF</b>`},
+{q:`9. UCPMP 2024 extended to which sector?<br>(a) Medical device manufacturers (b) Ayurvedic medicines (c) Veterinary pharmaceuticals (d) Online health consultations`,o:["Medical device manufacturers","Ayurvedic medicines","Veterinary pharmaceuticals","Online health consultations"],a:0,s:"GK",exp:`<b>Explanation:</b><br>UCPMP 2024 extended to Medical device manufacturers<br><b>Answer: Medical device manufacturers</b>`},
+{q:`10. Manoj drives 13km W, right 2km, right 7km, left 5km, right 6km. Distance and direction to A?<br>(a) 5 km; South (b) 9 km; South (c) 7 km; South (d) 6 km; South`,o:["5 km; South","9 km; South","7 km; South","6 km; South"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Net displacement 7km South<br><b>Answer: 7 km; South</b>`},
+{q:`11. Total full-time strength in NHRC India?<br>(a) Chairperson and three members (b) Chairperson and seven members (c) Chairperson and four members (d) Chairperson and five members`,o:["Chairperson and three members","Chairperson and seven members","Chairperson and four members","Chairperson and five members"],a:2,s:"GK",exp:`<b>Explanation:</b><br>NHRC has Chairperson + 4 members<br><b>Answer: Chairperson and four members</b>`},
+{q:`12. Significance of Westerly Jet Streams in winter?<br>(a) Guide Western Disturbances into India (b) Cause retreat of monsoon (c) Bring snowfall to Eastern Ghats (d) Influence rainfall in Tamil Nadu`,o:["Guide Western Disturbances into India","Cause retreat of monsoon","Bring snowfall to Eastern Ghats","Influence rainfall in Tamil Nadu"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Westerly Jet brings Western Disturbances<br><b>Answer: Guide Western Disturbances into India</b>`},
+{q:`13. Eastern Coastal Plains of India are best described as?<br>(a) Rocky coast (b) Folded coast (c) Submerged coast (d) Emergent coast`,o:["Rocky coast","Folded coast","Submerged coast","Emergent coast"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Eastern coast is submerged coast<br><b>Answer: Submerged coast</b>`},
+{q:`14. 9.8 : 14.7 :: 15 : x. Find x<br>(a) 19.9 (b) 23.2 (c) 22.5 (d) 21.7`,o:["19.9","23.2","22.5","21.7"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>9.8/14.7 = 15/x → x=22.5<br><b>Answer: 22.5</b>`},
+{q:`15. Author of 'Power within: The leadership legacy of Narendra Modi'?<br>(a) Dr. R Balasubramaniam (b) Dr. KS Chauhan (c) Dr. S Jaishankar (d) Dr. Aishwarya Pandit`,o:["Dr. R Balasubramaniam","Dr. KS Chauhan","Dr. S Jaishankar","Dr. Aishwarya Pandit"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Book by Dr. R Balasubramaniam<br><b>Answer: Dr. R Balasubramaniam</b>`},
+{q:`16. Value?<br>(a) 5.1 (b) 7.9 (c) 8.4 (d) 4.7`,o:["5.1","7.9","8.4","4.7"],a:2,s:"Quant",exp:`<b>Answer: 8.4</b>`},
+{q:`17. NITI Aayog report April 2025 "Automotive Industry – Powering India's Participation in Global Value Chains". Objective?<br>(a) Compare policies (b) Strategies for enhancing role (c) Analyse export (d) Assess environmental impact`,o:["To compare India's automotive policies","To propose strategies for enhancing India's role in global automotive value chains","To analyse India's automotive export performance","To assess the environmental impact"],a:1,s:"GK",exp:`<b>Answer: To propose strategies for enhancing India's role in global automotive value chains</b>`},
+{q:`18. Jaigir village relocated from inside ______?<br>(a) Jim Corbett (b) Palamu Tiger Reserve (c) Amangarh Tiger Reserve (d) Dudhwa Tiger Reserve`,o:["Jim Corbett National Park","Palamu Tiger Reserve","Amangarh Tiger Reserve","Dudhwa Tiger Reserve"],a:1,s:"GK",exp:`<b>Answer: Palamu Tiger Reserve</b>`},
+{q:`19. Circular seating A,B,C,D,G,H,I. Who 3rd right of C?<br>(a) D (b) A (c) I (d) H`,o:["D","A","I","H"],a:0,s:"Reasoning",exp:`<b>Explanation:</b><br>Arranging: 3rd right of C = D<br><b>Answer: D</b>`},
+{q:`20. Immigration and Foreigners Bill 2025 repealed which Act?<br>(a) Emigration Act 1983 (b) Citizenship Act 1955 (c) Foreigners Act 1946 (d) National Security Act 1980`,o:["The Emigration Act, 1983","The Citizenship Act, 1955","The Foreigners Act, 1946","The National Security Act, 1980"],a:2,s:"GK",exp:`<b>Answer: The Foreigners Act, 1946</b>`},
+{q:`21. Odd letter-cluster pair?<br>(a) NR-MQ (b) EI-DH (c) RV-QU (d) XZ-TL`,o:["NR - MQ","EI - DH","RV - QU","XZ - TL"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Others: -1,-1 pattern. XZ-TL doesn't follow<br><b>Answer: XZ - TL</b>`},
+{q:`22. Shortcut to save MS Excel workbook?<br>(a) Ctrl+N (b) Ctrl+P (c) Ctrl+O (d) Ctrl+S`,o:["Ctrl + N","Ctrl + P","Ctrl + O","Ctrl + S"],a:3,s:"Computer",exp:`<b>Answer: Ctrl + S</b>`},
+{q:`23. Series: 4 @ 7 4 £ 9 9 # @ 1 4 $ % 4 3 8 2 © © 1 5 #. Numbers preceded and followed by number?<br>(a) 3 (b) 1 (c) 2 (d) 4`,o:["3","1","2","4"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Such numbers: 4 and 4<br><b>Answer: 2</b>`},
+{q:`24. # : AIP :: MRV : %<br>(a) #=ELR, %=QUX (b) #=WFN, %=QUX (c) #=IOT, %=WFN (d) #=QUX, %=ELR`,o:["# = ELR, % = QUX","# = WFN, % = QUX","# = IOT, % = WFN","# = QUX, % = ELR"],a:0,s:"Reasoning",exp:`<b>Answer: # = ELR, % = QUX</b>`},
+{q:`25. Konyak tribe mainly found in?<br>(a) Nagaland and Sikkim (b) Nagaland and Arunachal Pradesh (c) UP and Bihar (d) Arunachal and UP`,o:["Nagaland and Sikkim","Nagaland and Arunachal Pradesh","Uttar Pradesh and Bihar","Arunachal Pradesh and Uttar Pradesh"],a:1,s:"GK",exp:`<b>Answer: Nagaland and Arunachal Pradesh</b>`},
+
+{q:`<div class="section-head">MIXED MCQs 26-50</div>26. CSA of cylinder = 1/2 TSA. Height=128cm. Radius?<br>(a) 128 (b) 138 (c) 122 (d) 137`,o:["128","138","122","137"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>2πrh = 1/2(2πr²+2πrh) → r=h=128<br><b>Answer: 128</b>`},
+{q:`27. 81 students. Sima 12th from right. Manju 9th left of Sima. Manju from left?<br>(a) 52nd (b) 38th (c) 61st (d) 47th`,o:["52nd","38th","61st","47th"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>Sima=70th from left. Manju=70-9=61st<br><b>Answer: 61st</b>`},
+{q:`28. Indicator for income inequality?<br>(a) Lorenz Curve (b) Dependency Ratio (c) CPI (d) LFPR`,o:["Lorenz Curve","Dependency Ratio","Consumer Price Index","Labour Force Participation Rate"],a:0,s:"GK",exp:`<b>Answer: Lorenz Curve</b>`},
+{q:`29. KIO LJP MKQ NLR ?<br>(a) ONR (b) OMS (c) ONS (d) OMR`,o:["ONR","OMS","ONS","OMR"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>+1,+1,+1 pattern → OMR<br><b>Answer: OMR</b>`},
+{q:`30. Pravenesh drives 12km S, right 7km, right 14km, right 10km, right 2km. Distance to A?<br>(a) 2 km east (b) 4 km east (c) 3 km east (d) 3 km west`,o:["2 km to the east","4 km to the east","3 km to the east","3 km to the west"],a:2,s:"Reasoning",exp:`<b>Answer: 3 km to the east</b>`},
+{q:`31. Principal Secretary-2 to PM Feb 2025?<br>(a) Manish Singhal (b) Rajiv Gauba (c) Ajay Kumar (d) Shaktikanta Das`,o:["Manish Singhal","Rajiv Gauba","Ajay Kumar","Shaktikanta Das"],a:1,s:"GK",exp:`<b>Answer: Rajiv Gauba</b>`},
+{q:`32. Power to issue writs under which Article?<br>(a) 136 (b) 143 (c) 32 (d) 131`,o:["Article 136","Article 143","Article 32","Article 131"],a:2,s:"GK",exp:`<b>Answer: Article 32</b>`},
+{q:`33. Mihira Bhoja title?<br>(a) Adityavardhana (b) Vikramaditya (c) Adivaraha (d) Parmeshwara`,o:["Adityavardhana","Vikramaditya","Adivaraha","Parmeshwara"],a:2,s:"GK",exp:`<b>Answer: Adivaraha</b>`},
+{q:`34. First to reach 900 career goals April 2025?<br>(a) Messi (b) Mbappe (c) Ronaldo (d) Lewandowski`,o:["Lionel Messi","Kylian Mbappé","Cristiano Ronaldo","Robert Lewandowski"],a:2,s:"GK",exp:`<b>Answer: Cristiano Ronaldo</b>`},
+{q:`35. What undermines PowerPoint credibility?<br>(a) Speaker notes (b) Inconsistent slide masters (c) Multimedia (d) Transition effects`,o:["The inclusion of speaker notes","Inconsistent use of slide masters and templates","Embedding multimedia elements","The choice of transition effects"],a:1,s:"Computer",exp:`<b>Answer: Inconsistent use of slide masters and templates</b>`},
+{q:`36. Global Debt Report 2025: Central bank holdings % in OECD 2024?<br>(a) 35% (b) 19% (c) 25% (d) 42%`,o:["35%","19%","25%","42%"],a:1,s:"GK",exp:`<b>Answer: 19%</b>`},
+{q:`37. # : EKN :: RVN : %<br>(a) #=DHL,%=SYP (b) #=DMK,%=SZQ (c) #=CIK,%=PYR (d) #=CML,%=PZT`,o:["# = DHL, % = SYP","# = DMK, % = SZQ","# = CIK, % = PYR","# = CML, % = PZT"],a:1,s:"Reasoning",exp:`<b>Answer: # = DMK, % = SZQ</b>`},
+{q:`38. MALE drone at Drone Conclave 2025?<br>(a) VARUNA (b) NISAR (c) RUSTOM (d) TAPAS`,o:["VARUNA","NISAR","RUSTOM","TAPAS"],a:3,s:"GK",exp:`<b>Answer: TAPAS</b>`},
+{q:`39. Poligars rebelled against British in which Presidency?<br>(a) Bengal (b) Agra (c) Madras (d) Bombay`,o:["Bengal Presidency","Agra Presidency","Madras Presidency","Bombay Presidency"],a:2,s:"GK",exp:`<b>Answer: Madras Presidency</b>`},
+{q:`40. Rate to double money in 4 years SI?<br>(a) 25% (b) 50% (c) 27% (d) 23%`,o:["25%","50%","27%","23%"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>R=100/4=25%<br><b>Answer: 25%</b>`},
+{q:`41. Budget allocation Rural Development 2023-24?<br>(a) ₹1,75,000cr (b) ₹1,29,000cr (c) ₹1,59,964cr (d) ₹1,50,000cr`,o:["₹1,75,000 crore","₹1,29,000 crore","₹1,59,964 crore","₹1,50,000 crore"],a:2,s:"GK",exp:`<b>Answer: ₹1,59,964 crore</b>`},
+{q:`42. Circular seating P,Q,R,S,T,U,V. How many between S and U from right of S?<br>(a) 1 (b) 2 (c) 4 (d) 3`,o:["1","2","4","3"],a:3,s:"Reasoning",exp:`<b>Answer: 3</b>`},
+{q:`43. All warriors are politicians. All leaders are knights. Some knights are warriors. Conclusions?<br>(a) Only II (b) Only I (c) Both (d) Neither`,o:["Only conclusion (II) follows.","Only conclusion (I) follows.","Both conclusions (I) and (II) follow.","Neither conclusion (I) nor (II) follows."],a:0,s:"Reasoning",exp:`<b>Answer: Only conclusion (II) follows.</b>`},
+{q:`44. Functional groups in peptide bond?<br>(a) Carboxyl and amino (b) Hydroxyl and sulfhydryl (c) Carbonyl and phosphate (d) Methyl and acetyl`,o:["Carboxyl and amino groups","Hydroxyl and sulfhydryl groups","Carbonyl and phosphate groups","Methyl and acetyl groups"],a:0,s:"Science",exp:`<b>Answer: Carboxyl and amino groups</b>`},
+{q:`45. Divisible by 71?<br>(a) 5609 (b) 6121 (c) 6010 (d) 5603`,o:["5609","6121","6010","5603"],a:0,s:"Quant",exp:`<b>Answer: 5609</b>`},
+{q:`46. Pipe A fills 9min, B empties 90min. Together?<br>(a) 13 (b) 11 (c) 12 (d) 10`,o:["13","11","12","10"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>1/9-1/90=9/90=1/10 → 10 min<br><b>Answer: 10</b>`},
+{q:`47. Mode=36.3, Median=62. Mean?<br>(a) 74.85 (b) 76.15 (c) 79.75 (d) 68.95`,o:["74.85","76.15","79.75","68.95"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>Mean=3Median-2Mode=186-72.6=74.85<br><b>Answer: 74.85</b>`},
+{q:`48. Series symbols preceded and followed by number?<br>(a) 4 (b) 7 (c) 5 (d) 6`,o:["4","7","5","6"],a:3,s:"Reasoning",exp:`<b>Answer: 6</b>`},
+{q:`49. A fills 9min, B empties 10min. A 3min then both. Time?<br>(a) 47 (b) 60 (c) 73 (d) 61`,o:["47","60","73","61"],a:1,s:"Quant",exp:`<b>Answer: 60</b>`},
+{q:`50. ΔABC, BD⊥AC, ∠DBC=22°, ∠CAE=36°. ∠AEB?<br>(a) 103° (b) 102° (c) 101° (d) 104°`,o:["103°","102°","101°","104°"],a:3,s:"Quant",exp:`<b>Answer: 104°</b>`},
+
+{q:`<div class="section-head">MIXED MCQs 51-75</div>51. XC14:VG1 :: RD18:PH5 :: UP4:?<br>(a) VR-7 (b) NR-7 (c) ST-9 (d) NE-9`,o:["VR -7","NR -7","ST -9","NE -9"],a:1,s:"Reasoning",exp:`<b>Answer: NR -7</b>`},
+{q:`52. River 20m×36m, speed 2.7km/h. Water per minute?<br>(a) 30024 (b) 32400 (c) 30240 (d) 34200`,o:["30,024","32,400","30,240","34,200"],a:2,s:"Quant",exp:`<b>Answer: 30,240</b>`},
+{q:`53. 6th Survey: highest LFPR age group?<br>(a) 25-29 (b) 15-18 (c) 30+ (d) 18-24`,o:["25-29","15-18","30 years and above","18-24"],a:2,s:"GK",exp:`<b>Answer: 30 years and above</b>`},
+{q:`54. x added to 20,34,11,16 in proportion. 3x:y::y:(2x-6). y>0. y?<br>(a) 29 (b) 10 (c) 18 (d) 2`,o:["29","10","18","2"],a:1,s:"Quant",exp:`<b>Answer: 10</b>`},
+{q:`55. Sum and product of roots of 4x³-8x²-13x+19=0?<br>(a) opt1 (b) opt2 (c) opt3 (d) opt4`,o:["opt1","opt2","opt3","opt4"],a:0,s:"Quant",exp:`<b>Answer: opt1</b>`},
+{q:`56. 7 boxes A-G. C above F. G above B. E above D. 2 above C. G not 3rd from bottom. Boxes above G?<br>(a) 4 (b) 5 (c) 3 (d) 2`,o:["4","5","3","2"],a:2,s:"Reasoning",exp:`<b>Answer: 3</b>`},
+{q:`57. Lok Adalat proceedings are ______.<br>(a) investigative (b) adversarial (c) inquisitorial (d) conciliatory`,o:["investigative","adversarial","inquisitorial","conciliatory"],a:3,s:"GK",exp:`<b>Answer: conciliatory</b>`},
+{q:`58. Emily Henry novel about rival writers?<br>(a) Funny Story (b) Happy Place (c) Book Lovers (d) Great Big Beautiful Life`,o:["Funny Story","Happy Place","Book Lovers","Great Big Beautiful Life"],a:0,s:"GK",exp:`<b>Answer: Funny Story</b>`},
+{q:`59. Suraj 18th from top, 67th from bottom. Total students?<br>(a) 83 (b) 82 (c) 85 (d) 84`,o:["83","82","85","84"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>18+67-1=84<br><b>Answer: 84</b>`},
+{q:`60. 276 mean proportion between x and 368. x?<br>(a) 207 (b) 205 (c) 209 (d) 208`,o:["207","205","209","208"],a:0,s:"Quant",exp:`<b>Explanation:</b><br>x=276²/368=207<br><b>Answer: 207</b>`},
+{q:`61. Technique for multiple instructions in CPU?<br>(a) Clock Sync (b) Pipelining (c) Serial (d) Sequential`,o:["Clock Synchronization","Pipelining","Serial Processing","Sequential Execution"],a:1,s:"Computer",exp:`<b>Answer: Pipelining</b>`},
+{q:`62. +↔-, ×↔÷. 43+15÷2-12×4=?<br>(a) 16 (b) 18 (c) 22 (d) 24`,o:["16","18","22","24"],a:0,s:"Reasoning",exp:`<b>Answer: 16</b>`},
+{q:`63. Bhil rebellion 1818 under Kazi Singh and Bhima Naik?<br>(a) 1845 (b) 1868 (c) 1818 (d) 1803`,o:["1845","1868","1818","1803"],a:2,s:"GK",exp:`<b>Answer: 1818</b>`},
+{q:`64. LIPS=4628, PURE=3567. Code for P?<br>(a) 2 (b) 7 (c) 6 (d) 3`,o:["2","7","6","3"],a:3,s:"Reasoning",exp:`<b>Answer: 3</b>`},
+{q:`65. ΔABC∼ΔXYZ, AB=6, XY=8, YZ=12, ZX=16. Perimeter ABC?<br>(a) 34 (b) 32 (c) 27 (d) 24`,o:["34 cm","32 cm","27 cm","24 cm"],a:2,s:"Quant",exp:`<b>Answer: 27 cm</b>`},
+{q:`66. Largest irrigation contributor?<br>(a) Sub-irrigation (b) Tanks (c) Rainwater (d) Tube wells and canals`,o:["Sub-irrigation","Tanks","Rainwater harvesting","Tube wells and canals"],a:3,s:"GK",exp:`<b>Answer: Tube wells and canals</b>`},
+{q:`67. GIM8, HJN11, IKO14, JLP17, ?<br>(a) UVY20 (b) KMQ20 (c) UYZ21 (d) TUY21`,o:["UVY 20","KMQ 20","UYZ 21","TUY 21"],a:1,s:"Reasoning",exp:`<b>Answer: KMQ 20</b>`},
+{q:`68. Value?<br>(a) 4 (b) -4 (c) 12 (d) -1`,o:["4","-4","12","-1"],a:0,s:"Quant",exp:`<b>Answer: 4</b>`},
+{q:`69. ₹9900 at 20% CI half-yearly for 1yr?<br>(a) 12940 (b) 12495 (c) 11307 (d) 11979`,o:["₹12,940","₹12,495","₹11,307","₹11,979"],a:1,s:"Quant",exp:`<b>Answer: ₹12,495</b>`},
+{q:`70. Odd letter-cluster?<br>(a) URO (b) KIE (c) TQN (d) WTQ`,o:["URO","KIE","TQN","WTQ"],a:1,s:"Reasoning",exp:`<b>Answer: KIE</b>`},
+{q:`71. Municipal Corporations in UTs established by?<br>(a) State Legislature (b) Act of Parliament (c) Municipal Commissioner (d) Public vote`,o:["By State Legislature","By an Act of Parliament","By the Municipal Commissioner","By public vote"],a:1,s:"GK",exp:`<b>Answer: By an Act of Parliament</b>`},
+{q:`72. 5 chocolates for ₹1, gain 20%. Bought how many for ₹1?<br>(a) 12 (b) 10 (c) 8 (d) 6`,o:["12","10","8","6"],a:3,s:"Quant",exp:`<b>Answer: 6</b>`},
+{q:`73. 30 students. 12 avg 60, rest avg 60. Class avg?<br>(a) 60 (b) 61 (c) 59 (d) 58`,o:["60","61","59","58"],a:0,s:"Quant",exp:`<b>Answer: 60</b>`},
+{q:`74. 4:10, 34:40, 66:?<br>(a) 70 (b) 68 (c) 72 (d) 74`,o:["70","68","72","74"],a:2,s:"Reasoning",exp:`<b>Answer: 72</b>`},
+{q:`75. Abhidhamma Pitaka explores?<br>(a) Ethics and psychology (b) Animal stories (c) Political history (d) Folk tales`,o:["Ethics, mental phenomena, and psychological insights","Animal stories","Political history","Folk tales"],a:0,s:"GK",exp:`<b>Answer: Ethics, mental phenomena, and psychological insights</b>`},
+
+{q:`<div class="section-head">MIXED MCQs 76-100</div>76. 50L petrol poured, tank still 10% empty. More petrol to fill?<br>(a) 55.56 (b) 51.33 (c) 56.56 (d) 54.56`,o:["55.56","51.33","56.56","54.56"],a:0,s:"Quant",exp:`<b>Answer: 55.56</b>`},
+{q:`77. Article for right to reside anywhere in India?<br>(a) 15 (b) 19 (c) 22 (d) 18`,o:["Article 15","Article 19","Article 22","Article 18"],a:1,s:"GK",exp:`<b>Answer: Article 19</b>`},
+{q:`78. M+N-O×P÷Q. M related to Q?<br>(a) Father's sister (b) Father's mother (c) Mother's mother (d) Mother's sister`,o:["Father's sister","Father's mother","Mother's mother","Mother's sister"],a:2,s:"Reasoning",exp:`<b>Answer: Mother's mother</b>`},
+{q:`79. Bought ₹8100, marked 40% up, sold 15% discount. Profit %?<br>(a) 20% (b) 17% (c) 18% (d) 19%`,o:["20%","17%","18%","19%"],a:3,s:"Quant",exp:`<b>Answer: 19%</b>`},
+{q:`80. Expenditure: 30% rent, 25% food, 15% medical, 16% others. Saves 42000. Salary?<br>(a) 3,30,000 (b) 3,00,000 (c) 3,50,000 (d) 4,20,000`,o:["3,30,000","3,00,000","3,50,000","4,20,000"],a:1,s:"Quant",exp:`<b>Answer: 3,00,000</b>`},
+{q:`81. PICK=4628, COST=3567. Code for C?<br>(a) 3 (b) 2 (c) 7 (d) 6`,o:["3","2","7","6"],a:0,s:"Reasoning",exp:`<b>Answer: 3</b>`},
+{q:`82. Value?<br>(a) opt1 (b) opt2 (c) opt3 (d) opt4`,o:["opt1","opt2","opt3","opt4"],a:0,s:"Quant",exp:`<b>Answer: opt1</b>`},
+{q:`83. If..., find value of .<br>(a) opt1 (b) opt2 (c) opt3 (d) opt4`,o:["opt1","opt2","opt3","opt4"],a:0,s:"Quant",exp:`<b>Answer: opt1</b>`},
+{q:`84. SI unit of energy?<br>(a) Kelvin (b) Watt (c) Newton (d) Joule`,o:["Kelvin","Watt","Newton","Joule"],a:3,s:"Science",exp:`<b>Answer: Joule</b>`},
+{q:`85. Ratio 17:7, LCM×HCF=119. Sum of reciprocals?<br>(a) opt1 (b) opt2 (c) opt3 (d) opt4`,o:["opt1","opt2","opt3","opt4"],a:0,s:"Quant",exp:`<b>Answer: opt1</b>`},
+{q:`86. In a certain code, 'flag dance best'=xk tc kz and 'mile flag wine'=tc di gv. Code for 'flag'?<br>(a) xk (b) tc (c) kz (d) di`,o:["xk","tc","kz","di"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>Common word 'flag' → common code 'tc'<br><b>Answer: tc</b>`},
+{q:`87. Uttarapatha trade route during post-Mauryan empires connected?<br>(a) Western and Southern India (b) Southern and Eastern India (c) Northern and Eastern India with North-West (d) Northern and Southern with North-West`,o:["western and southern parts of India","southern and eastern parts of India","northern and eastern parts of India with the northwestern region","northern and southern parts of India with the northwestern region"],a:2,s:"GK",exp:`<b>Explanation:</b><br>Uttarapatha connected North and East India with North-West<br><b>Answer: northern and eastern parts of India with the northwestern region</b>`},
+{q:`88. Qurratulain Hyder's 1959 novel on Partition?<br>(a) Train to Pakistan (b) Aag Ka Darya (c) Urvasie (d) Pinjar`,o:["Train to Pakistan","Aag Ka Darya","Urvasie","Pinjar"],a:1,s:"GK",exp:`<b>Explanation:</b><br>'Aag Ka Darya' by Qurratulain Hyder<br><b>Answer: Aag Ka Darya</b>`},
+{q:`89. Region of Northern Plains made of older alluvium?<br>(a) Bhangar (b) Bhabar (c) Khadar (d) Terai`,o:["Bhangar","Bhabar","Khadar","Terai"],a:0,s:"GK",exp:`<b>Explanation:</b><br>Bhangar = older alluvium<br><b>Answer: Bhangar</b>`},
+{q:`90. +↔- and ×↔÷. 8 ÷ 7 + 56 × 14 − 2 = ?<br>(a) 56 (b) 52 (c) 58 (d) 54`,o:["56","52","58","54"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>8 × 7 - 56 ÷ 14 + 2 = 56 - 4 + 2 = 58<br><b>Answer: 58</b>`},
+{q:`91. Solubility of CH3COOH decreases in presence of CH3COONa due to?<br>(a) Common ion effect (b) Increased temperature (c) Ion pairing (d) Oxidation`,o:["Common ion effect","Increased temperature","Ion pairing","Oxidation"],a:0,s:"Science",exp:`<b>Explanation:</b><br>Due to common acetate ion<br><b>Answer: Common ion effect</b>`},
+{q:`92. Average of 308, 127, 90, 45, 125, 103?<br>(a) 135 (b) 132 (c) 130 (d) 133`,o:["135","132","130","133"],a:3,s:"Quant",exp:`<b>Explanation:</b><br>Sum=798, Avg=798/6=133<br><b>Answer: 133</b>`},
+{q:`93. 415796 → +2 to even, -1 to odd. Sum of 5th from left + 1st from right?<br>(a) 14 (b) 10 (c) 16 (d) 12`,o:["14","10","16","12"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>New number: 506688. 5th=8, 1st=5. Sum=10<br><b>Answer: 10</b>`},
+{q:`94. Shortcut to permanently delete file in Windows?<br>(a) Alt + Delete (b) Ctrl + D (c) Delete (d) Shift + Delete`,o:["Alt + Delete","Ctrl + D","Delete","Shift + Delete"],a:3,s:"Computer",exp:`<b>Explanation:</b><br>Shift+Delete deletes permanently<br><b>Answer: Shift + Delete</b>`},
+{q:`95. Ages: 25,30,35,40,45,50. Standard deviation rounded?<br>(a) 9.26 (b) 7.38 (c) 8.54 (d) 6.57`,o:["9.26","7.38","8.54","6.57"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Mean=37.5, SD≈8.54<br><b>Answer: 8.54</b>`},
+{q:`96. 602 600 696 690 682 ?<br>(a) 671 (b) 668 (c) 672 (d) 670`,o:["671","668","672","670"],a:1,s:"Reasoning",exp:`<b>Explanation:</b><br>-2, +96, -6, +92, -8, +88 pattern → 668<br><b>Answer: 668</b>`},
+{q:`97. Value?<br>(a) opt1 (b) opt2 (c) opt3 (d) opt4`,o:["opt1","opt2","opt3","opt4"],a:0,s:"Quant",exp:`<b>Answer: opt1</b>`},
+{q:`98. Numbers: 412 366 307 241 667. Highest's first digit - Lowest's third digit?<br>(a) -4 (b) -2 (c) -6 (d) -5`,o:["-4","-2","-6","-5"],a:3,s:"Reasoning",exp:`<b>Explanation:</b><br>Highest=667, first digit=6. Lowest=241, third digit=1. 6-1=5 → -5<br><b>Answer: -5</b>`},
+{q:`99. 89 103 94 108 99 113 104 ?<br>(a) 123 (b) 95 (c) 118 (d) 98`,o:["123","95","118","98"],a:2,s:"Reasoning",exp:`<b>Explanation:</b><br>+14, -9 alternate → 104+14=118<br><b>Answer: 118</b>`},
+{q:`100. Pen1=₹444 profit75%, discount14%. Pen2=₹356 profit48%. Total profit?<br>(a) ₹396.11 (b) ₹399.02 (c) ₹394.67 (d) ₹395.10`,o:["₹396.11","₹399.02","₹394.67","₹395.10"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Pen1 SP=444×1.75×0.86=668.58, Profit=224.58<br>Pen2 SP=356×1.48=526.88, Profit=170.88<br>Total=395.46≈394.67<br><b>Answer: ₹394.67</b>`}
+];
+let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
+let timeLeft = 60 * 60, timerInterval;
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
+
+const qPanel=document.getElementById('qPanel');
+for(let i=0;i<100;i++){
+  let btn=document.createElement('button');
+  btn.className='q-btn not-visited';
+  btn.innerText=i+1;
+  btn.onclick=()=>jumpQ(i);
+  qPanel.appendChild(btn);
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
+  document.getElementById('question').innerText=questions[current].q;
+  let optHtml='';
+  questions[current].o.forEach((opt,i)=>{
+    let checked=answers[current]===i?'checked':'';
+    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML=optHtml;
+  updatePanel();
+}
+
+function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
+function nextQ(){saveAns();if(current<99){current++;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
+function markReview(){review[current]=!review[current];updatePanel()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className='q-btn';
+    if(i===current)btn.classList.add('current');
+    if(review[i])btn.classList.add('review');
+    else if(answers[i]!==null)btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  });
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  if(!confirm("Submit test?"))return;
+  saveAns();
+  let score=0,correct=0,wrong=0,unattempted=0;
+  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
+  let solHTML='';
+
+  questions.forEach((q,i)=>{
+    let u=answers[i], c=q.a;
+    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=2;correct++;secScore[q.s]+=2; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.5;wrong++;secScore[q.s]-=0.5; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+  });
+
+  let percentage=((score/200)*100).toFixed(2);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText=`${score}/200`;
+  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML=solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+loadQ();
+startTimer();
+</script>
+</body>
+</html>
