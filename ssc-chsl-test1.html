@@ -52,7 +52,7 @@ body{margin:0;background:#f4f6f9;display:flex;height:100vh}
 <div class="main">
 <div class="header">
 <h2>SSC CHSL Mock Test 01</h2>
-<div class="timer" id="timer">Time Left: 60:00</div>
+<div class="timer" id="timer">Time Left: 90:00</div>
 </div>
 
 <div id="quizArea">
@@ -183,7 +183,7 @@ const questions = [
 {q:`100. Pen1=₹444 profit75%, discount14%. Pen2=₹356 profit48%. Total profit?<br>(a) ₹396.11 (b) ₹399.02 (c) ₹394.67 (d) ₹395.10`,o:["₹396.11","₹399.02","₹394.67","₹395.10"],a:2,s:"Quant",exp:`<b>Explanation:</b><br>Pen1 SP=444×1.75×0.86=668.58, Profit=224.58<br>Pen2 SP=356×1.48=526.88, Profit=170.88<br>Total=395.46≈394.67<br><b>Answer: ₹394.67</b>`}
 ];
 let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
-let timeLeft = 60 * 60, timerInterval;
+let timeLeft = 90 * 60, timerInterval;
 
 function startTimer(){
   clearInterval(timerInterval);
