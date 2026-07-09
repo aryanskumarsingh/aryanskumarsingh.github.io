@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC-chsl-test1</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
+
+<div class="main">
+<div class="header">
+<h2>SSC CHSL Mock Test 01</h2>
+<div class="timer" id="timer">Time Left: 90:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/200</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+const questions = [
+{q:`<div class="section-head">GENERAL STUDIES (PRELIMS) 1-30</div>1. The Preamble of the Constitution was amended by which Constitutional Amendment?<br>(a) 24th (b) 42nd (c) 44th (d) 52nd`,o:["24th","42nd","44th","52nd"],a:1,s:"Polity",exp:`<b>Explanation:</b><br>42nd Amendment 1976 added "Socialist, Secular and Integrity" to Preamble<br><b>Answer: 42nd</b>`},
+{q:`2. The capital of Bihar is:<br>(a) Gaya (b) Muzaffarpur (c) Patna (d) Bhagalpur`,o:["Gaya","Muzaffarpur","Patna","Bhagalpur"],a:2,s:"GK",exp:`<b>Answer: Patna</b>`},
+{q:`3. The Constitution of India came into force on:<br>(a) 15 August 1947 (b) 26 January 1950 (c) 26 November 1949 (d) 2 October 1950`,o:["15 August 1947","26 January 1950","26 November 1949","2 October 1950"],a:1,s:"Polity",exp:`<b>Answer: 26 January 1950</b>`},
+{q:`4. The longest river in India is:<br>(a) Yamuna (b) Ganga (c) Godavari (d) Brahmaputra`,o:["Yamuna","Ganga","Godavari","Brahmaputra"],a:1,s:"Geography",exp:`<b>Answer: Ganga</b> Length 2525 km`},
+{q:`5. Which gas is most abundant in Earth's atmosphere?<br>(a) Oxygen (b) Nitrogen (c) Carbon dioxide (d) Hydrogen`,o:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],a:1,s:"Science",exp:`<b>Answer: Nitrogen</b> ~78%`},
+{q:`6. Who is known as the Father of the Indian Constitution?<br>(a) Mahatma Gandhi (b) Jawaharlal Nehru (c) B. R. Ambedkar (d) Sardar Patel`,o:["Mahatma Gandhi","Jawaharlal Nehru","B. R. Ambedkar","Sardar Patel"],a:2,s:"Polity",exp:`<b>Answer: B. R. Ambedkar</b> Chairman of Drafting Committee`},
+{q:`7. Vikramshila University was located in:<br>(a) Nalanda (b) Bhagalpur (c) Patna (d) Gaya`,o:["Nalanda","Bhagalpur","Patna","Gaya"],a:1,s:"History",exp:`<b>Answer: Bhagalpur</b> Founded by Pala king Dharmapala`},
+{q:`8. The SI unit of force is:<br>(a) Joule (b) Newton (c) Pascal (d) Watt`,o:["Joule","Newton","Pascal","Watt"],a:1,s:"Science",exp:`<b>Answer: Newton</b>`},
+{q:`9. Which article provides the Right to Equality?<br>(a) 12–18 (b) 19–22 (c) 32 (d) 51A`,o:["12–18","19–22","32","51A"],a:0,s:"Polity",exp:`<b>Explanation:</b><br>Articles 14 to 18 deal with Right to Equality<br><b>Answer: 12–18</b>`},
+{q:`10. The currency of Japan is:<br>(a) Won (b) Yuan (c) Yen (d) Dollar`,o:["Won","Yuan","Yen","Dollar"],a:2,s:"GK",exp:`<b>Answer: Yen</b>`},
+{q:`11. Which Mughal emperor built the Taj Mahal?<br>(a) Akbar (b) Jahangir (c) Shah Jahan (d) Aurangzeb`,o:["Akbar","Jahangir","Shah Jahan","Aurangzeb"],a:2,s:"History",exp:`<b>Answer: Shah Jahan</b>`},
+{q:`12. Which vitamin is obtained from sunlight?<br>(a) Vitamin A (b) Vitamin C (c) Vitamin D (d) Vitamin K`,o:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"],a:2,s:"Science",exp:`<b>Answer: Vitamin D</b>`},
+{q:`13. The first President of India was:<br>(a) Rajendra Prasad (b) Zakir Husain (c) S. Radhakrishnan (d) V. V. Giri`,o:["Rajendra Prasad","Zakir Husain","S. Radhakrishnan","V. V. Giri"],a:0,s:"GK",exp:`<b>Answer: Rajendra Prasad</b> He was from Bihar`},
+{q:`14. Which state shares the longest border with Bihar?<br>(a) Uttar Pradesh (b) Jharkhand (c) West Bengal (d) Nepal`,o:["Uttar Pradesh","Jharkhand","West Bengal","Nepal"],a:3,s:"Geography",exp:`<b>Answer: Nepal</b> 729 km`},
+{q:`15. Green plants prepare food through:<br>(a) Respiration (b) Photosynthesis (c) Digestion (d) Transpiration`,o:["Respiration","Photosynthesis","Digestion","Transpiration"],a:1,s:"Science",exp:`<b>Answer: Photosynthesis</b>`},
+{q:`16. Who founded the Maurya Empire?<br>(a) Ashoka (b) Chandragupta Maurya (c) Bindusara (d) Bimbisara`,o:["Ashoka","Chandragupta Maurya","Bindusara","Bimbisara"],a:1,s:"History",exp:`<b>Answer: Chandragupta Maurya</b>`},
+{q:`17. The headquarters of the Election Commission of India is in:<br>(a) Mumbai (b) New Delhi (c) Patna (d) Kolkata`,o:["Mumbai","New Delhi","Patna","Kolkata"],a:1,s:"Polity",exp:`<b>Answer: New Delhi</b>`},
+{q:`18. The pH value of pure water is:<br>(a) 5 (b) 6 (c) 7 (d) 8`,o:["5","6","7","8"],a:2,s:"Science",exp:`<b>Answer: 7</b> Neutral`},
+{q:`19. Which river is known as the Sorrow of Bihar?<br>(a) Son (b) Kosi (c) Gandak (d) Punpun`,o:["Son","Kosi","Gandak","Punpun"],a:1,s:"Geography",exp:`<b>Answer: Kosi</b>`},
+{q:`20. The Governor is appointed by:<br>(a) Prime Minister (b) Chief Minister (c) President of India (d) Parliament`,o:["Prime Minister","Chief Minister","President of India","Parliament"],a:2,s:"Polity",exp:`<b>Answer: President of India</b> Art 155`},
+{q:`21. The headquarters of UNESCO is in:<br>(a) Geneva (b) Paris (c) New York (d) London`,o:["Geneva","Paris","New York","London"],a:1,s:"GK",exp:`<b>Answer: Paris</b>`},
+{q:`22. Which planet is known as the Red Planet?<br>(a) Venus (b) Mars (c) Jupiter (d) Saturn`,o:["Venus","Mars","Jupiter","Saturn"],a:1,s:"Science",exp:`<b>Answer: Mars</b>`},
+{q:`23. The Battle of Plassey was fought in:<br>(a) 1757 (b) 1764 (c) 1857 (d) 1947`,o:["1757","1764","1857","1947"],a:0,s:"History",exp:`<b>Answer: 1757</b>`},
+{q:`24. The Constitution of India has borrowed the Directive Principles from:<br>(a) USA (b) Ireland (c) Canada (d) Australia`,o:["USA","Ireland","Canada","Australia"],a:1,s:"Polity",exp:`<b>Answer: Ireland</b>`},
+{q:`25. The national animal of India is:<br>(a) Lion (b) Tiger (c) Elephant (d) Leopard`,o:["Lion","Tiger","Elephant","Leopard"],a:1,s:"GK",exp:`<b>Answer: Tiger</b>`},
+{q:`26. Which is the largest district of Bihar by area?<br>(a) West Champaran (b) Patna (c) Gaya (d) Purnia`,o:["West Champaran","Patna","Gaya","Purnia"],a:0,s:"Geography",exp:`<b>Answer: West Champaran</b>`},
+{q:`27. The SI unit of electric current is:<br>(a) Volt (b) Ampere (c) Ohm (d) Watt`,o:["Volt","Ampere","Ohm","Watt"],a:1,s:"Science",exp:`<b>Answer: Ampere</b>`},
+{q:`28. Who gave the slogan "Do or Die"?<br>(a) Subhas Chandra Bose (b) Mahatma Gandhi (c) Bal Gangadhar Tilak (d) Jawaharlal Nehru`,o:["Subhas Chandra Bose","Mahatma Gandhi","Bal Gangadhar Tilak","Jawaharlal Nehru"],a:1,s:"History",exp:`<b>Answer: Mahatma Gandhi</b> During Quit India Movement`},
+{q:`29. Which Fundamental Duty was added by the 86th Constitutional Amendment?<br>(a) Protect forests (b) Educate children (6–14 years) (c) Respect the Constitution (d) Develop scientific temper`,o:["Protect forests","Educate children (6–14 years)","Respect the Constitution","Develop scientific temper"],a:1,s:"Polity",exp:`<b>Answer: Educate children (6–14 years)</b>`},
+{q:`30. Which city is known as the Silk City of Bihar?<br>(a) Patna (b) Bhagalpur (c) Gaya (d) Darbhanga`,o:["Patna","Bhagalpur","Gaya","Darbhanga"],a:1,s:"GK",exp:`<b>Answer: Bhagalpur</b>`},
+
+{q:`<div class="section-head">GENERAL STUDIES 31-60</div>31. Which Fundamental Right is called the "Heart and Soul" of the Constitution?<br>(a) Right to Equality (b) Right to Freedom (c) Right to Constitutional Remedies (d) Cultural and Educational Rights`,o:["Right to Equality","Right to Freedom","Right to Constitutional Remedies","Cultural and Educational Rights"],a:2,s:"Polity",exp:`<b>Answer: Right to Constitutional Remedies</b> Art 32`},
+{q:`32. Which is the largest planet in our Solar System?<br>(a) Earth (b) Saturn (c) Jupiter (d) Mars`,o:["Earth","Saturn","Jupiter","Mars"],a:2,s:"Science",exp:`<b>Answer: Jupiter</b>`},
+{q:`33. The Quit India Movement was launched in:<br>(a) 1930 (b) 1942 (c) 1947 (d) 1920`,o:["1930","1942","1947","1920"],a:1,s:"History",exp:`<b>Answer: 1942</b>`},
+{q:`34. The famous Mahabodhi Temple is located at:<br>(a) Patna (b) Rajgir (c) Bodh Gaya (d) Nalanda`,o:["Patna","Rajgir","Bodh Gaya","Nalanda"],a:2,s:"GK",exp:`<b>Answer: Bodh Gaya</b>`},
+{q:`35. Which vitamin helps in blood clotting?<br>(a) Vitamin A (b) Vitamin B12 (c) Vitamin K (d) Vitamin C`,o:["Vitamin A","Vitamin B12","Vitamin K","Vitamin C"],a:2,s:"Science",exp:`<b>Answer: Vitamin K</b>`},
+{q:`36. The Lok Sabha can have a maximum strength of:<br>(a) 543 (b) 545 (c) 552 (d) 560`,o:["543","545","552","560"],a:2,s:"Polity",exp:`<b>Answer: 552</b> 530+20+2`},
+{q:`37. Which river originates from the Gangotri Glacier?<br>(a) Yamuna (b) Ganga (Bhagirathi) (c) Brahmaputra (d) Godavari`,o:["Yamuna","Ganga (Bhagirathi)","Brahmaputra","Godavari"],a:1,s:"Geography",exp:`<b>Answer: Ganga (Bhagirathi)</b>`},
+{q:`38. The SI unit of power is:<br>(a) Joule (b) Newton (c) Watt (d) Pascal`,o:["Joule","Newton","Watt","Pascal"],a:2,s:"Science",exp:`<b>Answer: Watt</b>`},
+{q:`39. The first Governor-General of independent India was:<br>(a) Lord Mountbatten (b) C. Rajagopalachari (c) Warren Hastings (d) Lord Wavell`,o:["Lord Mountbatten","C. Rajagopalachari","Warren Hastings","Lord Wavell"],a:0,s:"History",exp:`<b>Answer: Lord Mountbatten</b>`},
+{q:`40. Nalanda University is situated in which district of Bihar?<br>(a) Nalanda (b) Gaya (c) Patna (d) Jehanabad`,o:["Nalanda","Gaya","Patna","Jehanabad"],a:0,s:"GK",exp:`<b>Answer: Nalanda</b>`},
+{q:`41. Which metal is liquid at room temperature?<br>(a) Iron (b) Mercury (c) Copper (d) Aluminium`,o:["Iron","Mercury","Copper","Aluminium"],a:1,s:"Science",exp:`<b>Answer: Mercury</b>`},
+{q:`42. Which Schedule of the Constitution deals with languages?<br>(a) Sixth Schedule (b) Seventh Schedule (c) Eighth Schedule (d) Ninth Schedule`,o:["Sixth Schedule","Seventh Schedule","Eighth Schedule","Ninth Schedule"],a:2,s:"Polity",exp:`<b>Answer: Eighth Schedule</b>`},
+{q:`43. The Battle of Buxar was fought in:<br>(a) 1757 (b) 1764 (c) 1857 (d) 1773`,o:["1757","1764","1857","1773"],a:1,s:"History",exp:`<b>Answer: 1764</b>`},
+{q:`44. The headquarters of the World Health Organization is in:<br>(a) Paris (b) Geneva (c) New York (d) London`,o:["Paris","Geneva","New York","London"],a:1,s:"GK",exp:`<b>Answer: Geneva</b>`},
+{q:`45. The largest producer of litchi in India is:<br>(a) Uttar Pradesh (b) Bihar (c) Punjab (d) Gujarat`,o:["Uttar Pradesh","Bihar","Punjab","Gujarat"],a:1,s:"Geography",exp:`<b>Answer: Bihar</b> Muzaffarpur famous`},
+{q:`46. The process of conversion of water into vapour is called:<br>(a) Condensation (b) Evaporation (c) Sublimation (d) Freezing`,o:["Condensation","Evaporation","Sublimation","Freezing"],a:1,s:"Science",exp:`<b>Answer: Evaporation</b>`},
+{q:`47. The Speaker of the Lok Sabha is elected by:<br>(a) President (b) Members of Lok Sabha (c) Prime Minister (d) Chief Justice of India`,o:["President","Members of Lok Sabha","Prime Minister","Chief Justice of India"],a:1,s:"Polity",exp:`<b>Answer: Members of Lok Sabha</b>`},
+{q:`48. Which Mughal emperor introduced Din-i-Ilahi?<br>(a) Babur (b) Humayun (c) Akbar (d) Aurangzeb`,o:["Babur","Humayun","Akbar","Aurangzeb"],a:2,s:"History",exp:`<b>Answer: Akbar</b>`},
+{q:`49. Which is the smallest continent?<br>(a) Europe (b) Australia (c) Antarctica (d) South America`,o:["Europe","Australia","Antarctica","South America"],a:1,s:"Geography",exp:`<b>Answer: Australia</b>`},
+{q:`50. Which district of Bihar is famous for Madhubani painting?<br>(a) Darbhanga (b) Madhubani (c) Sitamarhi (d) Samastipur`,o:["Darbhanga","Madhubani","Sitamarhi","Samastipur"],a:1,s:"GK",exp:`<b>Answer: Madhubani</b>`},
+{q:`51. Which gas is used by plants during photosynthesis?<br>(a) Oxygen (b) Nitrogen (c) Carbon dioxide (d) Hydrogen`,o:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],a:2,s:"Science",exp:`<b>Answer: Carbon dioxide</b>`},
+{q:`52. The Directive Principles are mentioned in:<br>(a) Part III (b) Part IV (c) Part IVA (d) Part V`,o:["Part III","Part IV","Part IVA","Part V"],a:1,s:"Polity",exp:`<b>Answer: Part IV</b> Art 36-51`},
+{q:`53. Who wrote "Discovery of India"?<br>(a) Mahatma Gandhi (b) Jawaharlal Nehru (c) B. R. Ambedkar (d) Rabindranath Tagore`,o:["Mahatma Gandhi","Jawaharlal Nehru","B. R. Ambedkar","Rabindranath Tagore"],a:1,s:"History",exp:`<b>Answer: Jawaharlal Nehru</b>`},
+{q:`54. Which is the highest mountain peak in the world?<br>(a) Kanchenjunga (b) K2 (c) Mount Everest (d) Nanda Devi`,o:["Kanchenjunga","K2","Mount Everest","Nanda Devi"],a:2,s:"Geography",exp:`<b>Answer: Mount Everest</b>`},
+{q:`55. Which blood group is known as the universal donor?<br>(a) A+ (b) AB+ (c) O- (d) B+`,o:["A+","AB+","O-","B+"],a:2,s:"Science",exp:`<b>Answer: O-</b>`},
+{q:`56. The Planning Commission was replaced by:<br>(a) Finance Commission (b) NITI Aayog (c) UPSC (d) Election Commission`,o:["Finance Commission","NITI Aayog","UPSC","Election Commission"],a:1,s:"Polity",exp:`<b>Answer: NITI Aayog</b> 2015`},
+{q:`57. Which river forms the famous Sunderbans Delta?<br>(a) Krishna (b) Ganga and Brahmaputra (c) Narmada (d) Godavari`,o:["Krishna","Ganga and Brahmaputra","Narmada","Godavari"],a:1,s:"Geography",exp:`<b>Answer: Ganga and Brahmaputra</b>`},
+{q:`58. The Indian Constitution was adopted on:<br>(a) 26 January 1950 (b) 15 August 1947 (c) 26 November 1949 (d) 2 October 1949`,o:["26 January 1950","15 August 1947","26 November 1949","2 October 1949"],a:2,s:"Polity",exp:`<b>Answer: 26 November 1949</b>`},
+{q:`59. Which wildlife sanctuary is located in Bihar?<br>(a) Kaziranga (b) Valmiki Tiger Reserve (c) Gir National Park (d) Ranthambore`,o:["Kaziranga","Valmiki Tiger Reserve","Gir National Park","Ranthambore"],a:1,s:"GK",exp:`<b>Answer: Valmiki Tiger Reserve</b>`},
+{q:`60. Which instrument is used to measure atmospheric pressure?<br>(a) Hygrometer (b) Thermometer (c) Barometer (d) Ammeter`,o:["Hygrometer","Thermometer","Barometer","Ammeter"],a:2,s:"Science",exp:`<b>Answer: Barometer</b>`},
+
+{q:`<div class="section-head">GENERAL STUDIES 61-90</div>61. Who was the first President of the Constituent Assembly of India?<br>(a) Rajendra Prasad (b) Sachchidananda Sinha (c) Jawaharlal Nehru (d) B. R. Ambedkar`,o:["Rajendra Prasad","Sachchidananda Sinha","Jawaharlal Nehru","B. R. Ambedkar"],a:1,s:"Polity",exp:`<b>Explanation:</b><br>Sachchidananda Sinha was temporary President. Rajendra Prasad was permanent President<br><b>Answer: Sachchidananda Sinha</b>`},
+{q:`62. Which district of Bihar is known as the "Rice Bowl of Bihar"?<br>(a) Rohtas (b) Purnia (c) Gaya (d) Buxar`,o:["Rohtas","Purnia","Gaya","Buxar"],a:0,s:"Geography",exp:`<b>Answer: Rohtas</b>`},
+{q:`63. The cell is the basic unit of:<br>(a) Matter (b) Life (c) Energy (d) Force`,o:["Matter","Life","Energy","Force"],a:1,s:"Science",exp:`<b>Answer: Life</b>`},
+{q:`64. Which article deals with the abolition of untouchability?<br>(a) Article 14 (b) Article 15 (c) Article 17 (d) Article 19`,o:["Article 14","Article 15","Article 17","Article 19"],a:2,s:"Polity",exp:`<b>Answer: Article 17</b>`},
+{q:`65. The headquarters of the Reserve Bank of India is located in:<br>(a) New Delhi (b) Mumbai (c) Kolkata (d) Chennai`,o:["New Delhi","Mumbai","Kolkata","Chennai"],a:1,s:"GK",exp:`<b>Answer: Mumbai</b>`},
+{q:`66. Who founded the Gupta Empire?<br>(a) Samudragupta (b) Chandragupta I (c) Chandragupta II (d) Kumaragupta`,o:["Samudragupta","Chandragupta I","Chandragupta II","Kumaragupta"],a:1,s:"History",exp:`<b>Answer: Chandragupta I</b>`},
+{q:`67. Which Indian state has the longest coastline?<br>(a) Tamil Nadu (b) Gujarat (c) Maharashtra (d) Kerala`,o:["Tamil Nadu","Gujarat","Maharashtra","Kerala"],a:1,s:"Geography",exp:`<b>Answer: Gujarat</b>`},
+{q:`68. The SI unit of frequency is:<br>(a) Watt (b) Hertz (c) Volt (d) Newton`,o:["Watt","Hertz","Volt","Newton"],a:1,s:"Science",exp:`<b>Answer: Hertz</b>`},
+{q:`69. Which planet is known as the Morning Star?<br>(a) Mars (b) Venus (c) Mercury (d) Jupiter`,o:["Mars","Venus","Mercury","Jupiter"],a:1,s:"Science",exp:`<b>Answer: Venus</b>`},
+{q:`70. The famous Sonpur Fair is held in which district of Bihar?<br>(a) Saran (b) Vaishali (c) Patna (d) Gaya`,o:["Saran","Vaishali","Patna","Gaya"],a:0,s:"GK",exp:`<b>Answer: Saran</b>`},
+{q:`71. Which Mughal emperor banned the Jizya tax?<br>(a) Babur (b) Akbar (c) Aurangzeb (d) Jahangir`,o:["Babur","Akbar","Aurangzeb","Jahangir"],a:1,s:"History",exp:`<b>Answer: Akbar</b>`},
+{q:`72. The Fundamental Duties were added by which Constitutional Amendment?<br>(a) 24th (b) 42nd (c) 44th (d) 52nd`,o:["24th","42nd","44th","52nd"],a:1,s:"Polity",exp:`<b>Answer: 42nd</b>`},
+{q:`73. Which gas is known as laughing gas?<br>(a) Carbon dioxide (b) Nitrous oxide (c) Oxygen (d) Nitrogen`,o:["Carbon dioxide","Nitrous oxide","Oxygen","Nitrogen"],a:1,s:"Science",exp:`<b>Answer: Nitrous oxide</b> N2O`},
+{q:`74. The Green Revolution in India is mainly associated with:<br>(a) Milk production (b) Wheat production (c) Cotton production (d) Tea production`,o:["Milk production","Wheat production","Cotton production","Tea production"],a:1,s:"Geography",exp:`<b>Answer: Wheat production</b>`},
+{q:`75. Which river separates Bihar from Uttar Pradesh for some distance?<br>(a) Kosi (b) Son (c) Ganga (d) Gandak`,o:["Kosi","Son","Ganga","Gandak"],a:2,s:"Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`76. Who gave the slogan "Jai Jawan, Jai Kisan"?<br>(a) Mahatma Gandhi (b) Lal Bahadur Shastri (c) Jawaharlal Nehru (d) Subhas Chandra Bose`,o:["Mahatma Gandhi","Lal Bahadur Shastri","Jawaharlal Nehru","Subhas Chandra Bose"],a:1,s:"History",exp:`<b>Answer: Lal Bahadur Shastri</b>`},
+{q:`77. Which is the largest gland in the human body?<br>(a) Pancreas (b) Liver (c) Thyroid (d) Kidney`,o:["Pancreas","Liver","Thyroid","Kidney"],a:1,s:"Science",exp:`<b>Answer: Liver</b>`},
+{q:`78. The headquarters of the United Nations is located in:<br>(a) Geneva (b) Paris (c) New York (d) London`,o:["Geneva","Paris","New York","London"],a:2,s:"GK",exp:`<b>Answer: New York</b>`},
+{q:`79. Which Indian Governor-General abolished Sati?<br>(a) Lord William Bentinck (b) Lord Dalhousie (c) Lord Curzon (d) Lord Ripon`,o:["Lord William Bentinck","Lord Dalhousie","Lord Curzon","Lord Ripon"],a:0,s:"History",exp:`<b>Answer: Lord William Bentinck</b> 1829`},
+{q:`80. Which district is known as the gateway to Nepal from Bihar?<br>(a) Kishanganj (b) Sitamarhi (c) West Champaran (d) Araria`,o:["Kishanganj","Sitamarhi","West Champaran","Araria"],a:2,s:"Geography",exp:`<b>Answer: West Champaran</b> Raxaul`},
+{q:`81. The speed of light in vacuum is approximately:<br>(a) 3 × 10⁸ m/s (b) 3 × 10⁶ m/s (c) 3 × 10⁵ km/s (d) Both A and C`,o:["3 × 10⁸ m/s","3 × 10⁶ m/s","3 × 10⁵ km/s","Both A and C"],a:3,s:"Science",exp:`<b>Answer: Both A and C</b>`},
+{q:`82. The Finance Commission is constituted under:<br>(a) Article 280 (b) Article 324 (c) Article 356 (d) Article 370`,o:["Article 280","Article 324","Article 356","Article 370"],a:0,s:"Polity",exp:`<b>Answer: Article 280</b>`},
+{q:`83. Which dynasty built the Sun Temple at Konark?<br>(a) Maurya (b) Gupta (c) Eastern Ganga (d) Chola`,o:["Maurya","Gupta","Eastern Ganga","Chola"],a:2,s:"History",exp:`<b>Answer: Eastern Ganga</b>`},
+{q:`84. Which vitamin deficiency causes rickets?<br>(a) Vitamin A (b) Vitamin B (c) Vitamin C (d) Vitamin D`,o:["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],a:3,s:"Science",exp:`<b>Answer: Vitamin D</b>`},
+{q:`85. The largest freshwater lake in India is:<br>(a) Dal Lake (b) Wular Lake (c) Chilika Lake (d) Loktak Lake`,o:["Dal Lake","Wular Lake","Chilika Lake","Loktak Lake"],a:1,s:"Geography",exp:`<b>Answer: Wular Lake</b>`},
+{q:`86. Which district of Bihar is famous for Shahi Litchi?<br>(a) Muzaffarpur (b) Patna (c) Gaya (d) Buxar`,o:["Muzaffarpur","Patna","Gaya","Buxar"],a:0,s:"GK",exp:`<b>Answer: Muzaffarpur</b>`},
+{q:`87. Which constitutional body conducts elections in India?<br>(a) UPSC (b) Finance Commission (c) Election Commission of India (d) NITI Aayog`,o:["UPSC","Finance Commission","Election Commission of India","NITI Aayog"],a:2,s:"Polity",exp:`<b>Answer: Election Commission of India</b>`},
+{q:`88. The symbol 'Na' stands for:<br>(a) Nitrogen (b) Sodium (c) Neon (d) Nickel`,o:["Nitrogen","Sodium","Neon","Nickel"],a:1,s:"Science",exp:`<b>Answer: Sodium</b> Natrium`},
+{q:`89. The Champaran Satyagraha took place in:<br>(a) 1915 (b) 1917 (c) 1920 (d) 1930`,o:["1915","1917","1920","1930"],a:1,s:"History",exp:`<b>Answer: 1917</b>`},
+{q:`90. Which river is the largest tributary of the Ganga in Bihar?<br>(a) Son (b) Kosi (c) Gandak (d) Punpun`,o:["Son","Kosi","Gandak","Punpun"],a:1,s:"Geography",exp:`<b>Answer: Kosi</b>`},
+
+{q:`<div class="section-head">GENERAL STUDIES 91-120</div>91. Which part of the Constitution contains the Fundamental Rights?<br>(a) Part II (b) Part III (c) Part IV (d) Part V`,o:["Part II","Part III","Part IV","Part V"],a:1,s:"Polity",exp:`<b>Answer: Part III</b> Art 12-35`},
+{q:`92. The famous ruins of Nalanda University are located in:<br>(a) Patna (b) Nalanda (c) Gaya (d) Bhojpur`,o:["Patna","Nalanda","Gaya","Bhojpur"],a:1,s:"GK",exp:`<b>Answer: Nalanda</b>`},
+{q:`93. Which is the largest organ in the human body?<br>(a) Liver (b) Brain (c) Skin (d) Heart`,o:["Liver","Brain","Skin","Heart"],a:2,s:"Science",exp:`<b>Answer: Skin</b>`},
+{q:`94. Which Article deals with Right to Freedom of Speech and Expression?<br>(a) Article 14 (b) Article 19(1)(a) (c) Article 21 (d) Article 32`,o:["Article 14","Article 19(1)(a)","Article 21","Article 32"],a:1,s:"Polity",exp:`<b>Answer: Article 19(1)(a)</b>`},
+{q:`95. Which is the largest desert in India?<br>(a) Sahara (b) Thar (c) Gobi (d) Kalahari`,o:["Sahara","Thar","Gobi","Kalahari"],a:1,s:"Geography",exp:`<b>Answer: Thar</b>`},
+{q:`96. The headquarters of ISRO is located in:<br>(a) Hyderabad (b) Bengaluru (c) Chennai (d) Mumbai`,o:["Hyderabad","Bengaluru","Chennai","Mumbai"],a:1,s:"GK",exp:`<b>Answer: Bengaluru</b>`},
+{q:`97. Which river is called the "Dakshin Ganga"?<br>(a) Krishna (b) Godavari (c) Narmada (d) Kaveri`,o:["Krishna","Godavari","Narmada","Kaveri"],a:1,s:"Geography",exp:`<b>Answer: Godavari</b>`},
+{q:`98. Who was the founder of the Maurya Empire?<br>(a) Ashoka (b) Bindusara (c) Chandragupta Maurya (d) Bimbisara`,o:["Ashoka","Bindusara","Chandragupta Maurya","Bimbisara"],a:2,s:"History",exp:`<b>Answer: Chandragupta Maurya</b>`},
+{q:`99. Which gas is essential for human respiration?<br>(a) Nitrogen (b) Oxygen (c) Hydrogen (d) Helium`,o:["Nitrogen","Oxygen","Hydrogen","Helium"],a:1,s:"Science",exp:`<b>Answer: Oxygen</b>`},
+{q:`100. Which district of Bihar is famous for the Vishnupad Temple?<br>(a) Gaya (b) Patna (c) Nalanda (d) Bhagalpur`,o:["Gaya","Patna","Nalanda","Bhagalpur"],a:0,s:"GK",exp:`<b>Answer: Gaya</b>`},
+{q:`101. The Constitution of India describes India as a:<br>(a) Federation of States (b) Union of States (c) Confederation of States (d) Republic of Provinces`,o:["Federation of States","Union of States","Confederation of States","Republic of Provinces"],a:1,s:"Polity",exp:`<b>Answer: Union of States</b> Art 1`},
+{q:`102. The SI unit of work is:<br>(a) Watt (b) Newton (c) Joule (d) Pascal`,o:["Watt","Newton","Joule","Pascal"],a:2,s:"Science",exp:`<b>Answer: Joule</b>`},
+{q:`103. Which movement was started by Mahatma Gandhi in 1920?<br>(a) Civil Disobedience Movement (b) Non-Cooperation Movement (c) Quit India Movement (d) Swadeshi Movement
+let current=0, answers=Array(100).fill(null), review=Array(100).fill(false);
+let timeLeft = 90 * 60, timerInterval;
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
+
+const qPanel=document.getElementById('qPanel');
+for(let i=0;i<100;i++){
+  let btn=document.createElement('button');
+  btn.className='q-btn not-visited';
+  btn.innerText=i+1;
+  btn.onclick=()=>jumpQ(i);
+  qPanel.appendChild(btn);
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
+  document.getElementById('question').innerText=questions[current].q;
+  let optHtml='';
+  questions[current].o.forEach((opt,i)=>{
+    let checked=answers[current]===i?'checked':'';
+    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML=optHtml;
+  updatePanel();
+}
+
+function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
+function nextQ(){saveAns();if(current<99){current++;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
+function markReview(){review[current]=!review[current];updatePanel()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className='q-btn';
+    if(i===current)btn.classList.add('current');
+    if(review[i])btn.classList.add('review');
+    else if(answers[i]!==null)btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  });
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  if(!confirm("Submit test?"))return;
+  saveAns();
+  let score=0,correct=0,wrong=0,unattempted=0;
+  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
+  let solHTML='';
+
+  questions.forEach((q,i)=>{
+    let u=answers[i], c=q.a;
+    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=2;correct++;secScore[q.s]+=2; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.5;wrong++;secScore[q.s]-=0.5; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+  });
+
+  let percentage=((score/200)*100).toFixed(2);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText=`${score}/200`;
+  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/50 | Quant: ${secScore.Quant}/50 | Reasoning: ${secScore.Reasoning}/50 | English: ${secScore.English}/50`;
+  document.getElementById('solutionBox').innerHTML=solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+loadQ();
+startTimer();
+</script>
+</body>
+</html>
