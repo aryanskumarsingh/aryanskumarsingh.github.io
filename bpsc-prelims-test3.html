@@ -1,1 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bpsc-prelims-test3</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f4f6f9;display:flex;height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #ddd;padding:15px;overflow-y:auto}
+.main{flex:1;padding:20px;overflow-y:auto}
+.header{background:#1a237e;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.timer{background:#fff;color:#d32f2f;padding:8px 15px;border-radius:4px;font-weight:bold;font-size:18px}
+.q-panel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:15px}
+.q-btn{padding:8px;border:1px solid #ccc;background:#fff;cursor:pointer;border-radius:4px;font-size:14px}
+.q-btn.not-visited{background:#fff}
+.q-btn.answered{background:#4caf50;color:white;border:none}
+.q-btn.review{background:#ff9800;color:white;border:none}
+.q-btn.current{border:2px solid #1a237e}
+.question-box{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.options label{display:block;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;cursor:pointer}
+.options label:hover{background:#f0f0f0}
+.options input{margin-right:10px}
+.btn{padding:10px 20px;border:none;border-radius:4px;cursor:pointer;font-size:16px;margin:5px}
+.btn-next{background:#1a237e;color:white}
+.btn-review{background:#ff9800;color:white}
+.btn-submit{background:#d32f2f;color:white}
+.legend span{display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:3px}
+.hide{display:none}
+#result{background:white;padding:30px;border-radius:8px;text-align:center}
+.score{font-size:48px;color:#1a237e;margin:10px}
+.solution-box{text-align:left;max-height:500px;overflow-y:auto;margin-top:20px}
+.sol-que{padding:12px;margin:8px 0;border-radius:6px;border-left:5px solid #ccc}
+.correct{background:#e8f5e9;border-color:#4caf50}
+.wrong{background:#ffebee;border-color:#d32f2f}
+.not-att{background:#f5f5f5;border-color:#9e9e9e}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:180px}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h3>Question Panel</h3>
+<div class="legend">
+<p><span style="background:#4caf50"></span>Answered</p>
+<p><span style="background:#ff9800"></span>Marked</p>
+<p><span style="background:#fff;border:1px solid #ccc"></span>Not Visited</p>
+</div>
+<div class="q-panel" id="qPanel"></div>
+<button class="btn btn-submit" onclick="submitTest()" style="width:100%;margin-top:20px">Submit Test</button>
+</div>
 
+<div class="main">
+<div class="header">
+<h2>BPSC Prelims Mock Test 03</h2>
+<div class="timer" id="timer">Time Left: 120:00</div>
+</div>
+
+<div id="quizArea">
+<div class="question-box">
+<h3 id="qNum">Question 1</h3>
+<p id="question"></p>
+<div class="options" id="options"></div>
+</div>
+<button class="btn btn-review" onclick="markReview()">Mark for Review</button>
+<button class="btn btn-next" onclick="nextQ()">Save & Next</button>
+</div>
+
+<div id="result" class="hide">
+<h2>Test Submitted!</h2>
+<p class="score" id="finalScore">0/150</p>
+<p id="analysis"></p>
+<h3>Section Wise:</h3>
+<p id="sectionScore"></p>
+<button class="btn btn-next" onclick="toggleSolution()">Check Answers</button>
+<div id="solutionBox" class="solution-box hide"></div>
+</div>
+</div>
+
+<script>
+const questions = [
+{q:`1. Which ancient university was located in Bihar and considered one of the world's oldest? (a) Takshashila (b) Nalanda (c) Vikramshila (d) Vallabhi`,o:["Takshashila","Nalanda","Vikramshila","Vallabhi"],a:1,s:"Bihar History",exp:`<b>Answer: Nalanda</b> One of the world's oldest universities`},
+{q:`2. The first Buddhist Council was held at which place in Bihar? (a) Vaishali (b) Rajgir (c) Pataliputra (d) Bodh Gaya`,o:["Vaishali","Rajgir","Pataliputra","Bodh Gaya"],a:1,s:"Bihar History",exp:`<b>Answer: Rajgir</b>`},
+{q:`3. Who founded the Mauryan Empire with its capital at Pataliputra? (a) Bindusara (b) Ashoka (c) Chandragupta Maurya (d) Brihadratha`,o:["Bindusara","Ashoka","Chandragupta Maurya","Brihadratha"],a:2,s:"Bihar History",exp:`<b>Answer: Chandragupta Maurya</b>`},
+{q:`4. The famous 'Lion Capital of Ashoka' is associated with which place? (a) Lauriya Nandangarh (b) Vaishali (c) Sarnath (Though in UP, symbol adopted from Ashokan pillar) (d) Bodh Gaya`,o:["Lauriya Nandangarh","Vaishali","Sarnath (Though in UP, symbol adopted from Ashokan pillar)","Bodh Gaya"],a:2,s:"Bihar History",exp:`<b>Answer: Sarnath</b> Lion Capital was originally at Sarnath, adopted as India's National Emblem`},
+{q:`5. Which Buddhist Council was patronized by King Ashoka? (a) First Council (b) Second Council (c) Third Council (d) Fourth Council`,o:["First Council","Second Council","Third Council","Fourth Council"],a:2,s:"Bihar History",exp:`<b>Answer: Third Council</b>`},
+{q:`6. The ancient kingdom of Videha had its capital at: (a) Rajgir (b) Mithila (Janakpur) (c) Champa (d) Vaishali`,o:["Rajgir","Mithila (Janakpur)","Champa","Vaishali"],a:1,s:"Bihar History",exp:`<b>Answer: Mithila (Janakpur)</b>`},
+{q:`7. Which one is NOT correctly matched regarding Buddhist Councils in Bihar? (a) First Council - Rajgir (b) Second Council - Vaishali (c) Third Council - Pataliputra (d) Fourth Council - Bodh Gaya`,o:["First Council - Rajgir","Second Council - Vaishali","Third Council - Pataliputra","Fourth Council - Bodh Gaya"],a:3,s:"Bihar History",exp:`<b>Answer: Fourth Council</b> Fourth Council was in Kashmir`},
+{q:`8. The Lichchhavis were associated with which republican state in ancient Bihar? (a) Anga (b) Magadha (c) Vaishali (d) Mithila`,o:["Anga","Magadha","Vaishali","Mithila"],a:2,s:"Bihar History",exp:`<b>Answer: Vaishali</b>`},
+{q:`9. Who was the last ruler of the Mauryan dynasty? (a) Ashoka (b) Bindusara (c) Brihadratha (d) Dasharatha`,o:["Ashoka","Bindusara","Brihadratha","Dasharatha"],a:2,s:"Bihar History",exp:`<b>Answer: Brihadratha</b>`},
+{q:`10. The famous physician of ancient India, Jivaka, was associated with which place? (a) Nalanda (b) Rajgir (c) Pataliputra (d) Vaishali`,o:["Nalanda","Rajgir","Pataliputra","Vaishali"],a:1,s:"Bihar History",exp:`<b>Answer: Rajgir</b>`},
+{q:`11. Which Gupta ruler is known as the 'Napoleon of India'? (a) Chandragupta I (b) Samudragupta (c) Chandragupta II (d) Skandagupta`,o:["Chandragupta I","Samudragupta","Chandragupta II","Skandagupta"],a:1,s:"Bihar History",exp:`<b>Answer: Samudragupta</b>`},
+{q:`12. The Chinese traveler Fa-Hien visited Bihar during the reign of: (a) Chandragupta I (b) Samudragupta (c) Chandragupta II (Vikramaditya) (d) Skandagupta`,o:["Chandragupta I","Samudragupta","Chandragupta II (Vikramaditya)","Skandagupta"],a:2,s:"Bihar History",exp:`<b>Answer: Chandragupta II (Vikramaditya)</b>`},
+{q:`13. Vikramshila University was founded by: (a) Gopala (b) Devapala (c) Dharmapala (d) Mahipala`,o:["Gopala","Devapala","Dharmapala","Mahipala"],a:2,s:"Bihar History",exp:`<b>Answer: Dharmapala</b>`},
+{q:`14. The famous 'Battle of Buxar' was fought in which year? (a) 1757 (b) 1761 (c) 1764 (d) 1770`,o:["1757","1761","1764","1770"],a:2,s:"Bihar History",exp:`<b>Answer: 1764</b>`},
+{q:`15. Which foreign traveler visited Bihar during the reign of Harshavardhana? (a) Megasthenes (b) Fa-Hien (c) Hiuen Tsang (d) I-Tsing`,o:["Megasthenes","Fa-Hien","Hiuen Tsang","I-Tsing"],a:2,s:"Bihar History",exp:`<b>Answer: Hiuen Tsang</b>`},
+{q:`16. The Pala dynasty was founded by: (a) Dharmapala (b) Devapala (c) Gopala (d) Mahipala`,o:["Dharmapala","Devapala","Gopala","Mahipala"],a:2,s:"Bihar History",exp:`<b>Answer: Gopala</b>`},
+{q:`17. Which ancient text is associated with Kautilya (Chanakya)? (a) Manusmriti (b) Arthashastra (c) Mudrarakshasa (d) Ashtadhyayi`,o:["Manusmriti","Arthashastra","Mudrarakshasa","Ashtadhyayi"],a:1,s:"Bihar History",exp:`<b>Answer: Arthashastra</b>`},
+{q:`18. The famous rock-cut caves of Barabar Hills are located in which district of Bihar? (a) Gaya (b) Jehanabad (c) Nawada (d) Nalanda`,o:["Gaya","Jehanabad","Nawada","Nalanda"],a:1,s:"Bihar Geography",exp:`<b>Answer: Jehanabad</b>`},
+{q:`19. Mahavira, the 24th Tirthankara of Jainism, attained Nirvana at: (a) Rajgir (b) Pawapuri (c) Vaishali (d) Bodh Gaya`,o:["Rajgir","Pawapuri","Vaishali","Bodh Gaya"],a:1,s:"Bihar History",exp:`<b>Answer: Pawapuri</b>`},
+{q:`20. Which ruler shifted the capital from Rajgir to Pataliputra? (a) Bimbisara (b) Ajatashatru (c) Udayin (d) Shishunaga`,o:["Bimbisara","Ajatashatru","Udayin","Shishunaga"],a:2,s:"Bihar History",exp:`<b>Answer: Udayin</b>`},
+{q:`21. The famous 'Didarganj Yakshi' statue belongs to which period? (a) Mauryan Period (b) Gupta Period (c) Pala Period (d) Sunga Period`,o:["Mauryan Period","Gupta Period","Pala Period","Sunga Period"],a:0,s:"Bihar History",exp:`<b>Answer: Mauryan Period</b>`},
+{q:`22. Sher Shah Suri's tomb is located at: (a) Patna (b) Sasaram (c) Gaya (d) Munger`,o:["Patna","Sasaram","Gaya","Munger"],a:1,s:"Bihar History",exp:`<b>Answer: Sasaram</b>`},
+{q:`23. The first Republic of the world is considered to be: (a) Athens (b) Rome (c) Vaishali (d) Sparta`,o:["Athens","Rome","Vaishali","Sparta"],a:2,s:"Bihar History",exp:`<b>Answer: Vaishali</b>`},
+{q:`24. Which Buddhist text mentions the 16 Mahajanapadas including those in Bihar? (a) Tripitaka (b) Anguttara Nikaya (c) Jataka Tales (d) Mahavamsa`,o:["Tripitaka","Anguttara Nikaya","Jataka Tales","Mahavamsa"],a:1,s:"Bihar History",exp:`<b>Answer: Anguttara Nikaya</b>`},
+{q:`25. The famous 'Maner Sharif' is associated with which Sufi saint? (a) Khwaja Moinuddin Chishti (b) Makhdoom Shah Daulat (c) Nizamuddin Auliya (d) Salim Chishti`,o:["Khwaja Moinuddin Chishti","Makhdoom Shah Daulat","Nizamuddin Auliya","Salim Chishti"],a:1,s:"Bihar GK",exp:`<b>Answer: Makhdoom Shah Daulat</b>`},
+
+{q:`26. Sher Shah Suri defeated Humayun in which battle? (a) Battle of Panipat (b) Battle of Chausa (c) Battle of Kannauj (d) Both B and C`,o:["Battle of Panipat","Battle of Chausa","Battle of Kannauj","Both B and C"],a:3,s:"Bihar History",exp:`<b>Answer: Both B and C</b>`},
+{q:`27. The Grand Trunk Road was constructed by: (a) Ashoka (b) Chandragupta Maurya (c) Sher Shah Suri (d) Akbar`,o:["Ashoka","Chandragupta Maurya","Sher Shah Suri","Akbar"],a:2,s:"Bihar History",exp:`<b>Answer: Sher Shah Suri</b>`},
+{q:`28. Sher Shah Suri's real name was: (a) Hasan Khan (b) Farid Khan (c) Bahadur Khan (d) Islam Shah`,o:["Hasan Khan","Farid Khan","Bahadur Khan","Islam Shah"],a:1,s:"Bihar History",exp:`<b>Answer: Farid Khan</b>`},
+{q:`29. The currency 'Rupiya' was introduced by: (a) Akbar (b) Sher Shah Suri (c) Babur (d) Humayun`,o:["Akbar","Sher Shah Suri","Babur","Humayun"],a:1,s:"Bihar History",exp:`<b>Answer: Sher Shah Suri</b>`},
+{q:`30. Which medieval ruler made Patna his capital? (a) Sher Shah Suri (b) Islam Shah (c) Daud Khan (d) Alauddin Husain Shah`,o:["Sher Shah Suri","Islam Shah","Daud Khan","Alauddin Husain Shah"],a:0,s:"Bihar History",exp:`<b>Answer: Sher Shah Suri</b>`},
+{q:`31. The famous 'Patna Kalam' painting style developed during which period? (a) Mauryan Period (b) Mughal Period (c) British Period (d) Post-Independence`,o:["Mauryan Period","Mughal Period","British Period","Post-Independence"],a:1,s:"Bihar Culture",exp:`<b>Answer: Mughal Period</b>`},
+{q:`32. Guru Gobind Singh was born in which city of Bihar? (a) Patna (b) Gaya (c) Munger (d) Bhagalpur`,o:["Patna","Gaya","Munger","Bhagalpur"],a:0,s:"Bihar GK",exp:`<b>Answer: Patna</b> At Patna Sahib`},
+{q:`33. The 'Takht Sri Patna Sahib' is associated with which Sikh Guru? (a) Guru Nanak Dev (b) Guru Tegh Bahadur (c) Guru Gobind Singh (d) Guru Arjan Dev`,o:["Guru Nanak Dev","Guru Tegh Bahadur","Guru Gobind Singh","Guru Arjan Dev"],a:2,s:"Bihar GK",exp:`<b>Answer: Guru Gobind Singh</b>`},
+{q:`34. Which Mughal emperor granted the Diwani of Bengal, Bihar, and Orissa to the British East India Company? (a) Shah Alam I (b) Bahadur Shah I (c) Shah Alam II (d) Farrukhsiyar`,o:["Shah Alam I","Bahadur Shah I","Shah Alam II","Farrukhsiyar"],a:2,s:"Bihar History",exp:`<b>Answer: Shah Alam II</b> Treaty of Allahabad, 1765`},
+{q:`35. The Battle of Buxar was fought between the British and: (a) Siraj-ud-Daula (b) Mir Qasim, Shuja-ud-Daula, and Shah Alam II (c) Alivardi Khan (d) Tipu Sultan`,o:["Siraj-ud-Daula","Mir Qasim, Shuja-ud-Daula, and Shah Alam II","Alivardi Khan","Tipu Sultan"],a:1,s:"Bihar History",exp:`<b>Answer: Mir Qasim, Shuja-ud-Daula, and Shah Alam II</b>`},
+{q:`36. The Santhal Rebellion (1855-56) was led by: (a) Birsa Munda (b) Sidhu and Kanhu Murmu (c) Tilka Manjhi (d) Kunwar Singh`,o:["Birsa Munda","Sidhu and Kanhu Murmu","Tilka Manjhi","Kunwar Singh"],a:1,s:"Bihar History",exp:`<b>Answer: Sidhu and Kanhu Murmu</b>`},
+{q:`37. Who led the 1857 Revolt in Bihar? (a) Kunwar Singh (b) Amar Singh (c) Nana Sahib (d) Tantia Tope`,o:["Kunwar Singh","Amar Singh","Nana Sahib","Tantia Tope"],a:0,s:"Bihar History",exp:`<b>Answer: Kunwar Singh</b>`},
+{q:`38. Kunwar Singh belonged to which place in Bihar? (a) Arrah (b) Jagdishpur (c) Chapra (d) Gaya`,o:["Arrah","Jagdishpur","Chapra","Gaya"],a:1,s:"Bihar History",exp:`<b>Answer: Jagdishpur</b> Bhojpur district`},
+{q:`39. The 'Champaran Satyagraha' of 1917 was related to: (a) Salt Tax (b) Indigo Plantation (c) Land Revenue (d) Forest Rights`,o:["Salt Tax","Indigo Plantation","Land Revenue","Forest Rights"],a:1,s:"Bihar History",exp:`<b>Answer: Indigo Plantation</b>`},
+{q:`40. Mahatma Gandhi's first Satyagraha in India was at: (a) Kheda (b) Ahmedabad (c) Champaran (d) Bardoli`,o:["Kheda","Ahmedabad","Champaran","Bardoli"],a:2,s:"Bihar History",exp:`<b>Answer: Champaran</b>`},
+{q:`41. Who invited Mahatma Gandhi to Champaran? (a) Rajendra Prasad (b) Raj Kumar Shukla (c) J.B. Kripalani (d) Anugrah Narayan Sinha`,o:["Rajendra Prasad","Raj Kumar Shukla","J.B. Kripalani","Anugrah Narayan Sinha"],a:1,s:"Bihar History",exp:`<b>Answer: Raj Kumar Shukla</b>`},
+{q:`42. The 'Patna University' was established in which year? (a) 1916 (b) 1917 (c) 1918 (d) 1920`,o:["1916","1917","1918","1920"],a:1,s:"Bihar GK",exp:`<b>Answer: 1917</b>`},
+{q:`43. The Quit India Movement (1942) started from which place in Bihar? (a) Patna (b) Gaya (c) Champaran (d) There is a popular belief about Patna, but nationwide it started from Bombay`,o:["Patna","Gaya","Champaran","There is a popular belief about Patna, but nationwide it started from Bombay"],a:0,s:"Bihar History",exp:`<b>Answer: Patna</b> Many activities centered in Patna`},
+{q:`44. Who is known as 'Bihar Kesari'? (a) Rajendra Prasad (b) Sri Krishna Sinha (c) Anugrah Narayan Sinha (d) K.B. Sahay`,o:["Rajendra Prasad","Sri Krishna Sinha","Anugrah Narayan Sinha","K.B. Sahay"],a:1,s:"Bihar GK",exp:`<b>Answer: Sri Krishna Sinha</b>`},
+{q:`45. Who was the first Chief Minister of Bihar? (a) Sri Krishna Sinha (b) Anugrah Narayan Sinha (c) Muhammad Yunus (d) K.B. Sahay`,o:["Sri Krishna Sinha","Anugrah Narayan Sinha","Muhammad Yunus","K.B. Sahay"],a:0,s:"Bihar Polity",exp:`<b>Answer: Sri Krishna Sinha</b>`},
+
+{q:`46. What is the total geographical area of Bihar? (a) 94,163 sq km (b) 84,163 sq km (c) 74,163 sq km (d) 1,04,163 sq km`,o:["94,163 sq km","84,163 sq km","74,163 sq km","1,04,163 sq km"],a:0,s:"Bihar Geography",exp:`<b>Answer: 94,163 sq km</b>`},
+{q:`47. Which river is known as the 'Sorrow of Bihar'? (a) Ganga (b) Kosi (c) Gandak (d) Bagmati`,o:["Ganga","Kosi","Gandak","Bagmati"],a:1,s:"Bihar Geography",exp:`<b>Answer: Kosi</b>`},
+{q:`48. How many districts are there in Bihar (as of 2024)? (a) 37 (b) 38 (c) 39 (d) 40`,o:["37","38","39","40"],a:1,s:"Bihar Polity",exp:`<b>Answer: 38</b>`},
+{q:`49. Which is the largest district of Bihar by area? (a) Patna (b) West Champaran (c) Gaya (d) East Champaran`,o:["Patna","West Champaran","Gaya","East Champaran"],a:1,s:"Bihar Geography",exp:`<b>Answer: West Champaran</b>`},
+{q:`50. Which district of Bihar has the highest literacy rate as per the 2011 Census? (a) Patna (b) Rohtas (c) Munger (d) Begusarai`,o:["Patna","Rohtas","Munger","Begusarai"],a:1,s:"Bihar GK",exp:`<b>Answer: Rohtas</b>`},
+{q:`51. The Valmiki Tiger Reserve is located in which district? (a) East Champaran (b) West Champaran (c) Muzaffarpur (d) Sitamarhi`,o:["East Champaran","West Champaran","Muzaffarpur","Sitamarhi"],a:1,s:"Bihar Geography",exp:`<b>Answer: West Champaran</b>`},
+{q:`52. Which river forms the boundary between Bihar and Uttar Pradesh? (a) Ganga (b) Ghaghara (c) Karmanasa (d) Son`,o:["Ganga","Ghaghara","Karmanasa","Son"],a:2,s:"Bihar Geography",exp:`<b>Answer: Karmanasa</b>`},
+{q:`53. The 'Triveni Canal' is located in which division? (a) Patna (b) Tirhut (c) Saran (d) Munger`,o:["Patna","Tirhut","Saran","Munger"],a:2,s:"Bihar Geography",exp:`<b>Answer: Saran</b>`},
+{q:`54. Which is the state tree of Bihar? (a) Banyan (b) Peepal (c) Mango (d) Sal`,o:["Banyan","Peepal","Mango","Sal"],a:1,s:"Bihar GK",exp:`<b>Answer: Peepal</b>`},
+{q:`55. The 'Kaimur Plateau' is situated in which part of Bihar? (a) North Bihar (b) South Bihar (Southwest) (c) Central Bihar (d) Northeast Bihar`,o:["North Bihar","South Bihar (Southwest)","Central Bihar","Northeast Bihar"],a:1,s:"Bihar Geography",exp:`<b>Answer: South Bihar (Southwest)</b>`},
+{q:`56. Which type of soil is predominantly found in North Bihar? (a) Red Soil (b) Black Soil (c) Alluvial Soil (d) Laterite Soil`,o:["Red Soil","Black Soil","Alluvial Soil","Laterite Soil"],a:2,s:"Bihar Geography",exp:`<b>Answer: Alluvial Soil</b>`},
+{q:`57. The Rajgir Hills are located in which district? (a) Nalanda (b) Gaya (c) Nawada (d) Jehanabad`,o:["Nalanda","Gaya","Nawada","Jehanabad"],a:0,s:"Bihar Geography",exp:`<b>Answer: Nalanda</b>`},
+{q:`58. Which is the longest river in Bihar? (a) Kosi (b) Gandak (c) Ganga (d) Son`,o:["Kosi","Gandak","Ganga","Son"],a:2,s:"Bihar Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`59. The Kakolat Waterfall is located in which district? (a) Rohtas (b) Nawada (c) Jamui (d) Kaimur`,o:["Rohtas","Nawada","Jamui","Kaimur"],a:1,s:"Bihar Geography",exp:`<b>Answer: Nawada</b>`},
+{q:`60. What is the state animal of Bihar? (a) Tiger (b) Elephant (c) Gaur (Indian Bison) (d) Leopard`,o:["Tiger","Elephant","Gaur (Indian Bison)","Leopard"],a:2,s:"Bihar GK",exp:`<b>Answer: Gaur (Indian Bison)</b>`},
+{q:`61. Which district of Bihar touches both Uttar Pradesh and Jharkhand? (a) Rohtas (b) Kaimur (c) Gaya (d) Aurangabad`,o:["Rohtas","Kaimur","Gaya","Aurangabad"],a:0,s:"Bihar Geography",exp:`<b>Answer: Rohtas</b>`},
+{q:`62. The 'Bhimbandh Wildlife Sanctuary' is in: (a) Munger (b) Jamui (c) Bhagalpur (d) Banka`,o:["Munger","Jamui","Bhagalpur","Banka"],a:0,s:"Bihar Geography",exp:`<b>Answer: Munger</b>`},
+{q:`63. The state bird of Bihar is: (a) Peacock (b) House Sparrow (c) Koel (d) Parrot`,o:["Peacock","House Sparrow","Koel","Parrot"],a:1,s:"Bihar GK",exp:`<b>Answer: House Sparrow</b>`},
+{q:`64. What percentage of Bihar's total area is under forest cover (approx)? (a) 7-8% (b) 15-16% (c) 20-21% (d) 25-26%`,o:["7-8%","15-16%","20-21%","25-26%"],a:0,s:"Bihar Geography",exp:`<b>Answer: 7-8%</b> As per India State of Forest Report`},
+{q:`65. The 'Gandak River' is also known as: (a) Sadanira (b) Karmanasha (c) Saryu (d) Narayani`,o:["Sadanira","Karmanasha","Saryu","Narayani"],a:3,s:"Bihar Geography",exp:`<b>Answer: Narayani</b> In Nepal and some parts`},
+{q:`66. Which place in Bihar is famous for mica deposits? (a) Jharia (b) Koderma (now in Jharkhand) (c) Gaya (Nawada) (d) Munger`,o:["Jharia","Koderma (now in Jharkhand)","Gaya (Nawada)","Munger"],a:2,s:"Bihar Geography",exp:`<b>Answer: Gaya (Nawada)</b> Current Bihar context`},
+{q:`67. The 'Falgu River' flows through which famous city? (a) Patna (b) Gaya (c) Bhagalpur (d) Muzaffarpur`,o:["Patna","Gaya","Bhagalpur","Muzaffarpur"],a:1,s:"Bihar Geography",exp:`<b>Answer: Gaya</b>`},
+{q:`68. The boundary between Bihar and Nepal is formed by which districts? (a) 5 districts (b) 7 districts (c) 8 districts (d) 10 districts`,o:["5 districts","7 districts","8 districts","10 districts"],a:1,s:"Bihar Geography",exp:`<b>Answer: 7 districts</b>`},
+{q:`69. The 'Telhar Waterfall' is situated in: (a) Rohtas (b) Kaimur (c) Aurangabad (d) Gaya`,o:["Rohtas","Kaimur","Aurangabad","Gaya"],a:1,s:"Bihar Geography",exp:`<b>Answer: Kaimur</b>`},
+{q:`70. Which is the hottest place in Bihar during summer? (a) Patna (b) Gaya (c) Bhagalpur (d) Aurangabad`,o:["Patna","Gaya","Bhagalpur","Aurangabad"],a:1,s:"Bihar Geography",exp:`<b>Answer: Gaya</b>`},
+{q:`71. The 'Son River' is a tributary of which river? (a) Ganga (b) Yamuna (c) Brahmaputra (d) Mahanadi`,o:["Ganga","Yamuna","Brahmaputra","Mahanadi"],a:0,s:"Bihar Geography",exp:`<b>Answer: Ganga</b>`},
+{q:`72. Which district of Bihar has the highest population density? (a) Patna (b) Sheohar (c) Vaishali (d) Darbhanga`,o:["Patna","Sheohar","Vaishali","Darbhanga"],a:1,s:"Bihar GK",exp:`<b>Answer: Sheohar</b>`},
+{q:`73. The total length of the River Ganga in Bihar is approximately: (a) 345 km (b) 445 km (c) 545 km (d) 645 km`,o:["345 km","445 km","545 km","645 km"],a:1,s:"Bihar Geography",exp:`<b>Answer: 445 km</b>`},
+{q:`74. 'Dhruv Kund' is located in: (a) Rajgir (b) Buxar (c) Munger (d) Bodh Gaya`,o:["Rajgir","Buxar","Munger","Bodh Gaya"],a:1,s:"Bihar GK",exp:`<b>Answer: Buxar</b>`},
+{q:`75. The 'Barabar Caves' are situated in the hills of: (a) Rajgir (b) Barabar (c) Kaimur (d) Someshwar`,o:["Rajgir","Barabar","Kaimur","Someshwar"],a:1,s:"Bihar History",exp:`<b>Answer: Barabar</b> Jehanabad district`},
+
+{q:`76. As per the Economic Survey, what is the GSDP of Bihar for the latest financial year (approx)? (a) ₹3.5 lakh crore (b) ₹5.5 lakh crore (c) ₹7.5 lakh crore (d) ₹9.5 lakh crore`,o:["₹3.5 lakh crore","₹5.5 lakh crore","₹7.5 lakh crore","₹9.5 lakh crore"],a:2,s:"Bihar Economy",exp:`<b>Answer: ₹7.5 lakh crore</b> Subject to latest updates, approx base`},
+{q:`77. Which sector contributes the highest to Bihar's GSDP? (a) Agriculture (b) Industry (c) Services (d) Manufacturing`,o:["Agriculture","Industry","Services","Manufacturing"],a:2,s:"Bihar Economy",exp:`<b>Answer: Services</b>`},
+{q:`78. 'Jeevika' is a program related to: (a) Health (b) Education (c) Women Self-Help Groups (d) Infrastructure`,o:["Health","Education","Women Self-Help Groups","Infrastructure"],a:2,s:"Bihar Economy",exp:`<b>Answer: Women Self-Help Groups</b>`},
+{q:`79. Which crop is known as 'Golden Fiber'? (a) Cotton (b) Jute (c) Sugarcane (d) Silk`,o:["Cotton","Jute","Sugarcane","Silk"],a:1,s:"Bihar Agriculture",exp:`<b>Answer: Jute</b>`},
+{q:`80. Bihar is the largest producer of which vegetable in India? (a) Potato (b) Onion (c) Tomato (d) Cauliflower`,o:["Potato","Onion","Tomato","Cauliflower"],a:0,s:"Bihar Agriculture",exp:`<b>Answer: Potato</b> Often top or among top`},
+{q:`81. 'Makhana' (Fox Nut) is predominantly produced in which district of Bihar? (a) Patna (b) Darbhanga (c) Purnia (d) Bhagalpur`,o:["Patna","Darbhanga","Purnia","Bhagalpur"],a:1,s:"Bihar Agriculture",exp:`<b>Answer: Darbhanga</b> And surrounding Mithila region`},
+{q:`82. The 'Barauni Refinery' is located in which district? (a) Patna (b) Muzaffarpur (c) Begusarai (d) Munger`,o:["Patna","Muzaffarpur","Begusarai","Munger"],a:2,s:"Bihar Economy",exp:`<b>Answer: Begusarai</b>`},
+{q:`83. 'Hariyali Mission' is related to: (a) Agriculture (b) Environment and Forest Cover (c) Health (d) Education`,o:["Agriculture","Environment and Forest Cover","Health","Education"],a:1,s:"Bihar Economy",exp:`<b>Answer: Environment and Forest Cover</b>`},
+{q:`84. Which district is famous for 'Bhagalpuri Silk'? (a) Patna (b) Gaya (c) Bhagalpur (d) Munger`,o:["Patna","Gaya","Bhagalpur","Munger"],a:2,s:"Bihar Economy",exp:`<b>Answer: Bhagalpur</b>`},
+{q:`85. The 'Kosi Mega Bridge' connects which two places? (a) Patna-Hajipur (b) Saharsa-Darbhanga (c) Saharsa-Supaul (d) Purnia-Katihar`,o:["Patna-Hajipur","Saharsa-Darbhanga","Saharsa-Supaul","Purnia-Katihar"],a:2,s:"Bihar Economy",exp:`<b>Answer: Saharsa-Supaul</b> Or relevant connection across Kosi`},
+{q:`86. 'Bihar State Milk Co-operative Federation' is known as: (a) Sudha (b) Amul (c) COMFED (d) Aavin`,o:["Sudha","Amul","COMFED","Aavin"],a:2,s:"Bihar Economy",exp:`<b>Answer: COMFED</b> Sudha is the brand name`},
+{q:`87. Which of the following is a major industrial area of Bihar? (a) Patna (b) Hajipur (c) Barauni (d) Fatuha E) All of the above`,o:["Patna","Hajipur","Barauni","Fatuha","All of the above"],a:4,s:"Bihar Economy",exp:`<b>Answer: All of the above</b>`},
+{q:`88. The 'Buddhist Circuit' tourism project connects which places? (a) Bodh Gaya, Rajgir, Nalanda, Vaishali (b) Patna, Gaya, Munger (c) Deoghar, Parasnath, Ranchi (d) Sarnath, Kushinagar`,o:["Bodh Gaya, Rajgir, Nalanda, Vaishali","Patna, Gaya, Munger","Deoghar, Parasnath, Ranchi","Sarnath, Kushinagar"],a:0,s:"Bihar Economy",exp:`<b>Answer: Bodh Gaya, Rajgir, Nalanda, Vaishali</b>`},
+{q:`89. Which agro-climatic zone covers the largest area in Bihar? (a) Zone I (North West Alluvial Plain) (b) Zone II (North East Alluvial Plain) (c) Zone III A (South East Alluvial Plain) (d) Zone III B (South West Alluvial Plain)`,o:["Zone I (North West Alluvial Plain)","Zone II (North East Alluvial Plain)","Zone III A (South East Alluvial Plain)","Zone III B (South West Alluvial Plain)"],a:1,s:"Bihar Geography",exp:`<b>Answer: Zone II (North East Alluvial Plain)</b>`},
+{q:`90. Bihar's first ethanol plant was established in: (a) Gopalganj (b) Purnia (c) Bhagalpur (d) Muzaffarpur`,o:["Gopalganj","Purnia","Bhagalpur","Muzaffarpur"],a:1,s:"Bihar Economy",exp:`<b>Answer: Purnia</b>`},
+{q:`91. 'Nalanda University' (new) is located in which district? (a) Patna (b) Gaya (c) Nalanda (Rajgir) (d) Nawada`,o:["Patna","Gaya","Nalanda (Rajgir)","Nawada"],a:2,s:"Bihar GK",exp:`<b>Answer: Nalanda (Rajgir)</b>`},
+{q:`92. What is the main source of irrigation in Bihar? (a) Canals (b) Tube-wells (c) Ponds (d) Wells`,o:["Canals","Tube-wells","Ponds","Wells"],a:1,s:"Bihar Economy",exp:`<b>Answer: Tube-wells</b>`},
+{q:`93. The 'Saat Nischay Part-2' scheme focuses on: (a) Youth Empowerment (b) Women Empowerment (c) Agriculture (d) All of the above`,o:["Youth Empowerment","Women Empowerment","Agriculture","All of the above"],a:3,s:"Bihar Economy",exp:`<b>Answer: All of the above</b> Multiple focus areas`},
+{q:`94. 'Darbhanga Airport' is proposed to be developed as: (a) International Airport (b) Civil Enclave (c) Cargo Hub (d) Defense Airport`,o:["International Airport","Civil Enclave","Cargo Hub","Defense Airport"],a:1,s:"Bihar Economy",exp:`<b>Answer: Civil Enclave</b> Now operational`},
+{q:`95. Which crop is NOT primarily a Rabi crop in Bihar? (a) Wheat (b) Maize (Rabi maize) (c) Rice (d) Pulses`,o:["Wheat","Maize (Rabi maize)","Rice","Pulses"],a:2,s:"Bihar Agriculture",exp:`<b>Answer: Rice</b> Primarily Kharif`},
+{q:`96. The 'Ganga Expressway' in Bihar connects: (a) Patna-Buxar (b) Patna-Bhagalpur (c) Hajipur-Buxar (d) Patna-Gaya`,o:["Patna-Buxar","Patna-Bhagalpur","Hajipur-Buxar","Patna-Gaya"],a:0,s:"Bihar Economy",exp:`<b>Answer: Patna-Buxar</b> Proposed`},
+{q:`97. The 'Mega Food Park' in Bihar is located at: (a) Muzaffarpur (b) Khagaria (c) Begusarai (d) Bhagalpur`,o:["Muzaffarpur","Khagaria","Begusarai","Bhagalpur"],a:1,s:"Bihar Economy",exp:`<b>Answer: Khagaria</b>`},
+{q:`98. 'Start-Up Bihar' policy aims to promote: (a) Handicrafts (b) Entrepreneurship (c) Organic Farming (d) Textiles`,o:["Handicrafts","Entrepreneurship","Organic Farming","Textiles"],a:1,s:"Bihar Economy",exp:`<b>Answer: Entrepreneurship</b>`},
+{q:`99. The main cash crop of North Bihar is: (a) Wheat (b) Rice (c) Sugarcane (d) Jute`,o:["Wheat","Rice","Sugarcane","Jute"],a:2,s:"Bihar Agriculture",exp:`<b>Answer: Sugarcane</b>`},
+{q:`100. Bihar's first 'Dry Port' (Inland Container Depot) is located at: (a) Patna (b) Bihta (c) Fatuha (d) Buxar`,o:["Patna","Bihta","Fatuha","Buxar"],a:1,s:"Bihar Economy",exp:`<b>Answer: Bihta</b>`},
+
+{q:`101. The Bihar Legislative Council has how many seats? (a) 75 (b) 95 (c) 100 (d) 125`,o:["75","95","100","125"],a:0,s:"Bihar Polity",exp:`<b>Answer: 75</b>`},
+{q:`102. The Bihar Legislative Assembly consists of: (a) 240 seats (b) 243 seats (c) 245 seats (d) 250 seats`,o:["240 seats","243 seats","245 seats","250 seats"],a:1,s:"Bihar Polity",exp:`<b>Answer: 243 seats</b>`},
+{q:`103. Who is the ex-officio Chairman of the Bihar Legislative Council? (a) Chief Minister (b) Governor (c) Chairman (elected) (d) Speaker`,o:["Chief Minister","Governor","Chairman (elected)","Speaker"],a:2,s:"Bihar Polity",exp:`<b>Answer: Chairman (elected)</b> Though Governor addresses, Chairman presides`},
+{q:`104. The High Court of Judicature at Patna was established in: (a) 1912 (b) 1916 (c) 1917 (d) 1920`,o:["1912","1916","1917","1920"],a:1,s:"Bihar Polity",exp:`<b>Answer: 1916</b>`},
+{q:`105. How many Lok Sabha seats are there in Bihar? (a) 30 (b) 35 (c) 40 (d) 42`,o:["30","35","40","42"],a:2,s:"Bihar Polity",exp:`<b>Answer: 40</b>`},
+{q:`106. Bihar was separated from Bengal Presidency in which year? (a) 1905 (b) 1911 (c) 1912 (d) 1916`,o:["1905","1911","1912","1916"],a:2,s:"Bihar History",exp:`<b>Answer: 1912</b>`},
+{q:`107. The 'Bihar Public Service Commission' was constituted in: (a) 1947 (b) 1949 (c) 1950 (d) 1956`,o:["1947","1949","1950","1956"],a:1,s:"Bihar Polity",exp:`<b>Answer: 1949</b> Started functioning in 1949`},
+{q:`108. Which Article of the Indian Constitution provides for the establishment of a Public Service Commission for a state? (a) Article 315 (b) Article 320 (c) Article 325 (d) Article 330`,o:["Article 315","Article 320","Article 325","Article 330"],a:0,s:"Bihar Polity",exp:`<b>Answer: Article 315</b>`},
+{q:`109. Who is the current Chief Minister of Bihar (as of 2024)? (a) Tejashwi Yadav (b) Sushil Kumar Modi (c) Nitish Kumar (d) Jitan Ram Manjhi`,o:["Tejashwi Yadav","Sushil Kumar Modi","Nitish Kumar","Jitan Ram Manjhi"],a:2,s:"Bihar Polity",exp:`<b>Answer: Nitish Kumar</b>`},
+{q:`110. What is the name of Bihar's caste-based survey report? (a) Bihar Jati Adharit Ganana (b) Bihar Samajik Arthaik Ganana (c) Janadesh (d) Samagra`,o:["Bihar Jati Adharit Ganana","Bihar Samajik Arthaik Ganana","Janadesh","Samagra"],a:0,s:"Bihar Current Affairs",exp:`<b>Answer: Bihar Jati Adharit Ganana</b>`},
+{q:`111. The 'Bihar Panchayati Raj Act' provides for how many tiers? (a) 2 (b) 3 (c) 4 (d) 5`,o:["2","3","4","5"],a:1,s:"Bihar Polity",exp:`<b>Answer: 3</b>`},
+{q:`112. 'Gram Katchahry' is constituted under which Act in Bihar? (a) Bihar Panchayati Raj Act, 2006 (b) Bihar Gram Katchahry Act (c) Nyaya Panchayat Act (d) Both A and C`,o:["Bihar Panchayati Raj Act, 2006","Bihar Gram Katchahry Act","Nyaya Panchayat Act","Both A and C"],a:0,s:"Bihar Polity",exp:`<b>Answer: Bihar Panchayati Raj Act, 2006</b>`},
+{q:`113. Who was the first Speaker of the Bihar Legislative Assembly? (a) Ram Dayalu Singh (b) Bindeshwari Prasad Verma (c) Lalu Prasad Yadav (d) Uday Narayan Choudhary`,o:["Ram Dayalu Singh","Bindeshwari Prasad Verma","Lalu Prasad Yadav","Uday Narayan Choudhary"],a:0,s:"Bihar Polity",exp:`<b>Answer: Ram Dayalu Singh</b>`},
+{q:`114. The 'Right to Public Services Act' in Bihar came into force in: (a) 2010 (b) 2011 (c) 2012 (d) 2013`,o:["2010","2011","2012","2013"],a:1,s:"Bihar Polity",exp:`<b>Answer: 2011</b>`},
+{q:`115. 'Lokayukta' in Bihar was established under: (a) Bihar Lokayukta Act, 1973 (b) Bihar Lokayukta Act, 2011 (c) Lokpal and Lokayuktas Act, 2013 (d) None`,o:["Bihar Lokayukta Act, 1973","Bihar Lokayukta Act, 2011","Lokpal and Lokayuktas Act, 2013","None"],a:0,s:"Bihar Polity",exp:`<b>Answer: Bihar Lokayukta Act, 1973</b>`},
+{q:`116. Bihar's state symbol 'Bodhi Tree' is associated with: (a) Buddha's Birth (b) Buddha's Enlightenment (c) Buddha's First Sermon (d) Buddha's Death`,o:["Buddha's Birth","Buddha's Enlightenment","Buddha's First Sermon","Buddha's Death"],a:1,s:"Bihar GK",exp:`<b>Answer: Buddha's Enlightenment</b>`},
+{q:`117. The state flower of Bihar is: (a) Rose (b) Marigold (c) Kachnar (d) Lotus`,o:["Rose","Marigold","Kachnar","Lotus"],a:1,s:"Bihar GK",exp:`<b>Answer: Marigold</b> Genda`},
+{q:`118. The 'Bihar Caste Survey' 2023 shows which community as the largest population bloc? (a) General (b) OBC (c) EBC (d) SC/ST`,o:["General","OBC","EBC","SC/ST"],a:2,s:"Bihar Current Affairs",exp:`<b>Answer: EBC</b> Extremely Backward Classes, approx 36%`},
+{q:`119. The famous 'Chhath Puja' is dedicated to which God? (a) Sun God (Surya) (b) Moon God (c) Vishnu (d) Shiva`,o:["Sun God (Surya)","Moon God","Vishnu","Shiva"],a:0,s:"Bihar Culture",exp:`<b>Answer: Sun God (Surya)</b>`},
+{q:`120. 'Rajgir Mahotsav' is celebrated in: (a) Patna (b) Gaya (c) Nalanda (d) Vaishali`,o:["Patna","Gaya","Nalanda","Vaishali"],a:2,s:"Bihar Culture",exp:`<b>Answer: Nalanda</b>`},
+{q:`121. The 'Sohrai' painting is associated with which tribe of Bihar? (a) Santhal (b) Munda (c) Oraon (d) Ho`,o:["Santhal","Munda","Oraon","Ho"],a:0,s:"Bihar Culture",exp:`<b>Answer: Santhal</b> And also other tribes, but prominent in Santhal`},
+{q:`122. The 'Pitrapaksha Mela' is held in which month at Gaya? (a) Kartik (b) Ashwin (c) Shravan (d) Chaitra`,o:["Kartik","Ashwin","Shravan","Chaitra"],a:1,s:"Bihar Culture",exp:`<b>Answer: Ashwin</b>`},
+{q:`123. What is the official language of Bihar? (a) Hindi (b) Urdu (c) Both Hindi and Urdu (d) Hindi, Urdu, Maithili`,o:["Hindi","Urdu","Both Hindi and Urdu","Hindi, Urdu, Maithili"],a:2,s:"Bihar Polity",exp:`<b>Answer: Both Hindi and Urdu</b> Official Languages Act`},
+{q:`124. Which railway zone has its headquarters at Hajipur? (a) East Central Railway (b) North Eastern Railway (c) Eastern Railway (d) North Central Railway`,o:["East Central Railway","North Eastern Railway","Eastern Railway","North Central Railway"],a:0,s:"Bihar GK",exp:`<b>Answer: East Central Railway</b>`},
+{q:`125. The 'Bihar Museum' is located in which city? (a) Gaya (b) Patna (c) Nalanda (d) Muzaffarpur`,o:["Gaya","Patna","Nalanda","Muzaffarpur"],a:1,s:"Bihar GK",exp:`<b>Answer: Patna</b>`},
+
+{q:`126. The 'Madhubani Painting' is associated with which region? (a) Mithila (b) Bhojpur (c) Magadh (d) Angika`,o:["Mithila","Bhojpur","Magadh","Angika"],a:0,s:"Bihar Culture",exp:`<b>Answer: Mithila</b>`},
+{q:`127. Who is the author of the book 'Mrichchhakatika'? (a) Kalidasa (b) Shudraka (c) Bhasa (d) Harsha`,o:["Kalidasa","Shudraka","Bhasa","Harsha"],a:1,s:"Bihar Literature",exp:`<b>Answer: Shudraka</b>`},
+{q:`128. The famous folk dance 'Jhijhiya' is performed in which region of Bihar? (a) Mithila (b) Bhojpur (c) Magadh (d) Ang`,o:["Mithila","Bhojpur","Magadh","Ang"],a:0,s:"Bihar Culture",exp:`<b>Answer: Mithila</b>`},
+{q:`129. 'Bidesia' is a folk dance/drama associated with: (a) Bhikhari Thakur (b) Heera Dom (c) Vidyapati (d) Nagarjun`,o:["Bhikhari Thakur","Heera Dom","Vidyapati","Nagarjun"],a:0,s:"Bihar Culture",exp:`<b>Answer: Bhikhari Thakur</b>`},
+{q:`130. Who is known as 'Shakespeare of Bhojpuri'? (a) Mahendra Mishra (b) Bhikhari Thakur (c) Heera Dom (d) Ram Karan Sharma`,o:["Mahendra Mishra","Bhikhari Thakur","Heera Dom","Ram Karan Sharma"],a:1,s:"Bihar Literature",exp:`<b>Answer: Bhikhari Thakur</b>`},
+{q:`131. 'Chhau' dance in Bihar is performed in which style? (a) Seraikella (b) Purulia (c) Mayurbhanj (d) All three, but Seraikella is in Jharkhand now. In Bihar context, Mayurbhanj? No. 'Seraikella Chhau' used to be Bihar.`,o:["Seraikella","Purulia","Mayurbhanj","All three, but Seraikella is in Jharkhand now. In Bihar context, Mayurbhanj? No. 'Seraikella Chhau' used to be Bihar."],a:0,s:"Bihar Culture",exp:`<b>Answer: Seraikella</b> Historically Bihar, now Jharkhand. Still often asked.`},
+{q:`132. 'Maihar Gharana' of music is associated with which region? (a) Darbhanga (b) Patna (c) Maihar (MP) (d) Both A and C? Actually, Darbhanga Gharana is famous. Maihar is MP.`,o:["Darbhanga","Patna","Maihar (MP)","Both A and C? Actually, Darbhanga Gharana is famous. Maihar is MP."],a:0,s:"Bihar Culture",exp:`<b>Answer: Darbhanga</b> Darbhanga Gharana of Dhrupad is very famous.`},
+{q:`133. The famous Maithili poet 'Vidyapati' served under which king? (a) Raja Man Singh (b) Raja Shiva Singh (c) Raja Ram Singh (d) Raja Darbhanga`,o:["Raja Man Singh","Raja Shiva Singh","Raja Ram Singh","Raja Darbhanga"],a:1,s:"Bihar Literature",exp:`<b>Answer: Raja Shiva Singh</b>`},
+{q:`134. 'Chaturbhuj Narayan Singh' is associated with which field? (a) Literature (b) Music (Sitar) (c) Painting (d) Dance`,o:["Literature","Music (Sitar)","Painting","Dance"],a:1,s:"Bihar Culture",exp:`<b>Answer: Music (Sitar)</b> Maihar Gharana, but original roots`},
+{q:`135. 'Phanishwar Nath Renu' is famous for which novel? (a) Godaan (b) Maila Anchal (c) Chandrakanta (d) Kamayani`,o:["Godaan","Maila Anchal","Chandrakanta","Kamayani"],a:1,s:"Bihar Literature",exp:`<b>Answer: Maila Anchal</b>`},
+{q:`136. The first Maithili film is: (a) Kanyadan (b) Sasta Jingi Mahag Senur (c) Bhaiyaa (d) Mamta Gaave Geet`,o:["Kanyadan","Sasta Jingi Mahag Senur","Bhaiyaa","Mamta Gaave Geet"],a:0,s:"Bihar Culture",exp:`<b>Answer: Kanyadan</b>`},
+{q:`137. The 'Patna Kalam' painting is a style derived from: (a) Rajput Painting (b) Mughal Painting (c) Pahari Painting (d) Kangra Painting`,o:["Rajput Painting","Mughal Painting","Pahari Painting","Kangra Painting"],a:1,s:"Bihar Culture",exp:`<b>Answer: Mughal Painting</b>`},
+{q:`138. Which famous festival of Bihar involves worshipping the Sun God while standing in water? (a) Holi (b) Diwali (c) Chhath (d) Makar Sankranti`,o:["Holi","Diwali","Chhath","Makar Sankranti"],a:2,s:"Bihar Culture",exp:`<b>Answer: Chhath</b>`},
+{q:`139. 'Domkach' is a folk dance associated with which occasion? (a) Marriage (b) Harvest (c) Birth (d) Death`,o:["Marriage","Harvest","Birth","Death"],a:0,s:"Bihar Culture",exp:`<b>Answer: Marriage</b>`},
+{q:`140. 'Nirala' (Suryakant Tripathi) is associated with which literary movement? (a) Chhayavad (b) Pragativad (c) Prayogvad (d) Nakenvad`,o:["Chhayavad","Pragativad","Prayogvad","Nakenvad"],a:0,s:"Bihar Literature",exp:`<b>Answer: Chhayavad</b>`},
+
+{q:`141. The 'Mandan Mishra' was a famous philosopher of which school? (a) Nyaya (b) Mimamsa (c) Vedanta (d) Buddhism`,o:["Nyaya","Mimamsa","Vedanta","Buddhism"],a:1,s:"Bihar History",exp:`<b>Answer: Mimamsa</b>`},
+{q:`142. The 'Ashokan Pillar' at Lauriya-Areraj is located in which district? (a) West Champaran (b) East Champaran (c) Vaishali (d) Saran`,o:["West Champaran","East Champaran","Vaishali","Saran"],a:1,s:"Bihar History",exp:`<b>Answer: East Champaran</b>`},
+{q:`143. 'Golghar' in Patna was built by: (a) John Garstin (b) William Bentinck (c) Lord Cornwallis (d) Warren Hastings`,o:["John Garstin","William Bentinck","Lord Cornwallis","Warren Hastings"],a:0,s:"Bihar History",exp:`<b>Answer: John Garstin</b>`},
+{q:`144. The 'Bihar Regiment' is the most decorated regiment of the Indian Army. (a) True (b) False (c) Partially True (d) Second most decorated`,o:["True","False","Partially True","Second most decorated"],a:0,s:"Bihar GK",exp:`<b>Answer: True</b> One of the most decorated`},
+{q:`145. The 'Ganges Dolphin' is the state: (a) Animal (b) Bird (c) Aquatic Animal (d) Fish`,o:["Animal","Bird","Aquatic Animal","Fish"],a:2,s:"Bihar GK",exp:`<b>Answer: Aquatic Animal</b>`},
+{q:`146. The 'Bihar Museum Biennale' was hosted in collaboration with which country? (a) USA (b) UK (c) France (d) Italy`,o:["USA","UK","France","Italy"],a:2,s:"Bihar GK",exp:`<b>Answer: France</b> Museum Biennale often involves international collaboration`},
+{q:`147. 'Pind Daan' is a ritual performed at: (a) Patna (b) Bodh Gaya (c) Gaya (d) Rajgir`,o:["Patna","Bodh Gaya","Gaya","Rajgir"],a:2,s:"Bihar Culture",exp:`<b>Answer: Gaya</b>`},
+{q:`148. Who is the author of the famous Bhojpuri poem 'Batohiya'? (a) Bhikhari Thakur (b) Heera Dom (c) Raghubir Narayan (d) Mahendra Mishra`,o:["Bhikhari Thakur","Heera Dom","Raghubir Narayan","Mahendra Mishra"],a:2,s:"Bihar Literature",exp:`<b>Answer: Raghubir Narayan</b>`},
+{q:`149. The 'Gurdwara Handi Sahib' in Danapur is associated with: (a) Guru Nanak Dev (b) Guru Tegh Bahadur (c) Guru Gobind Singh (d) Guru Arjan Dev`,o:["Guru Nanak Dev","Guru Tegh Bahadur","Guru Gobind Singh","Guru Arjan Dev"],a:1,s:"Bihar GK",exp:`<b>Answer: Guru Tegh Bahadur</b>`},
+{q:`150. The 'Sher Shah Suri Masjid' is located in: (a) Patna (b) Sasaram (c) Buxar (d) Rohtas`,o:["Patna","Sasaram","Buxar","Rohtas"],a:0,s:"Bihar History",exp:`<b>Answer: Patna</b> Pather ki Masjid`}
+];  
+let current=0, answers=Array(150).fill(null), review=Array(150).fill(false);
+let timeLeft = 120 * 60, timerInterval;
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(timeLeft <= 0){ clearInterval(timerInterval); alert("Time Up!"); submitTest(); return; }
+    timeLeft--;
+    let min = Math.floor(timeLeft / 60), sec = timeLeft % 60;
+    document.getElementById('timer').innerText = `Time Left: ${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    if(timeLeft < 300) document.getElementById('timer').style.color = '#d32f2f';
+  },1000);
+}
+
+const qPanel=document.getElementById('qPanel');
+for(let i=0;i<150;i++){
+  let btn=document.createElement('button');
+  btn.className='q-btn not-visited';
+  btn.innerText=i+1;
+  btn.onclick=()=>jumpQ(i);
+  qPanel.appendChild(btn);
+}
+
+function loadQ(){
+  document.getElementById('qNum').innerText=`Question ${current+1} | ${questions[current].s}`;
+  document.getElementById('question').innerText=questions[current].q;
+  let optHtml='';
+  questions[current].o.forEach((opt,i)=>{
+    let checked=answers[current]===i?'checked':'';
+    optHtml+=`<label><input type="radio" name="opt" value="${i}" ${checked} onchange="saveAns()"> ${opt}</label>`;
+  });
+  document.getElementById('options').innerHTML=optHtml;
+  updatePanel();
+}
+
+function saveAns(){let s=document.querySelector('input[name="opt"]:checked');if(s)answers[current]=parseInt(s.value);updatePanel();}
+function nextQ(){saveAns();if(current<150){current++;loadQ()}}
+function jumpQ(i){saveAns();current=i;loadQ()}
+function markReview(){review[current]=!review[current];updatePanel()}
+
+function updatePanel(){
+  document.querySelectorAll('.q-btn').forEach((btn,i)=>{
+    btn.className='q-btn';
+    if(i===current)btn.classList.add('current');
+    if(review[i])btn.classList.add('review');
+    else if(answers[i]!==null)btn.classList.add('answered');
+    else btn.classList.add('not-visited');
+  });
+}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  if(!confirm("Submit test?"))return;
+  saveAns();
+  let score=0,correct=0,wrong=0,unattempted=0;
+  let secScore={GK:0,Quant:0,Reasoning:0,English:0};
+  let solHTML='';
+
+  questions.forEach((q,i)=>{
+    let u=answers[i], c=q.a;
+    if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
+    else if(u===c){score+=1;correct++;secScore[q.s]+=1; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
+    else{score-=0.33;wrong++;secScore[q.s]-=0.33; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+  });
+
+  let percentage=((score/150)*100).toFixed(2);
+  document.getElementById('quizArea').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  document.getElementById('finalScore').innerText=`${score}/150`;
+  document.getElementById('analysis').innerHTML=`Correct: ${correct} | Wrong: ${wrong} | Unattempted: ${unattempted} | <b>Percentage: ${percentage}%</b>`;
+  document.getElementById('sectionScore').innerHTML=`GK: ${secScore.GK}/150`;
+  document.getElementById('solutionBox').innerHTML=solHTML;
+}
+
+function toggleSolution(){
+  document.getElementById('solutionBox').classList.toggle('hide');
+}
+
+loadQ();
+startTimer();
+</script>
+</body>
+</html>
