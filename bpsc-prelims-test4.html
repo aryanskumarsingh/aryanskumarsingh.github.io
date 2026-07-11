@@ -302,7 +302,7 @@ function submitTest(){
     let u=answers[i], c=q.a;
     if(u===null){unattempted++; solHTML+=`<div class="sol-que not-att"><b>Q${i+1}.</b> ${q.q}<br><b>Not Attempted</b> | Correct: ${q.o[c]}</div>`;}
     else if(u===c){score+=1;correct++;secScore[q.s]+=1; solHTML+=`<div class="sol-que correct"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ✔️ | Correct: ${q.o[c]}</div>`;}
-    else{score-=0.33;wrong++;secScore[q.s]-=0.33; solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
+    else{score-=(1/3);wrong++;secScore[q.s]-=(1/3); solHTML+=`<div class="sol-que wrong"><b>Q${i+1}.</b> ${q.q}<br>Your: ${q.o[u]} ❌ | Correct: ${q.o[c]}</div>`;}
   });
 
   let percentage=((score/150)*100).toFixed(1);
